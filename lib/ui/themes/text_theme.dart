@@ -23,16 +23,16 @@ final TextTheme myTextTheme = TextTheme(
   ),
   headline5: GoogleFonts.quicksand(
     fontSize: 24,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w700,
   ),
   headline6: GoogleFonts.quicksand(
     fontSize: 20,
-    fontWeight: FontWeight.w500,
+    fontWeight: FontWeight.w700,
     letterSpacing: 0.15,
   ),
   subtitle1: GoogleFonts.quicksand(
     fontSize: 16,
-    fontWeight: FontWeight.w400,
+    fontWeight: FontWeight.w700,
     letterSpacing: 0.15,
   ),
   subtitle2: GoogleFonts.quicksand(

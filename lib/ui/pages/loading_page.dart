@@ -21,7 +21,7 @@ class LoadingPage extends StatelessWidget {
               const SizedBox(height: 24),
               Text(
                 'Sedang Memuat Data...',
-                style: Theme.of(context).textTheme.subtitle1,
+                style: Theme.of(context).textTheme.bodyText1,
               ),
             ],
           ),

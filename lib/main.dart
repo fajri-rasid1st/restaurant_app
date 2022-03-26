@@ -18,11 +18,9 @@ void main() {
   ]);
 
   // change status bar color
-  SystemChrome.setSystemUIOverlayStyle(const SystemUiOverlayStyle(
-    statusBarColor: Colors.transparent,
-    statusBarBrightness: Brightness.dark,
-    statusBarIconBrightness: Brightness.dark,
-    systemNavigationBarColor: Colors.white,
+  SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
+    statusBarColor: primaryColor,
+    systemNavigationBarColor: backGroundColor,
   ));
 
   runApp(const MyApp());
@@ -58,7 +56,7 @@ class MyApp extends StatelessWidget {
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.done) {
             if (snapshot.hasData) {
-              return const LoadingPage();
+              return HomePage(restaurants: snapshot.data!);
             }
 
             return const ErrorPage();

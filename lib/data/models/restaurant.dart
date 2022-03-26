@@ -30,4 +30,9 @@ class Restaurant {
       menus: Menu.fromMap(restaurant['menus']),
     );
   }
+
+  @override
+  String toString() {
+    return 'Restaurant(id: $id, name: $name, description: $description, pictureId: $pictureId, city: $city, rating: $rating, menus: $menus)';
+  }
 }

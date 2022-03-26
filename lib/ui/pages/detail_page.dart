@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:restaurant_app/data/models/restaurant.dart';
 
 class DetailPage extends StatelessWidget {
-  const DetailPage({Key? key}) : super(key: key);
+  final Restaurant restaurant;
+
+  const DetailPage({
+    Key? key,
+    required this.restaurant,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('detail page'),
+    return Center(
+      child: Text(restaurant.toString()),
     );
   }
 }
