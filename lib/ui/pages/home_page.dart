@@ -1,12 +1,18 @@
 import 'package:flutter/material.dart';
+import 'package:restaurant_app/data/models/restaurant.dart';
 
 class HomePage extends StatelessWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final List<Restaurant>? restaurants;
+
+  const HomePage({Key? key, required this.restaurants}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('home page'),
+    return Scaffold(
+      
+      body: SafeArea(
+        child: Container(),
+      ),
     );
   }
 }

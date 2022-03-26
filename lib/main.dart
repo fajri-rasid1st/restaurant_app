@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:restaurant_app/data/api/restaurant_api.dart';
+import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/home_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
@@ -50,18 +53,20 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: backGroundColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      // home: FutureBuilder<String>(
-      //   future: SharedPreferences.getInstance(),
-      //   builder: (context, snapshot) {
-      //     if (snapshot.connectionState == ConnectionState.done) {
-      //       if (snapshot.hasData) {
-      //         return const HomePage();
-      //       }
-      //     }
+      home: FutureBuilder<List<Restaurant>>(
+        future: RestaurantApi.getRestaurants(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.done) {
+            if (snapshot.hasData) {
+              return const LoadingPage();
+            }
 
-      //     return const LoadingPage();
-      //   },
-      // ),
+            return const ErrorPage();
+          }
+
+          return const LoadingPage();
+        },
+      ),
     );
   }
 }
