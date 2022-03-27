@@ -9,7 +9,7 @@ class Menu {
     required this.drinks,
   });
 
-  // constructor untuk membuat objek Menu dari bentuk Map (hasil parsing json)
+  /// constructor untuk membuat objek Menu dari bentuk Map (hasil parsing json)
   factory Menu.fromMap(Map<String, dynamic> menus) {
     return Menu(
       foods: List<Food>.from(menus['foods']?.map((food) {

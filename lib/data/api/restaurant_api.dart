@@ -9,7 +9,7 @@ class RestaurantApi {
   /// mengambil list data restaurant dari server, dan mengembalikan:
   ///
   /// * list daftar restaurant, jika berhasil
-  /// * throm exception error, jika gagal
+  /// * throw exception error, jika gagal
   static Future<List<Restaurant>> getRestaurants() async {
     // definisikan target url
     const url = Const.urlToData;

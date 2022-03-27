@@ -19,7 +19,7 @@ class Restaurant {
     required this.menus,
   });
 
-  // constructor untuk membuat objek Restaurant dari bentuk Map (hasil parsing json)
+  /// constructor untuk membuat objek Restaurant dari bentuk Map (hasil parsing json)
   factory Restaurant.fromMap(Map<String, dynamic> restaurant) {
     return Restaurant(
       id: restaurant['id'] ?? '',

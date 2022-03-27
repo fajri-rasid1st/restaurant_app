@@ -81,7 +81,7 @@ class _ErrorPageState extends State<ErrorPage> {
     ]).then((value) {
       setState(() => _restaurants = value[1]);
 
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         MaterialPageRoute(
           builder: ((context) => HomePage(restaurants: _restaurants!)),
