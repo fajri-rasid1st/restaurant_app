@@ -16,6 +16,7 @@ class RestaurantItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      margin: const EdgeInsets.all(0),
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Stack(
         children: <Widget>[
@@ -23,44 +24,47 @@ class RestaurantItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Expanded(
-                flex: 1,
+                flex: 2,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
-                  child: CachedNetworkImage(
-                    imageUrl: restaurant.pictureId,
-                    fit: BoxFit.fill,
-                    width: double.infinity,
-                    height: 100,
-                    fadeInDuration: const Duration(milliseconds: 200),
-                    fadeOutDuration: const Duration(milliseconds: 200),
-                    placeholder: (context, url) {
-                      return Center(
-                        child: SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: SpinKitPulse(color: primaryColor),
-                        ),
-                      );
-                    },
-                    errorWidget: (context, url, error) {
-                      return Center(
-                        child: SizedBox(
-                          width: 100,
-                          height: 100,
-                          child: Icon(
-                            Icons.motion_photos_off_outlined,
-                            color: secondaryTextColor,
+                  child: Hero(
+                    tag: restaurant.id,
+                    child: CachedNetworkImage(
+                      imageUrl: restaurant.pictureId,
+                      fit: BoxFit.fill,
+                      width: double.infinity,
+                      height: 100,
+                      fadeInDuration: const Duration(milliseconds: 200),
+                      fadeOutDuration: const Duration(milliseconds: 200),
+                      placeholder: (context, url) {
+                        return Center(
+                          child: SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: SpinKitPulse(color: primaryColor),
                           ),
-                        ),
-                      );
-                    },
+                        );
+                      },
+                      errorWidget: (context, url, error) {
+                        return Center(
+                          child: SizedBox(
+                            width: 100,
+                            height: 100,
+                            child: Icon(
+                              Icons.motion_photos_off_outlined,
+                              color: secondaryTextColor,
+                            ),
+                          ),
+                        );
+                      },
+                    ),
                   ),
                 ),
               ),
               Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: Padding(
-                    padding: const EdgeInsets.all(12),
+                    padding: const EdgeInsets.all(8),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -82,12 +86,12 @@ class RestaurantItem extends StatelessWidget {
                             Text(restaurant.city)
                           ],
                         ),
-                        const SizedBox(height: 4),
+                        const SizedBox(width: 4),
                         Row(
                           children: <Widget>[
                             Icon(
                               Icons.star_rate_rounded,
-                              size: 18,
+                              size: 20,
                               color: Colors.orange[400],
                             ),
                             const SizedBox(width: 2),

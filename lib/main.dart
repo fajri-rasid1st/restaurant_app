@@ -19,7 +19,7 @@ void main() {
 
   // change status bar color
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
-    statusBarColor: primaryColor,
+    statusBarColor: Colors.transparent,
     systemNavigationBarColor: backGroundColor,
   ));
 

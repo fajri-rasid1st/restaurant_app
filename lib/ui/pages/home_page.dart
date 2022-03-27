@@ -39,8 +39,8 @@ class _HomePageState extends State<HomePage> {
           title: _buildTitle(),
           leading: _buildLeading(),
           actions: _buildActions(),
-          toolbarHeight: 67,
           titleSpacing: 0,
+          leadingWidth: 68,
         ),
         body: SafeArea(
           child: ListView.separated(
@@ -51,7 +51,7 @@ class _HomePageState extends State<HomePage> {
               return RestaurantItem(restaurant: restaurant);
             },
             separatorBuilder: (context, index) {
-              return const SizedBox(height: 8);
+              return const SizedBox(height: 12);
             },
             itemCount: widget.restaurants.length,
           ),
@@ -84,8 +84,6 @@ class _HomePageState extends State<HomePage> {
             padding: const EdgeInsets.symmetric(horizontal: 16),
             child: Image.asset(
               'assets/img/restaurant_icon.png',
-              width: 32,
-              height: 32,
               color: Colors.white,
             ),
           );
