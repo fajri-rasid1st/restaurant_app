@@ -1,6 +1,8 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_svg/flutter_svg.dart';
+import 'package:restaurant_app/data/api/restaurant_api.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/ui/widgets/restaurant_item.dart';
 import 'package:restaurant_app/ui/widgets/search_field.dart';
@@ -16,17 +18,11 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool _isSearching = false;
-  final String _query = '';
-  Timer? _debouncer;
-
-  late ScrollController _scrollController;
+  String _query = '';
+  List<Restaurant> _restaurantsFromSearch = <Restaurant>[];
 
   @override
   void initState() {
-    _scrollController = ScrollController();
-
-    if (_debouncer != null) _debouncer!.cancel();
-
     super.initState();
   }
 
@@ -41,20 +37,10 @@ class _HomePageState extends State<HomePage> {
           actions: _buildActions(),
           titleSpacing: 0,
           leadingWidth: 68,
+          toolbarHeight: 68,
         ),
         body: SafeArea(
-          child: ListView.separated(
-            padding: const EdgeInsets.all(16),
-            itemBuilder: (context, index) {
-              final restaurant = widget.restaurants[index];
-
-              return RestaurantItem(restaurant: restaurant);
-            },
-            separatorBuilder: (context, index) {
-              return const SizedBox(height: 12);
-            },
-            itemCount: widget.restaurants.length,
-          ),
+          child: _buildBody(),
         ),
       ),
     );
@@ -104,6 +90,73 @@ class _HomePageState extends State<HomePage> {
     ];
   }
 
+  Widget _buildBody() {
+    List<Restaurant> restaurants;
+
+    if (_isSearching && _query.isNotEmpty) {
+      restaurants = _restaurantsFromSearch;
+    } else {
+      restaurants = widget.restaurants;
+    }
+
+    if (restaurants.isEmpty) {
+      return _buildRestaurantEmpty();
+    }
+
+    return _buildRestaurantList(restaurants);
+  }
+
+  Center _buildRestaurantEmpty() {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            SvgPicture.asset(
+              'assets/svg/404_Error_cuate.svg',
+              width: 300,
+              fit: BoxFit.fill,
+            ),
+            Text(
+              'Restoran Tidak Ditemukan',
+              style: Theme.of(context).textTheme.bodyText1,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  ListView _buildRestaurantList(List<Restaurant> restaurants) {
+    return ListView.separated(
+      padding: const EdgeInsets.all(16),
+      itemBuilder: (context, index) {
+        return RestaurantItem(restaurant: restaurants[index]);
+      },
+      separatorBuilder: (context, index) {
+        return const SizedBox(height: 12);
+      },
+      itemCount: restaurants.length,
+    );
+  }
+
+  Future<void> searchRestaurant(String query) async {
+    final restaurants = await RestaurantApi.searchRestaurants(query);
+
+    setState(() {
+      _query = query;
+      _restaurantsFromSearch = restaurants;
+    });
+  }
+
+  void resetSearching() {
+    setState(() {
+      _isSearching = false;
+      _restaurantsFromSearch = widget.restaurants;
+    });
+  }
+
   Future<bool> onWillPop() {
     if (_isSearching) {
       resetSearching();
@@ -113,22 +166,4 @@ class _HomePageState extends State<HomePage> {
 
     return Future.value(true);
   }
-
-  void resetSearching() {
-    setState(() => _isSearching = false);
-
-    _scrollController.animateTo(
-      0,
-      duration: const Duration(milliseconds: 500),
-      curve: Curves.easeOut,
-    );
-  }
-
-  void debounce(VoidCallback callback) {
-    if (_debouncer != null) _debouncer!.cancel();
-
-    _debouncer = Timer(const Duration(milliseconds: 500), callback);
-  }
-
-  Future<void> searchRestaurant(String query) async {}
 }

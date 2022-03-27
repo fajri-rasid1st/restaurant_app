@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/ui/themes/color_scheme.dart';
 
 class SearchField extends StatefulWidget {
   final String query;
@@ -48,22 +47,11 @@ class _SearchFieldState extends State<SearchField> {
         autofocus: true,
         textInputAction: TextInputAction.search,
         decoration: InputDecoration(
+          contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
           hintText: widget.hintText,
           floatingLabelBehavior: FloatingLabelBehavior.never,
           border: InputBorder.none,
-          prefixIcon: const Icon(Icons.search),
-          suffix: widget.query.isEmpty
-              ? const SizedBox()
-              : IconButton(
-                  onPressed: () {
-                    _controller.clear();
-                    widget.onChanged('');
-                  },
-                  icon: Icon(
-                    Icons.close,
-                    color: primaryColor,
-                  ),
-                ),
+          suffixIcon: const Icon(Icons.search_rounded),
         ),
         onChanged: widget.onChanged,
       ),
