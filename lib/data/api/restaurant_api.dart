@@ -6,76 +6,54 @@ import 'package:restaurant_app/data/const.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 
 class RestaurantApi {
-  // function to get list of restaurants
+  /// mengambil list data restaurant dari server, dan mengembalikan:
+  ///
+  /// * list daftar restaurant, jika berhasil
+  /// * throm exception error, jika gagal
   static Future<List<Restaurant>> getRestaurants() async {
-    // define url target
+    // definisikan target url
     const url = Const.urlToData;
 
-    // parsing string to uri object
+    // parsing string url ke bentuk uri
     final uri = Uri.parse(url);
 
-    // send http with get method request
+    // kirim http request menggunakan metode get
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
-      // parse the string and returns the resulting json object
+      // parsing string dan mengembalikan nilai objek json
       final results = jsonDecode(response.body);
 
-      // casting results to Map<string, dynamic> and get 'restaurants' value
+      // casting hasilnya ke bentuk Map<string, dynamic>, lalu ambil value dari key restaurants
       final List<dynamic> restaurants =
           (results as Map<String, dynamic>)['restaurants'];
 
-      // initialize empty restaurant list
+      // inisialisasi list restaurant kosong
       final newRestaurantList = <Restaurant>[];
 
       for (var restaurant in restaurants) {
-        // add restaurant object to new restaurant list
+        // tambahkan objek restaurant ke list, yang diperoleh melalui method map
         newRestaurantList.add(Restaurant.fromMap(restaurant));
       }
 
-      // return new restaurant list
+      // kembalikan nilai newRestaurantList
       return newRestaurantList;
     } else {
       throw Exception();
     }
   }
 
-  // function to search restaurants
+  /// mengambil list data restaurant dari server kemudian melakukan filter sesuai query
   static Future<List<Restaurant>> searchRestaurants(String query) async {
-    // define url target
-    const url = Const.urlToData;
-
-    // parsing string to uri object
-    final uri = Uri.parse(url);
-
-    // send http with get method request
-    final response = await http.get(uri);
-
-    if (response.statusCode == 200) {
-      // parse the string and returns the resulting json object
-      final results = jsonDecode(response.body);
-
-      // casting results to Map<string, dynamic> and get 'restaurants' value
-      final List<dynamic> restaurants =
-          (results as Map<String, dynamic>)['restaurants'];
-
-      // initialize empty restaurant list
-      final newRestaurantList = <Restaurant>[];
-
-      for (var restaurant in restaurants) {
-        // add restaurant object to new restaurant list
-        newRestaurantList.add(Restaurant.fromMap(restaurant));
-      }
-
-      // return new restaurant list
-      return newRestaurantList.where((restaurant) {
+    // mengembalikan nilai dari method [getRestaurants]
+    return getRestaurants().then((restaurants) {
+      // kembalikan list restaurant hasil filter pada namanya sesuai kueri
+      return restaurants.where((restaurant) {
         final restaurantNameLower = restaurant.name.toLowerCase();
         final queryLower = query.toLowerCase();
 
         return restaurantNameLower.contains(queryLower);
       }).toList();
-    } else {
-      throw Exception('error network connection.');
-    }
+    });
   }
 }

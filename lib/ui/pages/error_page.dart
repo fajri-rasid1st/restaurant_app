@@ -68,6 +68,10 @@ class _ErrorPageState extends State<ErrorPage> {
     );
   }
 
+  /// melakukan reload halaman dan menghasilkan beberapa kondisi, yaitu:
+  ///
+  /// * memunculkuan peson error jika data gagal dimuat
+  /// * menuju ke halaman HomePage jika data berhasil dimuat
   Future<void> reloadPage() async {
     setState(() => _isReload = !_isReload);
 

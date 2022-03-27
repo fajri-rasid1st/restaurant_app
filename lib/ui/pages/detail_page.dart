@@ -1,11 +1,10 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:readmore/readmore.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:restaurant_app/data/models/drink.dart';
 import 'package:restaurant_app/data/models/food.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
+import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 import 'package:restaurant_app/ui/widgets/favorite_button.dart';
 import 'package:restaurant_app/ui/widgets/menu_item.dart';
 
@@ -39,32 +38,11 @@ class DetailPage extends StatelessWidget {
                   children: <Widget>[
                     Hero(
                       tag: restaurant.id,
-                      child: CachedNetworkImage(
-                        imageUrl: restaurant.pictureId,
-                        fit: BoxFit.fill,
-                        fadeInDuration: const Duration(milliseconds: 200),
-                        fadeOutDuration: const Duration(milliseconds: 200),
-                        placeholder: (context, url) {
-                          return Center(
-                            child: SizedBox(
-                              width: 240,
-                              height: 240,
-                              child: SpinKitPulse(color: primaryColor),
-                            ),
-                          );
-                        },
-                        errorWidget: (context, url, error) {
-                          return Center(
-                            child: SizedBox(
-                              width: 240,
-                              height: 240,
-                              child: Icon(
-                                Icons.motion_photos_off_outlined,
-                                color: secondaryTextColor,
-                              ),
-                            ),
-                          );
-                        },
+                      child: CustomNetworkImage(
+                        imgUrl: restaurant.pictureId,
+                        width: double.infinity,
+                        height: 240,
+                        placeHolderSize: 240,
                       ),
                     ),
                     Positioned.fill(
@@ -223,6 +201,7 @@ class DetailPage extends StatelessWidget {
     );
   }
 
+  /// untuk membuat menu item foods dan/atau drinks dengan kustomisasi jumlah grid dan rasio
   GridView _buildMenuItems({
     List<Food>? foods,
     List<Drink>? drinks,

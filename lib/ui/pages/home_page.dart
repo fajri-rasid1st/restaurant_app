@@ -141,6 +141,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  /// melukan pencarian data restaurant sesuai query yang dimasukkan
   Future<void> searchRestaurant(String query) async {
     final restaurants = await RestaurantApi.searchRestaurants(query);
 
@@ -150,6 +151,7 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  /// melakukan reset pencarian.
   void resetSearching() {
     setState(() {
       _isSearching = false;
@@ -157,6 +159,11 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
+  /// melakukan pengecekan, apakah sedang melakukan searching atau tidak.
+  ///
+  /// * jika iya, maka aplikasi tidak akan keluar jika menekan tombol back pada perangkat,
+  /// melainkan akan melakukan reset searching terlebih dahulu.
+  /// * jika tidak, aplikasi akan keluar jika menekan tombol back.
   Future<bool> onWillPop() {
     if (_isSearching) {
       resetSearching();

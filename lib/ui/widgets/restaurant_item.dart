@@ -1,9 +1,7 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/ui/pages/detail_page.dart';
-import 'package:restaurant_app/ui/themes/color_scheme.dart';
+import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 
 class RestaurantItem extends StatelessWidget {
   final Restaurant restaurant;
@@ -26,34 +24,11 @@ class RestaurantItem extends StatelessWidget {
                   borderRadius: BorderRadius.circular(12),
                   child: Hero(
                     tag: restaurant.id,
-                    child: CachedNetworkImage(
-                      imageUrl: restaurant.pictureId,
-                      fit: BoxFit.fill,
+                    child: CustomNetworkImage(
+                      imgUrl: restaurant.pictureId,
                       width: double.infinity,
                       height: 100,
-                      fadeInDuration: const Duration(milliseconds: 200),
-                      fadeOutDuration: const Duration(milliseconds: 200),
-                      placeholder: (context, url) {
-                        return Center(
-                          child: SizedBox(
-                            width: 100,
-                            height: 100,
-                            child: SpinKitPulse(color: primaryColor),
-                          ),
-                        );
-                      },
-                      errorWidget: (context, url, error) {
-                        return Center(
-                          child: SizedBox(
-                            width: 100,
-                            height: 100,
-                            child: Icon(
-                              Icons.motion_photos_off_outlined,
-                              color: secondaryTextColor,
-                            ),
-                          ),
-                        );
-                      },
+                      placeHolderSize: 100,
                     ),
                   ),
                 ),

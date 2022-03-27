@@ -1,9 +1,8 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:restaurant_app/data/models/drink.dart';
 import 'package:restaurant_app/data/models/food.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
+import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 
 class MenuItem extends StatelessWidget {
   final Food? food;
@@ -20,34 +19,11 @@ class MenuItem extends StatelessWidget {
       child: Stack(
         alignment: AlignmentDirectional.bottomStart,
         children: <Widget>[
-          CachedNetworkImage(
-            imageUrl: food == null ? drink!.imgUrl : food!.imgUrl,
+          CustomNetworkImage(
+            imgUrl: food == null ? drink!.imgUrl : food!.imgUrl,
             width: 300,
             height: 300,
-            fit: BoxFit.fill,
-            fadeInDuration: const Duration(milliseconds: 200),
-            fadeOutDuration: const Duration(milliseconds: 200),
-            placeholder: (context, url) {
-              return Center(
-                child: SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: SpinKitPulse(color: primaryColor),
-                ),
-              );
-            },
-            errorWidget: (context, url, error) {
-              return Center(
-                child: SizedBox(
-                  width: 100,
-                  height: 100,
-                  child: Icon(
-                    Icons.motion_photos_off_outlined,
-                    color: secondaryTextColor,
-                  ),
-                ),
-              );
-            },
+            placeHolderSize: 100,
           ),
           Positioned.fill(
             child: Container(

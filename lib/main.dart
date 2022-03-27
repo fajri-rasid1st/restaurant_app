@@ -11,13 +11,13 @@ import 'package:restaurant_app/ui/themes/text_theme.dart';
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // prevent landscape orientation
+  // untuk mencegah orientasi landskap
   SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // change status bar color
+  // ubah warna status bar
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     systemNavigationBarColor: backGroundColor,

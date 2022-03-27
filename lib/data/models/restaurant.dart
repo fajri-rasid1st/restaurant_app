@@ -19,6 +19,7 @@ class Restaurant {
     required this.menus,
   });
 
+  // constructor untuk membuat objek Restaurant dari bentuk Map (hasil parsing json)
   factory Restaurant.fromMap(Map<String, dynamic> restaurant) {
     return Restaurant(
       id: restaurant['id'] ?? '',
@@ -29,10 +30,5 @@ class Restaurant {
       rating: restaurant['rating']?.toDouble() ?? 0.0,
       menus: Menu.fromMap(restaurant['menus']),
     );
-  }
-
-  @override
-  String toString() {
-    return 'Restaurant(id: $id, name: $name, description: $description, pictureId: $pictureId, city: $city, rating: $rating, menus: $menus)';
   }
 }
