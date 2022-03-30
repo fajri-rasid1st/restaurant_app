@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurant_app/data/common/const.dart';
 import 'package:restaurant_app/data/models/menu_item.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
@@ -18,8 +19,10 @@ class MenuItemView extends StatelessWidget {
       child: Stack(
         alignment: AlignmentDirectional.bottomStart,
         children: <Widget>[
-          const CustomNetworkImage(
-            imgUrl: '',
+          CustomNetworkImage(
+            imgUrl: food == null
+                ? Const.imgDrinkPlaceholder
+                : Const.imgFoodPlaceholder,
             width: 300,
             height: 300,
             placeHolderSize: 100,

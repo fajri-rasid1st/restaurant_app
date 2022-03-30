@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:restaurant_app/data/common/const.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
@@ -25,7 +26,7 @@ class RestaurantItem extends StatelessWidget {
                   child: Hero(
                     tag: restaurant.id,
                     child: CustomNetworkImage(
-                      imgUrl: restaurant.pictureId,
+                      imgUrl: '${Const.imgUrl}/${restaurant.pictureId}',
                       width: double.infinity,
                       height: 100,
                       placeHolderSize: 100,

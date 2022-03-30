@@ -1,5 +1,6 @@
 import 'package:readmore/readmore.dart';
 import 'package:flutter/material.dart';
+import 'package:restaurant_app/data/common/const.dart';
 import 'package:restaurant_app/data/models/menu_item.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
@@ -38,7 +39,7 @@ class DetailPage extends StatelessWidget {
                     Hero(
                       tag: restaurant.id,
                       child: CustomNetworkImage(
-                        imgUrl: restaurant.pictureId,
+                        imgUrl: '${Const.imgUrl}/${restaurant.pictureId}',
                         width: double.infinity,
                         height: 240,
                         placeHolderSize: 240,
@@ -172,11 +173,11 @@ class DetailPage extends StatelessWidget {
                       ?.copyWith(color: secondaryTextColor),
                 ),
               ),
-              _buildMenuItems(
-                foods: restaurant.menus.foods,
-                crossAxisCount: 2,
-                childAspectRatio: 5 / 4,
-              ),
+              // _buildMenuItems(
+              //   foods: restaurant.menus.foods,
+              //   crossAxisCount: 2,
+              //   childAspectRatio: 5 / 4,
+              // ),
               const SizedBox(height: 8),
               Padding(
                 padding: const EdgeInsets.only(top: 16, bottom: 8),
@@ -188,11 +189,11 @@ class DetailPage extends StatelessWidget {
                       ?.copyWith(color: secondaryTextColor),
                 ),
               ),
-              _buildMenuItems(
-                drinks: restaurant.menus.drinks,
-                crossAxisCount: 3,
-                childAspectRatio: 2 / 3,
-              ),
+              // _buildMenuItems(
+              //   drinks: restaurant.menus.drinks,
+              //   crossAxisCount: 3,
+              //   childAspectRatio: 2 / 3,
+              // ),
             ],
           ),
         ),

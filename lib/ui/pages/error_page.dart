@@ -1,21 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
-import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/ui/pages/home_page.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 
-class ErrorPage extends StatefulWidget {
+class ErrorPage extends StatelessWidget {
   const ErrorPage({Key? key}) : super(key: key);
-
-  @override
-  State<ErrorPage> createState() => _ErrorPageState();
-}
-
-class _ErrorPageState extends State<ErrorPage> {
-  List<Restaurant>? _restaurants;
-  bool _isReload = false;
 
   @override
   Widget build(BuildContext context) {
@@ -41,8 +34,10 @@ class _ErrorPageState extends State<ErrorPage> {
               ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
-                onPressed: reloadPage,
-                icon: _isReload
+                onPressed: context.watch<RestaurantProvider>().isPageReload
+                    ? null
+                    : () => reloadPage(context),
+                icon: context.watch<RestaurantProvider>().isPageReload
                     ? SizedBox(
                         width: 18,
                         height: 18,
@@ -52,7 +47,7 @@ class _ErrorPageState extends State<ErrorPage> {
                         ),
                       )
                     : const Icon(Icons.replay_rounded),
-                label: _isReload
+                label: context.watch<RestaurantProvider>().isPageReload
                     ? const Text('Memuat Data...')
                     : const Text('Coba Lagi'),
                 style: ElevatedButton.styleFrom(
@@ -72,28 +67,28 @@ class _ErrorPageState extends State<ErrorPage> {
   ///
   /// * memunculkuan peson error jika data gagal dimuat
   /// * menuju ke halaman HomePage jika data berhasil dimuat
-  Future<void> reloadPage() async {
-    setState(() => _isReload = !_isReload);
+  Future<void> reloadPage(BuildContext context) async {
+    context.read<RestaurantProvider>().isPageReload = true;
 
     Future.wait([
       Future.delayed(const Duration(milliseconds: 3000)),
       RestaurantApi.getRestaurants(),
     ]).then((value) {
-      setState(() => _restaurants = value[1]);
+      context.read<RestaurantProvider>().restaurants = value[1];
 
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: ((context) => HomePage(restaurants: _restaurants!)),
+          builder: ((context) => HomePage(restaurants: value[1])),
         ),
       );
     }).catchError((error) {
-      setState(() => _isReload = !_isReload);
+      context.read<RestaurantProvider>().isPageReload = false;
 
       // create snackbar
       SnackBar snackBar = SnackBar(
         content: Text(
-          error.toString(),
+          error.message,
           style: GoogleFonts.quicksand(),
         ),
       );

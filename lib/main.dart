@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
-import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/home_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
@@ -23,7 +24,12 @@ void main() {
     systemNavigationBarColor: backGroundColor,
   ));
 
-  runApp(const MyApp());
+  runApp(
+    ChangeNotifierProvider<RestaurantProvider>(
+      create: (_) => RestaurantProvider(restaurantApi: RestaurantApi()),
+      child: const MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -51,19 +57,16 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: backGroundColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: FutureBuilder<List<Restaurant>>(
-        future: RestaurantApi.getRestaurants(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.done) {
-            if (snapshot.hasData) {
-              return HomePage(restaurants: snapshot.data!);
-            }
-
+      home: Consumer<RestaurantProvider>(
+        builder: ((context, value, child) {
+          if (value.state == ResultState.loading) {
+            return const LoadingPage();
+          } else if (value.state == ResultState.error) {
             return const ErrorPage();
           }
 
-          return const LoadingPage();
-        },
+          return HomePage(restaurants: value.restaurants);
+        }),
       ),
     );
   }

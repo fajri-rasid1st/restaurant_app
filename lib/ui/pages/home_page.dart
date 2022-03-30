@@ -1,65 +1,55 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:restaurant_app/data/api/restaurant_api.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/ui/widgets/restaurant_item.dart';
 import 'package:restaurant_app/ui/widgets/search_field.dart';
 
-class HomePage extends StatefulWidget {
+class HomePage extends StatelessWidget {
   final List<Restaurant> restaurants;
 
   const HomePage({Key? key, required this.restaurants}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
-  bool _isSearching = false;
-  String _query = '';
-  List<Restaurant> _restaurantsFromSearch = <Restaurant>[];
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     return WillPopScope(
-      onWillPop: onWillPop,
+      onWillPop: () => onWillPop(context),
       child: Scaffold(
         appBar: AppBar(
-          title: _buildTitle(),
-          leading: _buildLeading(),
-          actions: _buildActions(),
+          title: _buildTitle(context),
+          leading: _buildLeading(context),
+          actions: _buildActions(context),
           titleSpacing: 0,
           leadingWidth: 68,
           toolbarHeight: 68,
         ),
         body: SafeArea(
-          child: _buildBody(),
+          child: _buildBody(context),
         ),
       ),
     );
   }
 
-  Widget _buildTitle() {
-    return _isSearching
+  Widget _buildTitle(BuildContext context) {
+    return context.watch<RestaurantProvider>().isSearching
         ? SearchField(
-            query: _query,
+            query: context.watch<RestaurantProvider>().query,
             hintText: 'Search Restaurants...',
-            onChanged: searchRestaurant,
+            onChanged: (query) {
+              context.read<RestaurantProvider>().searchRestaurants(query);
+            },
           )
         : const Text('Restaurant App');
   }
 
-  Widget _buildLeading() {
-    return _isSearching
+  Widget _buildLeading(BuildContext context) {
+    return context.watch<RestaurantProvider>().isSearching
         ? IconButton(
-            onPressed: () => resetSearching(),
+            onPressed: () {
+              context.read<RestaurantProvider>().isSearching = false;
+            },
             icon: const Icon(
               Icons.arrow_back_rounded,
               size: 28,
@@ -75,11 +65,13 @@ class _HomePageState extends State<HomePage> {
           );
   }
 
-  List<Widget> _buildActions() {
+  List<Widget> _buildActions(BuildContext context) {
     return <Widget>[
-      if (!_isSearching) ...[
+      if (!context.watch<RestaurantProvider>().isSearching) ...[
         IconButton(
-          onPressed: () => setState(() => _isSearching = true),
+          onPressed: () {
+            context.watch<RestaurantProvider>().isSearching = true;
+          },
           icon: const Icon(
             Icons.search_rounded,
             size: 28,
@@ -90,28 +82,31 @@ class _HomePageState extends State<HomePage> {
     ];
   }
 
-  Widget _buildBody() {
-    List<Restaurant> restaurants;
+  Widget _buildBody(BuildContext context) {
+    // final isSearching = context.watch<RestaurantProvider>().isSearching;
+    // final query = context.watch<RestaurantProvider>().query;
 
-    if (_isSearching && _query.isNotEmpty) {
-      restaurants = _restaurantsFromSearch;
-    } else {
-      restaurants = widget.restaurants;
-    }
+    // if (isSearching && query.isNotEmpty) {
+    //   restaurants = _restaurantsFromSearch;
+    // } else {
+    //   restaurants = widget.restaurants;
+    // }
+
+    final restaurants = context.watch<RestaurantProvider>().restaurants;
 
     if (restaurants.isEmpty) {
-      return _buildRestaurantEmpty();
+      return _buildRestaurantEmpty(context);
     }
 
     return _buildRestaurantList(restaurants);
   }
 
-  Center _buildRestaurantEmpty() {
+  Center _buildRestaurantEmpty(BuildContext context) {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        child: Stack(
+          alignment: AlignmentDirectional.bottomCenter,
           children: <Widget>[
             SvgPicture.asset(
               'assets/svg/404_Error_cuate.svg',
@@ -141,32 +136,14 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  /// melukan pencarian data restaurant sesuai query yang dimasukkan
-  Future<void> searchRestaurant(String query) async {
-    final restaurants = await RestaurantApi.getRestaurants(query);
-
-    setState(() {
-      _query = query;
-      _restaurantsFromSearch = restaurants;
-    });
-  }
-
-  /// melakukan reset pencarian.
-  void resetSearching() {
-    setState(() {
-      _isSearching = false;
-      _restaurantsFromSearch = widget.restaurants;
-    });
-  }
-
   /// melakukan pengecekan, apakah sedang melakukan searching atau tidak.
   ///
   /// * jika iya, maka aplikasi tidak akan keluar jika menekan tombol back pada perangkat,
   /// melainkan akan melakukan reset searching terlebih dahulu.
   /// * jika tidak, aplikasi akan keluar jika menekan tombol back.
-  Future<bool> onWillPop() {
-    if (_isSearching) {
-      resetSearching();
+  Future<bool> onWillPop(BuildContext context) {
+    if (context.watch<RestaurantProvider>().isSearching) {
+      context.read<RestaurantProvider>().isSearching = false;
 
       return Future.value(false);
     }
