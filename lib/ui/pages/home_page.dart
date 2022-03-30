@@ -143,7 +143,7 @@ class _HomePageState extends State<HomePage> {
 
   /// melukan pencarian data restaurant sesuai query yang dimasukkan
   Future<void> searchRestaurant(String query) async {
-    final restaurants = await RestaurantApi.searchRestaurants(query);
+    final restaurants = await RestaurantApi.getRestaurants(query);
 
     setState(() {
       _query = query;

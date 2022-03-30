@@ -2,58 +2,71 @@ import 'dart:convert';
 
 import 'package:http/http.dart' as http;
 
-import 'package:restaurant_app/data/const.dart';
+import 'package:restaurant_app/data/common/const.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 
 class RestaurantApi {
-  /// mengambil list data restaurant dari server, dan mengembalikan:
+  /// Mengambil data daftar restaurant dari server. Jika [query] dimasukkan,
+  /// maka akan mengambil daftar restaurant sesuai [query]. mengembalikan nilai berupa:
   ///
-  /// * list daftar restaurant, jika berhasil
-  /// * throw exception error, jika gagal
-  static Future<List<Restaurant>> getRestaurants() async {
-    // definisikan target url
-    const url = Const.urlToData;
+  /// * List restaurant, jika berhasil.
+  /// * Throw exception error, jika gagal.
+  static Future<List<Restaurant>> getRestaurants([String? query]) async {
+    // Definisikan terlebih dahulu url-nya
+    final url = (query == null)
+        ? '${Const.baseUrl}/list'
+        : '${Const.baseUrl}/search?q=$query';
 
-    // parsing string url ke bentuk uri
+    // Parsing string url ke bentuk uri
     final uri = Uri.parse(url);
 
-    // kirim http request menggunakan metode get
+    // Kirim http request menggunakan metode get
     final response = await http.get(uri);
 
     if (response.statusCode == 200) {
-      // parsing string dan mengembalikan nilai objek json
+      // Parsing string dan mengembalikan nilai objek json
       final results = jsonDecode(response.body);
 
-      // casting hasilnya ke bentuk Map<string, dynamic>, lalu ambil value dari key restaurants
-      final List<dynamic> restaurants =
-          (results as Map<String, dynamic>)['restaurants'];
+      // Casting hasilnya ke bentuk Map, lalu ambil value dari key restaurants.
+      // karena data dari server berbentuk list, maka tipe List ditulis secara eksplisit.
+      final List restaurants = (results as Map<String, dynamic>)['restaurants'];
 
-      // inisialisasi list restaurant kosong
-      final newRestaurantList = <Restaurant>[];
-
-      for (var restaurant in restaurants) {
-        // tambahkan objek restaurant ke list, yang diperoleh melalui method map
-        newRestaurantList.add(Restaurant.fromMap(restaurant));
-      }
-
-      // kembalikan nilai newRestaurantList
-      return newRestaurantList;
+      // Kembalikan nilai berupa daftar restaurant yang telah dibuat dari bentuk map
+      return restaurants.map((restaurant) {
+        return Restaurant.fromMap(restaurant);
+      }).toList();
     } else {
-      throw Exception();
+      // Kembalikan exception error jika gagal
+      throw Exception('Gagal Memuat Daftar Restoran!');
     }
   }
 
-  /// mengambil list data restaurant dari server kemudian melakukan filter sesuai query
-  static Future<List<Restaurant>> searchRestaurants(String query) async {
-    // mengembalikan nilai dari method [getRestaurants]
-    return getRestaurants().then((restaurants) {
-      // kembalikan list restaurant hasil filter pada namanya sesuai kueri
-      return restaurants.where((restaurant) {
-        final restaurantNameLower = restaurant.name.toLowerCase();
-        final queryLower = query.toLowerCase();
+  /// Mengambil data detail restaurant dari server berdasarkan [id] restaurant
+  /// dan mengembalikan:
+  ///
+  /// * Object Restaurant, jika berhasil.
+  /// * Throw exception error, jika gagal.
+  static Future<Restaurant> getRestaurantDetail(String id) async {
+    // Parsing string url ke bentuk uri
+    final uri = Uri.parse('${Const.baseUrl}/detail/$id');
 
-        return restaurantNameLower.contains(queryLower);
-      }).toList();
-    });
+    // Kirim http request menggunakan metode get
+    final response = await http.get(uri);
+
+    if (response.statusCode == 200) {
+      // Parsing string dan mengembalikan nilai objek json
+      final results = jsonDecode(response.body);
+
+      // Casting hasilnya ke bentuk Map, lalu ambil value dari key restaurant.
+      // karena data dari server berbentuk object, maka hasilnya berupa object Restaurant.
+      final Restaurant restaurant =
+          (results as Map<String, dynamic>)['restaurant'];
+
+      // Kembalikan nilai berupa object restaurant yang telah dibuat dari bentuk map
+      return restaurant;
+    } else {
+      // Kembalikan exception error jika gagal
+      throw Exception('Gagal Memuat Data Restoran!');
+    }
   }
 }

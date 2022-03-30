@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/data/models/drink.dart';
-import 'package:restaurant_app/data/models/food.dart';
+import 'package:restaurant_app/data/models/menu_item.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 
-class MenuItem extends StatelessWidget {
-  final Food? food;
-  final Drink? drink;
+class MenuItemView extends StatelessWidget {
+  final MenuItem? food;
+  final MenuItem? drink;
 
-  const MenuItem({Key? key, this.food, this.drink}) : super(key: key);
+  const MenuItemView({Key? key, this.food, this.drink}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -19,8 +18,8 @@ class MenuItem extends StatelessWidget {
       child: Stack(
         alignment: AlignmentDirectional.bottomStart,
         children: <Widget>[
-          CustomNetworkImage(
-            imgUrl: food == null ? drink!.imgUrl : food!.imgUrl,
+          const CustomNetworkImage(
+            imgUrl: '',
             width: 300,
             height: 300,
             placeHolderSize: 100,

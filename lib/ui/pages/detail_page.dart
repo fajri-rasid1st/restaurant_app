@@ -1,12 +1,11 @@
 import 'package:readmore/readmore.dart';
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/data/models/drink.dart';
-import 'package:restaurant_app/data/models/food.dart';
+import 'package:restaurant_app/data/models/menu_item.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 import 'package:restaurant_app/ui/widgets/favorite_button.dart';
-import 'package:restaurant_app/ui/widgets/menu_item.dart';
+import 'package:restaurant_app/ui/widgets/menu_item_view.dart';
 
 class DetailPage extends StatelessWidget {
   final Restaurant restaurant;
@@ -203,8 +202,8 @@ class DetailPage extends StatelessWidget {
 
   /// untuk membuat menu item foods dan/atau drinks dengan kustomisasi jumlah grid dan rasio
   GridView _buildMenuItems({
-    List<Food>? foods,
-    List<Drink>? drinks,
+    List<MenuItem>? foods,
+    List<MenuItem>? drinks,
     required int crossAxisCount,
     required double childAspectRatio,
   }) {
@@ -218,7 +217,7 @@ class DetailPage extends StatelessWidget {
         mainAxisSpacing: 12,
       ),
       itemBuilder: (context, index) {
-        return MenuItem(food: foods?[index], drink: drinks?[index]);
+        return MenuItemView(food: foods?[index], drink: drinks?[index]);
       },
       itemCount: foods != null ? foods.length : drinks!.length,
       shrinkWrap: true,

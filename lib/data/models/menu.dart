@@ -1,22 +1,19 @@
-import 'package:restaurant_app/data/models/drink.dart';
-import 'package:restaurant_app/data/models/food.dart';
+import 'package:restaurant_app/data/models/menu_item.dart';
 
 class Menu {
-  final List<Food> foods;
-  final List<Drink> drinks;
-  Menu({
-    required this.foods,
-    required this.drinks,
-  });
+  final List<MenuItem> foods;
+  final List<MenuItem> drinks;
 
-  /// constructor untuk membuat objek Menu dari bentuk Map (hasil parsing json)
-  factory Menu.fromMap(Map<String, dynamic> menus) {
+  Menu({required this.foods, required this.drinks});
+
+  /// Constructor untuk membuat objek Menu dari bentuk map (hasil parsing json)
+  factory Menu.fromMap(Map<String, dynamic> map) {
     return Menu(
-      foods: List<Food>.from(menus['foods']?.map((food) {
-        return Food.fromMap(food);
+      foods: List<MenuItem>.from(map['foods']?.map((food) {
+        return MenuItem.fromMap(food);
       })),
-      drinks: List<Drink>.from(menus['drinks']?.map((drink) {
-        return Drink.fromMap(drink);
+      drinks: List<MenuItem>.from(map['drinks']?.map((drink) {
+        return MenuItem.fromMap(drink);
       })),
     );
   }
