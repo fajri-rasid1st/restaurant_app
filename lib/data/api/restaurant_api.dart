@@ -11,7 +11,9 @@ class RestaurantApi {
   /// * Throw exception error, jika gagal.
   static Future<List<Restaurant>> getRestaurants([String? query]) async {
     // Definisikan terlebih dahulu url-nya
-    const url = '${Const.baseUrl}/list';
+    final url = (query == null || query.isEmpty)
+        ? '${Const.baseUrl}/list'
+        : '${Const.baseUrl}/search?q=$query';
 
     // Parsing string url ke bentuk uri
     final uri = Uri.parse(url);

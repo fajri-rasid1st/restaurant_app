@@ -28,6 +28,8 @@ class RestaurantDetail extends Restaurant {
             city: city,
             rating: rating);
 
+  /// Constructor untuk membuat objek RestaurantDetail dari bentuk map
+  /// (hasil parsing json)
   factory RestaurantDetail.fromMap(Map<String, dynamic> map) {
     return RestaurantDetail(
       id: map['id'] ?? '',

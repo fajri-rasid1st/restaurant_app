@@ -7,100 +7,116 @@ import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/ui/widgets/restaurant_item.dart';
 import 'package:restaurant_app/ui/widgets/search_field.dart';
 
-class HomePage extends StatelessWidget {
-  final List<Restaurant> restaurants;
+class HomePage extends StatefulWidget {
+  const HomePage({Key? key}) : super(key: key);
 
-  const HomePage({Key? key, required this.restaurants}) : super(key: key);
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  Timer? _debouncer;
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    if (_debouncer != null) _debouncer!.cancel();
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
-    return WillPopScope(
-      onWillPop: () => onWillPop(context),
-      child: Scaffold(
-        appBar: AppBar(
-          title: _buildTitle(context),
-          leading: _buildLeading(context),
-          actions: _buildActions(context),
-          titleSpacing: 0,
-          leadingWidth: 68,
-          toolbarHeight: 68,
-        ),
-        body: SafeArea(
-          child: _buildBody(context),
-        ),
-      ),
+    return Consumer<RestaurantProvider>(
+      builder: (context, value, child) {
+        return WillPopScope(
+          // Melakukan pengecekan, apakah sedang melakukan searching atau tidak?
+          //
+          // * jika iya, maka aplikasi tidak akan keluar jika menekan tombol back
+          //   pada perangkat, melainkan akan melakukan reset searching terlebih dahulu.
+          // * jika tidak, aplikasi akan keluar jika menekan tombol back.
+          onWillPop: () {
+            if (value.isSearching) {
+              value.isSearching = false;
+
+              return Future.value(false);
+            }
+
+            return Future.value(true);
+          },
+          child: Scaffold(
+            appBar: AppBar(
+              title: value.isSearching
+                  ? SearchField(
+                      query: value.query,
+                      hintText: 'Search Restaurants...',
+                      onChanged: (query) {
+                        debounce(() {
+                          value.searchRestaurants(query);
+                        });
+                      },
+                    )
+                  : const Text('Restaurant App'),
+              leading: value.isSearching
+                  ? IconButton(
+                      onPressed: () => value.isSearching = false,
+                      icon: const Icon(
+                        Icons.arrow_back_rounded,
+                        size: 28,
+                      ),
+                      tooltip: 'Back',
+                    )
+                  : Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 16),
+                      child: Image.asset(
+                        'assets/img/restaurant_icon.png',
+                        color: Colors.white,
+                      ),
+                    ),
+              actions: <Widget>[
+                if (!value.isSearching) ...[
+                  IconButton(
+                    onPressed: () => value.isSearching = true,
+                    icon: const Icon(
+                      Icons.search_rounded,
+                      size: 28,
+                    ),
+                    tooltip: 'Search',
+                  )
+                ]
+              ],
+              titleSpacing: 0,
+              leadingWidth: 68,
+              toolbarHeight: 68,
+            ),
+            body: SafeArea(
+              child: Builder(
+                builder: (context) {
+                  var restaurants = <Restaurant>[];
+
+                  if (value.isSearching && value.query.isNotEmpty) {
+                    restaurants = value.restaurantFromSearch;
+                  } else {
+                    restaurants = value.restaurants;
+                  }
+
+                  return restaurants.isEmpty
+                      ? _buildRestaurantEmpty(context)
+                      : _buildRestaurantList(restaurants);
+                },
+              ),
+            ),
+          ),
+        );
+      },
     );
   }
 
-  Widget _buildTitle(BuildContext context) {
-    return context.watch<RestaurantProvider>().isSearching
-        ? SearchField(
-            query: context.watch<RestaurantProvider>().query,
-            hintText: 'Search Restaurants...',
-            onChanged: (query) {
-              context.read<RestaurantProvider>().searchRestaurants(query);
-            },
-          )
-        : const Text('Restaurant App');
-  }
-
-  Widget _buildLeading(BuildContext context) {
-    return context.watch<RestaurantProvider>().isSearching
-        ? IconButton(
-            onPressed: () {
-              context.read<RestaurantProvider>().isSearching = false;
-            },
-            icon: const Icon(
-              Icons.arrow_back_rounded,
-              size: 28,
-            ),
-            tooltip: 'Back',
-          )
-        : Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
-            child: Image.asset(
-              'assets/img/restaurant_icon.png',
-              color: Colors.white,
-            ),
-          );
-  }
-
-  List<Widget> _buildActions(BuildContext context) {
-    return <Widget>[
-      if (!context.watch<RestaurantProvider>().isSearching) ...[
-        IconButton(
-          onPressed: () {
-            context.watch<RestaurantProvider>().isSearching = true;
-          },
-          icon: const Icon(
-            Icons.search_rounded,
-            size: 28,
-          ),
-          tooltip: 'Search',
-        )
-      ]
-    ];
-  }
-
-  Widget _buildBody(BuildContext context) {
-    // final isSearching = context.watch<RestaurantProvider>().isSearching;
-    // final query = context.watch<RestaurantProvider>().query;
-
-    // if (isSearching && query.isNotEmpty) {
-    //   restaurants = _restaurantsFromSearch;
-    // } else {
-    //   restaurants = widget.restaurants;
-    // }
-
-    final restaurants = context.watch<RestaurantProvider>().restaurants;
-
-    if (restaurants.isEmpty) {
-      return _buildRestaurantEmpty(context);
-    }
-
-    return _buildRestaurantList(restaurants);
-  }
-
+  /// Widget untuk membuat page kosong jika data tidak ditemukan.
   Center _buildRestaurantEmpty(BuildContext context) {
     return Center(
       child: Padding(
@@ -114,7 +130,7 @@ class HomePage extends StatelessWidget {
               fit: BoxFit.fill,
             ),
             Text(
-              'Restoran Tidak Ditemukan',
+              'Oops, Restoran Tidak Ditemukan!',
               style: Theme.of(context).textTheme.bodyText1,
             ),
           ],
@@ -123,6 +139,7 @@ class HomePage extends StatelessWidget {
     );
   }
 
+  /// Widget untuk membuat list restaurant jika data berhasil didapatkan.
   ListView _buildRestaurantList(List<Restaurant> restaurants) {
     return ListView.separated(
       padding: const EdgeInsets.all(16),
@@ -136,18 +153,11 @@ class HomePage extends StatelessWidget {
     );
   }
 
-  /// melakukan pengecekan, apakah sedang melakukan searching atau tidak.
-  ///
-  /// * jika iya, maka aplikasi tidak akan keluar jika menekan tombol back pada perangkat,
-  /// melainkan akan melakukan reset searching terlebih dahulu.
-  /// * jika tidak, aplikasi akan keluar jika menekan tombol back.
-  Future<bool> onWillPop(BuildContext context) {
-    if (context.watch<RestaurantProvider>().isSearching) {
-      context.read<RestaurantProvider>().isSearching = false;
+  /// Method untuk memberikan jeda saat melakukan searching selama 0.5 detik
+  /// untuk mencegah pemanggilan method GET secara terus-menerus.
+  void debounce(VoidCallback callback) {
+    if (_debouncer != null) _debouncer!.cancel();
 
-      return Future.value(false);
-    }
-
-    return Future.value(true);
+    _debouncer = Timer(const Duration(milliseconds: 500), callback);
   }
 }

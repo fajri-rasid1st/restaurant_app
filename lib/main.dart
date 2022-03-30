@@ -65,7 +65,7 @@ class MyApp extends StatelessWidget {
             return const ErrorPage();
           }
 
-          return HomePage(restaurants: value.restaurants);
+          return const HomePage();
         }),
       ),
     );

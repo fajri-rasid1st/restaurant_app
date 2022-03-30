@@ -13,16 +13,29 @@ class RestaurantProvider extends ChangeNotifier {
   }
 
   late ResultState _state;
+  late ResultState _searchState;
+
   late List<Restaurant> _restaurants;
+  List<Restaurant> _restaurantFromSearch = <Restaurant>[];
+
+  String _message = '';
 
   bool _isSearching = false;
   String _query = '';
+
   bool _isPageReload = false;
 
   ResultState get state => _state;
+  ResultState get searchState => _searchState;
+
   List<Restaurant> get restaurants => _restaurants;
+  List<Restaurant> get restaurantFromSearch => _restaurantFromSearch;
+
+  String get message => _message;
+
   bool get isSearching => _isSearching;
   String get query => _query;
+
   bool get isPageReload => _isPageReload;
 
   set restaurants(List<Restaurant> value) {
@@ -31,6 +44,8 @@ class RestaurantProvider extends ChangeNotifier {
   }
 
   set isSearching(bool value) {
+    _restaurantFromSearch = _restaurants;
+
     _isSearching = value;
     notifyListeners();
   }
@@ -46,7 +61,7 @@ class RestaurantProvider extends ChangeNotifier {
   }
 
   /// Melukan pengambilan semua data restaurant
-  Future<List<Restaurant>> fetchAllRestaurants() async {
+  Future<dynamic> fetchAllRestaurants() async {
     try {
       _state = ResultState.loading;
       notifyListeners();
@@ -57,33 +72,34 @@ class RestaurantProvider extends ChangeNotifier {
       notifyListeners();
 
       return _restaurants = result;
-    } catch (e) {
+    } catch (error) {
       _state = ResultState.error;
       notifyListeners();
 
-      throw Exception(e.toString());
+      return _message = 'Error: $error';
     }
   }
 
   /// Melukan pencarian data restaurant sesuai query yang dimasukkan
-  Future<List<Restaurant>> searchRestaurants(String query) async {
+  Future<dynamic> searchRestaurants(String query) async {
     try {
-      _state = ResultState.loading;
+      _searchState = ResultState.loading;
       notifyListeners();
 
       final result = await RestaurantApi.getRestaurants(query);
 
       _query = query;
-
-      _state = ResultState.hasData;
       notifyListeners();
 
-      return _restaurants = result;
-    } catch (e) {
-      _state = ResultState.error;
+      _searchState = ResultState.hasData;
       notifyListeners();
 
-      throw Exception(e);
+      return _restaurantFromSearch = result;
+    } catch (error) {
+      _searchState = ResultState.error;
+      notifyListeners();
+
+      return _message = 'Error: $error';
     }
   }
 }

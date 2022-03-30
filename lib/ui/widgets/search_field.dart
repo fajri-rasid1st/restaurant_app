@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 
 class SearchField extends StatefulWidget {
   final String query;
@@ -39,19 +40,32 @@ class _SearchFieldState extends State<SearchField> {
       margin: const EdgeInsets.only(right: 16),
       height: 40,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(12),
         color: Colors.white,
       ),
       child: TextField(
         controller: _controller,
         autofocus: true,
         textInputAction: TextInputAction.search,
+        textCapitalization: TextCapitalization.words,
         decoration: InputDecoration(
           contentPadding: const EdgeInsets.fromLTRB(12, 8, 12, 8),
+          border: InputBorder.none,
           hintText: widget.hintText,
           floatingLabelBehavior: FloatingLabelBehavior.never,
-          border: InputBorder.none,
-          suffixIcon: const Icon(Icons.search_rounded),
+          suffixIcon: _controller.text.isEmpty
+              ? const Icon(Icons.search_rounded)
+              : IconButton(
+                  icon: const Icon(Icons.close),
+                  onPressed: () {
+                    _controller.clear();
+                    widget.onChanged('');
+                  },
+                ),
+        ),
+        style: GoogleFonts.quicksand(
+          fontSize: 16,
+          fontWeight: FontWeight.w500,
         ),
         onChanged: widget.onChanged,
       ),

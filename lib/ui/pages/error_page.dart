@@ -12,6 +12,8 @@ class ErrorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isPageReload = context.watch<RestaurantProvider>().isPageReload;
+
     return Scaffold(
       body: Center(
         child: Padding(
@@ -34,10 +36,8 @@ class ErrorPage extends StatelessWidget {
               ),
               const SizedBox(height: 16),
               ElevatedButton.icon(
-                onPressed: context.watch<RestaurantProvider>().isPageReload
-                    ? null
-                    : () => reloadPage(context),
-                icon: context.watch<RestaurantProvider>().isPageReload
+                onPressed: isPageReload ? null : () => reloadPage(context),
+                icon: isPageReload
                     ? SizedBox(
                         width: 18,
                         height: 18,
@@ -47,7 +47,7 @@ class ErrorPage extends StatelessWidget {
                         ),
                       )
                     : const Icon(Icons.replay_rounded),
-                label: context.watch<RestaurantProvider>().isPageReload
+                label: isPageReload
                     ? const Text('Memuat Data...')
                     : const Text('Coba Lagi'),
                 style: ElevatedButton.styleFrom(
@@ -79,7 +79,7 @@ class ErrorPage extends StatelessWidget {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: ((context) => HomePage(restaurants: value[1])),
+          builder: ((context) => const HomePage()),
         ),
       );
     }).catchError((error) {
