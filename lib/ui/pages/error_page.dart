@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/common/utilities.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
-import 'package:restaurant_app/providers/restaurant_provider.dart';
+import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/pages/home_page.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';

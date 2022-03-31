@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/utilities.dart';
-import 'package:restaurant_app/providers/restaurant_provider.dart';
+import 'package:restaurant_app/provider/restaurant_provider.dart';
 
 class ReviewFormPage extends StatefulWidget {
   final String id;
