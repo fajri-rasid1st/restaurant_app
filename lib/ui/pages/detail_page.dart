@@ -2,11 +2,13 @@ import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/const.dart';
+import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/data/models/menu_item.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
-import 'package:restaurant_app/provider/restaurant_provider.dart';
+import 'package:restaurant_app/providers/restaurant_provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
+import 'package:restaurant_app/ui/pages/review_form_page.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 import 'package:restaurant_app/ui/widgets/menu_item_view.dart';
@@ -222,7 +224,7 @@ class DetailPage extends StatelessWidget {
               ),
               SizedBox(
                 height: 140,
-                child: _buildMenuItems(
+                child: _buildMenuItem(
                   foods: restaurant.menus.foods,
                   crossAxisCount: 1,
                   childAspectRatio: 2 / 3,
@@ -240,7 +242,7 @@ class DetailPage extends StatelessWidget {
               ),
               SizedBox(
                 height: 140,
-                child: _buildMenuItems(
+                child: _buildMenuItem(
                   drinks: restaurant.menus.drinks,
                   crossAxisCount: 1,
                   childAspectRatio: 5 / 4,
@@ -251,30 +253,33 @@ class DetailPage extends StatelessWidget {
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
                 child: Text(
-                  'Ulasan',
+                  'Ulasan Ringkas',
                   style: Theme.of(context).textTheme.headline5,
                 ),
               ),
-              ListView.builder(
-                physics: const NeverScrollableScrollPhysics(),
-                padding: const EdgeInsets.all(0),
-                shrinkWrap: true,
-                itemBuilder: (context, index) {
-                  return ListTile(
-                    leading: CircleAvatar(
-                      radius: 24,
-                      backgroundColor: backGroundColor,
-                      child: Image.asset(
-                        'assets/img/user_pict.png',
-                        fit: BoxFit.fill,
-                      ),
-                    ),
-                    title: Text(restaurant.customerReviews[index].review),
-                    subtitle: Text(restaurant.customerReviews[index].name),
-                  );
-                },
-                itemCount: restaurant.customerReviews.length,
-              )
+              _buildReviewList(restaurant),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
+                child: Center(
+                  child: TextButton.icon(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: ((context) {
+                            return ReviewFormPage(
+                              id: restaurant.id,
+                              name: restaurant.name,
+                            );
+                          }),
+                        ),
+                      );
+                    },
+                    icon: const Icon(Icons.add_rounded),
+                    label: const Text('Tambah Ulasan'),
+                  ),
+                ),
+              ),
             ],
           ),
         ),
@@ -282,7 +287,33 @@ class DetailPage extends StatelessWidget {
     );
   }
 
-  /// Untuk membuat banner chip kategori restaurant
+  /// Untuk membuat widget list review restaurant
+  ListView _buildReviewList(RestaurantDetail restaurant) {
+    return ListView.builder(
+      padding: const EdgeInsets.all(0),
+      physics: const NeverScrollableScrollPhysics(),
+      shrinkWrap: true,
+      itemBuilder: (context, index) {
+        final restaurantReview = restaurant.customerReviews[index];
+
+        return ListTile(
+          leading: CircleAvatar(
+            radius: 24,
+            backgroundColor: backGroundColor,
+            child: Image.asset(
+              'assets/img/user_pict.png',
+              fit: BoxFit.fill,
+            ),
+          ),
+          title: Text('"${restaurantReview.review}"'),
+          subtitle: Text(restaurantReview.name),
+        );
+      },
+      itemCount: restaurant.customerReviews.length,
+    );
+  }
+
+  /// Untuk membuat widget banner chip kategori restaurant
   ListView _buildBannerChip(RestaurantDetail restaurant) {
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -302,8 +333,8 @@ class DetailPage extends StatelessWidget {
     );
   }
 
-  /// Untuk membuat menu item foods atau drinks dengan kustomisasi jumlah grid dan rasio
-  GridView _buildMenuItems({
+  /// Untuk membuat widget menu item dengan kustomisasi jumlah grid dan rasio
+  GridView _buildMenuItem({
     List<MenuItem>? foods,
     List<MenuItem>? drinks,
     required int crossAxisCount,

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/const.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
-import 'package:restaurant_app/provider/restaurant_provider.dart';
+import 'package:restaurant_app/providers/restaurant_provider.dart';
 import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 

@@ -6,7 +6,7 @@ import 'package:restaurant_app/data/models/restaurant.dart';
 class RestaurantDetail extends Restaurant {
   final String address;
   final List<Category> categories;
-  final List<CustomerReview> customerReviews;
+  late List<CustomerReview> customerReviews;
   final Menu menus;
 
   RestaurantDetail({

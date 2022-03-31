@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:restaurant_app/common/const.dart';
+import 'package:restaurant_app/data/models/customer_review.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
 
@@ -76,6 +77,54 @@ class RestaurantApi {
     } catch (e) {
       // Kembalikan exception error jika gagal
       throw Exception('Gagal memuat detail restoran. Silahkan coba lagi.');
+    }
+  }
+
+  /// Mengirim data review [id], [name], [review] dan ke server dan mengembalikan:
+  ///
+  /// * true , jika berhasil.
+  /// * false, jika gagal.
+  static Future<List<CustomerReview>> sendCustomerReview(
+    String id,
+    String name,
+    String review,
+  ) async {
+    // Parsing string url ke bentuk uri
+    final uri = Uri.parse('${Const.baseUrl}/review');
+
+    try {
+      // Kirim data ke server dengan menggunakan metode post
+      final response = await http.post(
+        uri,
+        headers: <String, String>{
+          'Content-Type': 'application/json',
+        },
+        body: jsonEncode(<String, String>{
+          "id": id,
+          "name": name,
+          "review": review,
+        }),
+      );
+
+      if (response.statusCode == 201) {
+        // Parsing string dan mengembalikan nilai objek json
+        final results = jsonDecode(response.body);
+
+        // Casting hasilnya ke bentuk Map, lalu ambil value dari key customerReviews.
+        final List review =
+            (results as Map<String, dynamic>)['customerReviews'];
+
+        // Kembalikan nilai berupa daftar review yang telah dibuat dari bentuk map
+        return review.map((restaurant) {
+          return CustomerReview.fromMap(restaurant);
+        }).toList();
+      } else {
+        // Jika server tidak mengembalikan kode 201, maka throw exception
+        throw Exception('Gagal menambah ulasan. Silahkan coba lagi.');
+      }
+    } catch (e) {
+      // Kembalikan exception error jika gagal
+      throw Exception('Gagal menambah ulasan. Silahkan coba lagi.');
     }
   }
 }

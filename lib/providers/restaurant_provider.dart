@@ -1,9 +1,9 @@
 import 'package:flutter/foundation.dart';
+import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
+import 'package:restaurant_app/data/models/customer_review.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
-
-enum ResultState { loading, error, hasData }
 
 class RestaurantProvider extends ChangeNotifier {
   static RestaurantProvider? _instance;
@@ -13,36 +13,44 @@ class RestaurantProvider extends ChangeNotifier {
     _instance = this;
   }
 
+  // singleton pattern agar kelas hanya bisa di instansiasi sekali
   factory RestaurantProvider() => _instance ?? RestaurantProvider._internal();
 
+  // deklarasi tiap-tiap state
   late ResultState _state;
-  late ResultState _searchState;
   late ResultState _detailState;
 
+  // deklarasi tiap-tiap data restaurant
   late List<Restaurant> _restaurants;
   List<Restaurant>? _restaurantFromSearch;
   RestaurantDetail? _restaurantDetail;
+  List<CustomerReview>? _customerReviews;
 
+  // inisialisasi message yang akan dikembalikan jika terjadi error
   String _message = '';
 
+  // inisialisasi kondisi saat sedang melakukan searching
   bool _isSearching = false;
+
+  // inisialisasi query saat sedang melakukan searching
   String _query = '';
 
+  // inisialisasi apakah halaman sedang di reload
   bool _isPageReload = false;
 
+  // method getter untuk setiap data class
   ResultState get state => _state;
-  ResultState get searchState => _searchState;
   ResultState get detailState => _detailState;
-
   List<Restaurant> get restaurants => _restaurants;
   List<Restaurant> get restaurantFromSearch => _restaurantFromSearch!;
   RestaurantDetail get restaurantDetail => _restaurantDetail!;
-
+  List<CustomerReview> get customerReviews => _customerReviews!;
   String get message => _message;
   bool get isSearching => _isSearching;
   String get query => _query;
   bool get isPageReload => _isPageReload;
 
+  // method setter untuk beberapa data class
   set state(ResultState value) {
     _state = value;
     notifyListeners();
@@ -67,11 +75,6 @@ class RestaurantProvider extends ChangeNotifier {
     _restaurantFromSearch = _restaurants;
 
     _isSearching = value;
-    notifyListeners();
-  }
-
-  set query(String value) {
-    _query = value;
     notifyListeners();
   }
 
@@ -103,22 +106,13 @@ class RestaurantProvider extends ChangeNotifier {
   /// Melukan pencarian data restaurant sesuai query yang dimasukkan
   Future<dynamic> searchRestaurants(String query) async {
     try {
-      _searchState = ResultState.loading;
-      notifyListeners();
-
       final result = await RestaurantApi.getRestaurants(query);
 
       _query = query;
       notifyListeners();
 
-      _searchState = ResultState.hasData;
-      notifyListeners();
-
       return _restaurantFromSearch = result;
     } catch (error) {
-      _searchState = ResultState.error;
-      notifyListeners();
-
       return _message = 'Error: $error';
     }
   }
@@ -140,6 +134,27 @@ class RestaurantProvider extends ChangeNotifier {
       notifyListeners();
 
       return _message = 'Error: $error';
+    }
+  }
+
+  /// Melukan pengiriman review restaurant dan pengambilan hasil review
+  ///
+  /// * return true jika berhasil
+  /// * return false jika gagal
+  Future<bool> sendCustomerReview(
+    String id,
+    String name,
+    String review,
+  ) async {
+    try {
+      final result = await RestaurantApi.sendCustomerReview(id, name, review);
+
+      _restaurantDetail!.customerReviews = result;
+      notifyListeners();
+
+      return true;
+    } catch (error) {
+      return false;
     }
   }
 }

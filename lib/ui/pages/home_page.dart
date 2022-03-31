@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
-import 'package:restaurant_app/provider/restaurant_provider.dart';
+import 'package:restaurant_app/providers/restaurant_provider.dart';
 import 'package:restaurant_app/ui/widgets/restaurant_item.dart';
 import 'package:restaurant_app/ui/widgets/search_field.dart';
 
@@ -55,9 +55,7 @@ class _HomePageState extends State<HomePage> {
                       query: value.query,
                       hintText: 'Search Restaurants...',
                       onChanged: (query) {
-                        debounce(() {
-                          value.searchRestaurants(query);
-                        });
+                        debounce(() => value.searchRestaurants(query));
                       },
                     )
                   : const Text('Restaurant App'),
