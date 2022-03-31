@@ -63,6 +63,10 @@ class ErrorPage extends StatelessWidget {
                         ? const Text('Memuat Data...')
                         : const Text('Coba Lagi'),
                     style: ElevatedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 12,
+                      ),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
                       ),

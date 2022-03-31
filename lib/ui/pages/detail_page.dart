@@ -144,13 +144,9 @@ class DetailPage extends StatelessWidget {
                         ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8),
-                      child: VerticalDivider(
-                        width: 0.5,
-                        thickness: 0.5,
-                        color: Theme.of(context).dividerColor,
-                      ),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 8),
+                      child: VerticalDivider(width: 1, thickness: 1),
                     ),
                     Expanded(
                       flex: 1,
@@ -163,7 +159,7 @@ class DetailPage extends StatelessWidget {
                           ),
                           const Spacer(),
                           Text(
-                            '${restaurant.rating}',
+                            '${restaurant.rating}/5.0',
                             style: Theme.of(context).textTheme.headline4,
                           )
                         ],
@@ -277,6 +273,15 @@ class DetailPage extends StatelessWidget {
                     },
                     icon: const Icon(Icons.add_rounded),
                     label: const Text('Tambah Ulasan'),
+                    style: TextButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 8,
+                        horizontal: 12,
+                      ),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                    ),
                   ),
                 ),
               ),
