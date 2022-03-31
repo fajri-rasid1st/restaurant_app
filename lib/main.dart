@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app/data/api/restaurant_api.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/home_page.dart';
@@ -26,7 +25,7 @@ void main() {
 
   runApp(
     ChangeNotifierProvider<RestaurantProvider>(
-      create: (_) => RestaurantProvider(restaurantApi: RestaurantApi()),
+      create: (_) => RestaurantProvider(),
       child: const MyApp(),
     ),
   );

@@ -1,22 +1,27 @@
 import 'package:flutter/foundation.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/data/models/restaurant_detail.dart';
 
 enum ResultState { loading, error, hasData }
 
 class RestaurantProvider extends ChangeNotifier {
-  // Inisialisisi restaurant API service
-  final RestaurantApi restaurantApi;
+  static RestaurantProvider? _instance;
 
-  RestaurantProvider({required this.restaurantApi}) {
+  RestaurantProvider._internal() {
     fetchAllRestaurants();
+    _instance = this;
   }
+
+  factory RestaurantProvider() => _instance ?? RestaurantProvider._internal();
 
   late ResultState _state;
   late ResultState _searchState;
+  late ResultState _detailState;
 
   late List<Restaurant> _restaurants;
-  List<Restaurant> _restaurantFromSearch = <Restaurant>[];
+  List<Restaurant>? _restaurantFromSearch;
+  RestaurantDetail? _restaurantDetail;
 
   String _message = '';
 
@@ -27,19 +32,34 @@ class RestaurantProvider extends ChangeNotifier {
 
   ResultState get state => _state;
   ResultState get searchState => _searchState;
+  ResultState get detailState => _detailState;
 
   List<Restaurant> get restaurants => _restaurants;
-  List<Restaurant> get restaurantFromSearch => _restaurantFromSearch;
+  List<Restaurant> get restaurantFromSearch => _restaurantFromSearch!;
+  RestaurantDetail get restaurantDetail => _restaurantDetail!;
 
   String get message => _message;
-
   bool get isSearching => _isSearching;
   String get query => _query;
-
   bool get isPageReload => _isPageReload;
+
+  set state(ResultState value) {
+    _state = value;
+    notifyListeners();
+  }
+
+  set detailState(ResultState value) {
+    _detailState = value;
+    notifyListeners();
+  }
 
   set restaurants(List<Restaurant> value) {
     _restaurants = value;
+    notifyListeners();
+  }
+
+  set restaurantDetail(RestaurantDetail value) {
+    _restaurantDetail = value;
     notifyListeners();
   }
 
@@ -60,7 +80,7 @@ class RestaurantProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Melukan pengambilan semua data restaurant
+  /// Melukan pengambilan semua daftar restaurant
   Future<dynamic> fetchAllRestaurants() async {
     try {
       _state = ResultState.loading;
@@ -97,6 +117,26 @@ class RestaurantProvider extends ChangeNotifier {
       return _restaurantFromSearch = result;
     } catch (error) {
       _searchState = ResultState.error;
+      notifyListeners();
+
+      return _message = 'Error: $error';
+    }
+  }
+
+  /// Melukan pengambilan data detail restauran sesuai id
+  Future<dynamic> getRestaurantDetail(String id) async {
+    try {
+      _detailState = ResultState.loading;
+      notifyListeners();
+
+      final result = await RestaurantApi.getRestaurantDetail(id);
+
+      _detailState = ResultState.hasData;
+      notifyListeners();
+
+      return _restaurantDetail = result;
+    } catch (error) {
+      _detailState = ResultState.error;
       notifyListeners();
 
       return _message = 'Error: $error';

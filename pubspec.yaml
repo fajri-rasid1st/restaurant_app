@@ -66,6 +66,7 @@ flutter:
     # To add assets to your application, add an assets section, like this:
     assets:
         - assets/img/restaurant_icon.png
+        - assets/img/user_pict.png
         - assets/svg/404_Error_cuate.svg
         - assets/svg/No_data_cuate.svg
 

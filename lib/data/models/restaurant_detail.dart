@@ -7,7 +7,7 @@ class RestaurantDetail extends Restaurant {
   final String address;
   final List<Category> categories;
   final List<CustomerReview> customerReviews;
-  final Menu menu;
+  final Menu menus;
 
   RestaurantDetail({
     required String id,
@@ -19,7 +19,7 @@ class RestaurantDetail extends Restaurant {
     required this.address,
     required this.categories,
     required this.customerReviews,
-    required this.menu,
+    required this.menus,
   }) : super(
             id: id,
             name: name,
@@ -49,7 +49,7 @@ class RestaurantDetail extends Restaurant {
           return CustomerReview.fromMap(customerReview);
         }),
       ),
-      menu: Menu.fromMap(map['menu']),
+      menus: Menu.fromMap(map['menus']),
     );
   }
 }

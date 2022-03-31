@@ -1,7 +1,8 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:restaurant_app/data/common/const.dart';
+import 'package:restaurant_app/common/const.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/data/models/restaurant_detail.dart';
 
 class RestaurantApi {
   /// Mengambil data daftar restaurant dari server. Jika [query] dimasukkan,
@@ -50,7 +51,7 @@ class RestaurantApi {
   ///
   /// * Object Restaurant, jika berhasil.
   /// * Throw exception error, jika gagal.
-  static Future<Restaurant> getRestaurantDetail(String id) async {
+  static Future<RestaurantDetail> getRestaurantDetail(String id) async {
     // Parsing string url ke bentuk uri
     final uri = Uri.parse('${Const.baseUrl}/detail/$id');
 
@@ -64,18 +65,17 @@ class RestaurantApi {
 
         // Casting hasilnya ke bentuk Map, lalu ambil value dari key restaurant.
         // karena data dari server berbentuk object, maka hasilnya berupa object Restaurant.
-        final Restaurant restaurant =
-            (results as Map<String, dynamic>)['restaurant'];
+        final restaurant = (results as Map<String, dynamic>)['restaurant'];
 
         // Kembalikan nilai berupa object restaurant yang telah dibuat dari bentuk map
-        return restaurant;
+        return RestaurantDetail.fromMap(restaurant);
       } else {
         // Kembalikan exception error jika gagal
-        throw Exception('Gagal memuat data restoran. Silahkan coba lagi.');
+        throw Exception('Gagal memuat detail restoran. Silahkan coba lagi.');
       }
     } catch (e) {
       // Kembalikan exception error jika gagal
-      throw Exception('Gagal memuat data restoran. Silahkan coba lagi.');
+      throw Exception('Gagal memuat detail restoran. Silahkan coba lagi.');
     }
   }
 }

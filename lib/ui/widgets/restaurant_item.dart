@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/data/common/const.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_app/common/const.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 
@@ -37,7 +39,7 @@ class RestaurantItem extends StatelessWidget {
               Expanded(
                   flex: 3,
                   child: Padding(
-                    padding: const EdgeInsets.all(8),
+                    padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
@@ -47,19 +49,18 @@ class RestaurantItem extends StatelessWidget {
                           overflow: TextOverflow.ellipsis,
                           style: Theme.of(context).textTheme.subtitle1,
                         ),
-                        const SizedBox(height: 8),
+                        const SizedBox(height: 12),
                         Row(
                           children: <Widget>[
                             Icon(
                               Icons.place_rounded,
-                              size: 16,
+                              size: 20,
                               color: Colors.red[400],
                             ),
                             const SizedBox(width: 4),
                             Text(restaurant.city)
                           ],
                         ),
-                        const SizedBox(width: 4),
                         Row(
                           children: <Widget>[
                             Icon(
@@ -67,7 +68,7 @@ class RestaurantItem extends StatelessWidget {
                               size: 20,
                               color: Colors.orange[400],
                             ),
-                            const SizedBox(width: 2),
+                            const SizedBox(width: 4),
                             Text(
                               '${restaurant.rating}',
                               style: Theme.of(context).textTheme.bodyText2,
@@ -85,11 +86,15 @@ class RestaurantItem extends StatelessWidget {
               child: InkWell(
                 borderRadius: BorderRadius.circular(12),
                 onTap: () {
+                  context
+                      .read<RestaurantProvider>()
+                      .getRestaurantDetail(restaurant.id);
+
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: ((context) {
-                        return DetailPage(restaurant: restaurant);
+                        return DetailPage(restaurantId: restaurant.id);
                       }),
                     ),
                   );

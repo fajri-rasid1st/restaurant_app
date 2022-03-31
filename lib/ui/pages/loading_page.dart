@@ -15,7 +15,7 @@ class LoadingPage extends StatelessWidget {
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
               SpinKitPulse(
-                size: 250,
+                size: 100,
                 color: primaryColor,
               ),
               const SizedBox(height: 24),
