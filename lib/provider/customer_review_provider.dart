@@ -19,7 +19,7 @@ class CustomerReviewProvider extends ChangeNotifier {
       notifyListeners();
 
       return true;
-    } catch (error) {
+    } catch (_) {
       return false;
     }
   }

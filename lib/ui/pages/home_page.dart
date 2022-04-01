@@ -2,10 +2,15 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/common/const.dart';
+import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/provider/category_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/provider/restaurant_search_provider.dart';
-import 'package:restaurant_app/ui/widgets/restaurant_item.dart';
+import 'package:restaurant_app/ui/pages/loading_page.dart';
+import 'package:restaurant_app/ui/widgets/category_list.dart';
+import 'package:restaurant_app/ui/widgets/restaurant_card.dart';
 import 'package:restaurant_app/ui/widgets/search_field.dart';
 
 class HomePage extends StatefulWidget {
@@ -32,20 +37,37 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<RestaurantProvider, RestaurantSearchProvider>(
-      builder: (context, restaurantProvider, searchProvider, child) {
+    return Consumer3<RestaurantProvider, RestaurantSearchProvider,
+        CategoryProvider>(
+      builder: (
+        context,
+        restaurantProvider,
+        searchProvider,
+        categoryProvider,
+        child,
+      ) {
         return WillPopScope(
-          onWillPop: () => onWillPop(searchProvider),
+          onWillPop: () => onWillPop(searchProvider, restaurantProvider),
           child: Scaffold(
             appBar: AppBar(
               title: _buildTitle(searchProvider),
-              leading: _buildLeading(searchProvider),
-              actions: _buildActions(searchProvider, restaurantProvider),
+              leading: _buildLeading(searchProvider, restaurantProvider),
+              actions: _buildActions(
+                searchProvider,
+                restaurantProvider,
+                categoryProvider,
+              ),
+              bottom: _buildBottom(searchProvider),
               titleSpacing: 0,
               leadingWidth: 68,
               toolbarHeight: 68,
+              elevation: 0.8,
             ),
-            body: _buildBody(searchProvider, restaurantProvider),
+            body: _buildBody(
+              searchProvider,
+              restaurantProvider,
+              categoryProvider,
+            ),
           ),
         );
       },
@@ -56,7 +78,6 @@ class _HomePageState extends State<HomePage> {
   Widget _buildTitle(RestaurantSearchProvider searchProvider) {
     return searchProvider.isSearching
         ? SearchField(
-            query: searchProvider.query,
             hintText: 'Search Restaurants, Categories, or Menu',
             onChanged: (query) {
               debounce(() => searchProvider.searchRestaurants(query));
@@ -66,10 +87,16 @@ class _HomePageState extends State<HomePage> {
   }
 
   /// Widget untuk membuat appbar leading
-  Widget _buildLeading(RestaurantSearchProvider searchProvider) {
+  Widget _buildLeading(
+    RestaurantSearchProvider searchProvider,
+    RestaurantProvider restaurantProvider,
+  ) {
     return searchProvider.isSearching
         ? IconButton(
-            onPressed: () => searchProvider.isSearching = false,
+            onPressed: () {
+              searchProvider.isSearching = false;
+              searchProvider.restaurants = restaurantProvider.restaurants;
+            },
             icon: const Icon(
               Icons.arrow_back_rounded,
               size: 28,
@@ -89,13 +116,15 @@ class _HomePageState extends State<HomePage> {
   List<Widget> _buildActions(
     RestaurantSearchProvider searchProvider,
     RestaurantProvider restaurantProvider,
+    CategoryProvider categoryProvider,
   ) {
     return <Widget>[
       if (!searchProvider.isSearching) ...[
         IconButton(
           onPressed: () {
-            searchProvider.isSearching = true;
+            categoryProvider.index = 0;
             searchProvider.restaurants = restaurantProvider.restaurants;
+            searchProvider.isSearching = true;
           },
           icon: const Icon(
             Icons.search_rounded,
@@ -107,16 +136,29 @@ class _HomePageState extends State<HomePage> {
     ];
   }
 
+  CategoryList? _buildBottom(RestaurantSearchProvider searchProvider) {
+    return searchProvider.isSearching == true
+        ? null
+        : const CategoryList(categories: Const.categories);
+  }
+
   /// Widget untuk membuat body
   Builder _buildBody(
     RestaurantSearchProvider searchProvider,
     RestaurantProvider restaurantProvider,
+    CategoryProvider categoryProvider,
   ) {
     return Builder(
       builder: (context) {
         var restaurants = <Restaurant>[];
 
         if (searchProvider.isSearching && searchProvider.query.isNotEmpty) {
+          restaurants = searchProvider.restaurants;
+        } else if (categoryProvider.category.isNotEmpty) {
+          if (searchProvider.state == ResultState.loading) {
+            return const LoadingPage();
+          }
+
           restaurants = searchProvider.restaurants;
         } else {
           restaurants = restaurantProvider.restaurants;
@@ -157,7 +199,7 @@ class _HomePageState extends State<HomePage> {
     return ListView.separated(
       padding: const EdgeInsets.all(16),
       itemBuilder: (context, index) {
-        return RestaurantItem(restaurant: restaurants[index]);
+        return RestaurantCard(restaurant: restaurants[index]);
       },
       separatorBuilder: (context, index) {
         return const SizedBox(height: 12);
@@ -179,8 +221,12 @@ class _HomePageState extends State<HomePage> {
   // * jika iya, maka aplikasi tidak akan keluar jika menekan tombol back
   //   pada perangkat, melainkan akan melakukan reset searching terlebih dahulu.
   // * jika tidak, aplikasi akan keluar jika menekan tombol back.
-  Future<bool> onWillPop(RestaurantSearchProvider searchProvider) {
+  Future<bool> onWillPop(
+    RestaurantSearchProvider searchProvider,
+    RestaurantProvider restaurantProvider,
+  ) {
     if (searchProvider.isSearching) {
+      searchProvider.restaurants = restaurantProvider.restaurants;
       searchProvider.isSearching = false;
 
       return Future.value(false);

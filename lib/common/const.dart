@@ -13,4 +13,15 @@ class Const {
   // Url untuk mengambil gambar placeholder drink
   static const String imgDrinkPlaceholder =
       'https://raw.githubusercontent.com/fajri-rasid1st/assets/main/foods_and_beverages/drink_placeholder.png';
+
+  static const List<String> categories = <String>[
+    'Semua',
+    'Italia',
+    'Jawa',
+    'Modern',
+    'Sop',
+    'Bali',
+    'Spanyol',
+    'Sunda',
+  ];
 }

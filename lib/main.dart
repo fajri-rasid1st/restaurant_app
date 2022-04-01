@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:restaurant_app/common/result_state.dart';
+import 'package:restaurant_app/provider/category_provider.dart';
 import 'package:restaurant_app/provider/customer_review_provider.dart';
 import 'package:restaurant_app/provider/page_reload_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
@@ -46,6 +47,9 @@ void main() {
         ),
         ChangeNotifierProvider<PageReloadProvider>(
           create: (_) => PageReloadProvider(),
+        ),
+        ChangeNotifierProvider<CategoryProvider>(
+          create: (_) => CategoryProvider(),
         ),
       ],
       child: const MyApp(),

@@ -40,7 +40,7 @@ class RestaurantProvider extends ChangeNotifier {
       notifyListeners();
 
       return _restaurants;
-    } catch (error) {
+    } catch (_) {
       _message = 'Gagal memuat daftar restoran. Silahkan coba lagi.';
 
       _state = ResultState.error;

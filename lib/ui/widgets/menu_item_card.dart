@@ -4,11 +4,11 @@ import 'package:restaurant_app/data/models/menu_item.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 
-class MenuItemView extends StatelessWidget {
+class MenuItemCard extends StatelessWidget {
   final MenuItem? food;
   final MenuItem? drink;
 
-  const MenuItemView({Key? key, this.food, this.drink}) : super(key: key);
+  const MenuItemCard({Key? key, this.food, this.drink}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

@@ -21,12 +21,13 @@ class RestaurantDetail extends Restaurant {
     required this.customerReviews,
     required this.menus,
   }) : super(
-            id: id,
-            name: name,
-            description: description,
-            pictureId: pictureId,
-            city: city,
-            rating: rating);
+          id: id,
+          name: name,
+          description: description,
+          pictureId: pictureId,
+          city: city,
+          rating: rating,
+        );
 
   /// Constructor untuk membuat objek RestaurantDetail dari bentuk map
   /// (hasil parsing json)

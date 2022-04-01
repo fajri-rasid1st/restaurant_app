@@ -6,10 +6,10 @@ import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 
-class RestaurantItem extends StatelessWidget {
+class RestaurantCard extends StatelessWidget {
   final Restaurant restaurant;
 
-  const RestaurantItem({Key? key, required this.restaurant}) : super(key: key);
+  const RestaurantCard({Key? key, required this.restaurant}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

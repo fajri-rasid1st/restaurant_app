@@ -2,13 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class SearchField extends StatefulWidget {
-  final String query;
   final String hintText;
   final ValueChanged<String> onChanged;
 
   const SearchField({
     Key? key,
-    required this.query,
     required this.hintText,
     required this.onChanged,
   }) : super(key: key);
