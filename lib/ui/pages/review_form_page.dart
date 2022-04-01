@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/utilities.dart';
-import 'package:restaurant_app/provider/restaurant_provider.dart';
+import 'package:restaurant_app/provider/customer_review_provider.dart';
+import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 
 class ReviewFormPage extends StatefulWidget {
   final String id;
@@ -126,8 +127,8 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
   SizedBox _buildSubmitButton() {
     return SizedBox(
       width: double.infinity,
-      child: Consumer<RestaurantProvider>(
-        builder: ((context, value, child) {
+      child: Consumer2<CustomerReviewProvider, RestaurantDetailProvider>(
+        builder: (context, reviewProvider, detailProvider, child) {
           return ElevatedButton(
             onPressed: () async {
               // Hilangkan fokus dari keybooard
@@ -135,13 +136,16 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
 
               if (_formKey.currentState!.validate()) {
                 // Jika form telah diisi dengan benar, kirim data review ke server
-                final isSuccess = await value.sendCustomerReview(
+                final isSuccess = await reviewProvider.sendCustomerReview(
                   widget.id,
                   _nameController.text,
                   _reviewController.text,
                 );
 
                 if (isSuccess) {
+                  detailProvider.detail.customerReviews =
+                      reviewProvider.customerReviews;
+
                   Utilities.showSnackBarMessage(
                     context: context,
                     text: 'Berhasil menambah ulasan',
@@ -171,7 +175,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
               ),
             ),
           );
-        }),
+        },
       ),
     );
   }

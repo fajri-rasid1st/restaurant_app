@@ -7,7 +7,7 @@ class Utilities {
     required BuildContext context,
     required String text,
   }) {
-    // create snackbar
+    // Create snackbar
     SnackBar snackBar = SnackBar(
       content: Text(
         text,
@@ -15,7 +15,7 @@ class Utilities {
       ),
     );
 
-    // show snackbar
+    // Show snackbar
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(snackBar);

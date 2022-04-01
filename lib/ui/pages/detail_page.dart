@@ -5,7 +5,7 @@ import 'package:restaurant_app/common/const.dart';
 import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/data/models/menu_item.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
-import 'package:restaurant_app/provider/restaurant_provider.dart';
+import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/pages/review_form_page.dart';
@@ -20,15 +20,15 @@ class DetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<RestaurantProvider>(
-      builder: (context, value, child) {
-        if (value.detailState == ResultState.loading) {
+    return Consumer<RestaurantDetailProvider>(
+      builder: (context, provider, child) {
+        if (provider.state == ResultState.loading) {
           return const LoadingPage();
-        } else if (value.detailState == ResultState.error) {
+        } else if (provider.state == ResultState.error) {
           return ErrorPage(restaurantId: restaurantId);
         }
 
-        return _buildDetailScreen(context, value.restaurantDetail);
+        return _buildDetailScreen(context, provider.detail);
       },
     );
   }

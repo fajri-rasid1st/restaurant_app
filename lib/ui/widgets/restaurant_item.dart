@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/const.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
-import 'package:restaurant_app/provider/restaurant_provider.dart';
+import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 
@@ -87,7 +87,7 @@ class RestaurantItem extends StatelessWidget {
                 borderRadius: BorderRadius.circular(12),
                 onTap: () {
                   context
-                      .read<RestaurantProvider>()
+                      .read<RestaurantDetailProvider>()
                       .getRestaurantDetail(restaurant.id);
 
                   Navigator.push(

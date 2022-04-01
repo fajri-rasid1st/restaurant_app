@@ -1,8 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'package:provider/single_child_widget.dart';
 import 'package:restaurant_app/common/result_state.dart';
+import 'package:restaurant_app/provider/customer_review_provider.dart';
+import 'package:restaurant_app/provider/page_reload_provider.dart';
+import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
+import 'package:restaurant_app/provider/restaurant_search_provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/home_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
@@ -25,8 +30,24 @@ void main() {
   ));
 
   runApp(
-    ChangeNotifierProvider<RestaurantProvider>(
-      create: (_) => RestaurantProvider(),
+    MultiProvider(
+      providers: <SingleChildWidget>[
+        ChangeNotifierProvider<RestaurantProvider>(
+          create: (_) => RestaurantProvider(),
+        ),
+        ChangeNotifierProvider<RestaurantDetailProvider>(
+          create: (_) => RestaurantDetailProvider(),
+        ),
+        ChangeNotifierProvider<RestaurantSearchProvider>(
+          create: (_) => RestaurantSearchProvider(),
+        ),
+        ChangeNotifierProvider<CustomerReviewProvider>(
+          create: (_) => CustomerReviewProvider(),
+        ),
+        ChangeNotifierProvider<PageReloadProvider>(
+          create: (_) => PageReloadProvider(),
+        ),
+      ],
       child: const MyApp(),
     ),
   );

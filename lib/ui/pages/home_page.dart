@@ -4,6 +4,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
+import 'package:restaurant_app/provider/restaurant_search_provider.dart';
 import 'package:restaurant_app/ui/widgets/restaurant_item.dart';
 import 'package:restaurant_app/ui/widgets/search_field.dart';
 
@@ -31,91 +32,105 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<RestaurantProvider>(
-      builder: (context, value, child) {
+    return Consumer2<RestaurantProvider, RestaurantSearchProvider>(
+      builder: (context, restaurantProvider, searchProvider, child) {
         return WillPopScope(
-          // Melakukan pengecekan, apakah sedang melakukan searching atau tidak?
-          //
-          // * jika iya, maka aplikasi tidak akan keluar jika menekan tombol back
-          //   pada perangkat, melainkan akan melakukan reset searching terlebih dahulu.
-          // * jika tidak, aplikasi akan keluar jika menekan tombol back.
-          onWillPop: () {
-            if (value.isSearching) {
-              value.isSearching = false;
-
-              return Future.value(false);
-            }
-
-            return Future.value(true);
-          },
+          onWillPop: () => onWillPop(searchProvider),
           child: Scaffold(
             appBar: AppBar(
-              title: value.isSearching
-                  ? SearchField(
-                      query: value.query,
-                      hintText: 'Search Restaurants, Categories, or Menu',
-                      onChanged: (query) {
-                        debounce(() => value.searchRestaurants(query));
-                      },
-                    )
-                  : const Text('Restaurant App'),
-              leading: value.isSearching
-                  ? IconButton(
-                      onPressed: () => value.isSearching = false,
-                      icon: const Icon(
-                        Icons.arrow_back_rounded,
-                        size: 28,
-                      ),
-                      tooltip: 'Back',
-                    )
-                  : Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: Image.asset(
-                        'assets/img/restaurant_icon.png',
-                        color: Colors.white,
-                      ),
-                    ),
-              actions: <Widget>[
-                if (!value.isSearching) ...[
-                  IconButton(
-                    onPressed: () => value.isSearching = true,
-                    icon: const Icon(
-                      Icons.search_rounded,
-                      size: 28,
-                    ),
-                    tooltip: 'Search',
-                  )
-                ]
-              ],
+              title: _buildTitle(searchProvider),
+              leading: _buildLeading(searchProvider),
+              actions: _buildActions(searchProvider, restaurantProvider),
               titleSpacing: 0,
               leadingWidth: 68,
               toolbarHeight: 68,
             ),
-            body: SafeArea(
-              child: Builder(
-                builder: (context) {
-                  var restaurants = <Restaurant>[];
-
-                  if (value.isSearching && value.query.isNotEmpty) {
-                    restaurants = value.restaurantFromSearch;
-                  } else {
-                    restaurants = value.restaurants;
-                  }
-
-                  return restaurants.isEmpty
-                      ? _buildRestaurantEmpty(context)
-                      : _buildRestaurantList(restaurants);
-                },
-              ),
-            ),
+            body: _buildBody(searchProvider, restaurantProvider),
           ),
         );
       },
     );
   }
 
-  /// Widget untuk membuat page kosong jika data tidak ditemukan.
-  Center _buildRestaurantEmpty(BuildContext context) {
+  /// Widget untuk membuat appbar title
+  Widget _buildTitle(RestaurantSearchProvider searchProvider) {
+    return searchProvider.isSearching
+        ? SearchField(
+            query: searchProvider.query,
+            hintText: 'Search Restaurants, Categories, or Menu',
+            onChanged: (query) {
+              debounce(() => searchProvider.searchRestaurants(query));
+            },
+          )
+        : const Text('Restaurant App');
+  }
+
+  /// Widget untuk membuat appbar leading
+  Widget _buildLeading(RestaurantSearchProvider searchProvider) {
+    return searchProvider.isSearching
+        ? IconButton(
+            onPressed: () => searchProvider.isSearching = false,
+            icon: const Icon(
+              Icons.arrow_back_rounded,
+              size: 28,
+            ),
+            tooltip: 'Back',
+          )
+        : Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: Image.asset(
+              'assets/img/restaurant_icon.png',
+              color: Colors.white,
+            ),
+          );
+  }
+
+  /// Widget untuk membuat appbar action
+  List<Widget> _buildActions(
+    RestaurantSearchProvider searchProvider,
+    RestaurantProvider restaurantProvider,
+  ) {
+    return <Widget>[
+      if (!searchProvider.isSearching) ...[
+        IconButton(
+          onPressed: () {
+            searchProvider.isSearching = true;
+            searchProvider.restaurants = restaurantProvider.restaurants;
+          },
+          icon: const Icon(
+            Icons.search_rounded,
+            size: 28,
+          ),
+          tooltip: 'Search',
+        )
+      ]
+    ];
+  }
+
+  /// Widget untuk membuat body
+  Builder _buildBody(
+    RestaurantSearchProvider searchProvider,
+    RestaurantProvider restaurantProvider,
+  ) {
+    return Builder(
+      builder: (context) {
+        var restaurants = <Restaurant>[];
+
+        if (searchProvider.isSearching && searchProvider.query.isNotEmpty) {
+          restaurants = searchProvider.restaurants;
+        } else {
+          restaurants = restaurantProvider.restaurants;
+        }
+
+        return restaurants.isEmpty
+            ? _buildRestaurantEmpty()
+            : _buildRestaurantList(restaurants);
+      },
+    );
+  }
+
+  /// Widget untuk membuat page kosong jika data tidak ditemukan
+  Center _buildRestaurantEmpty() {
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(16),
@@ -137,7 +152,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  /// Widget untuk membuat list restaurant jika data berhasil didapatkan.
+  /// Widget untuk membuat list restaurant jika data berhasil didapatkan
   ListView _buildRestaurantList(List<Restaurant> restaurants) {
     return ListView.separated(
       padding: const EdgeInsets.all(16),
@@ -157,5 +172,20 @@ class _HomePageState extends State<HomePage> {
     if (_debouncer != null) _debouncer!.cancel();
 
     _debouncer = Timer(const Duration(milliseconds: 500), callback);
+  }
+
+  // Melakukan pengecekan, apakah sedang melakukan searching atau tidak?
+  //
+  // * jika iya, maka aplikasi tidak akan keluar jika menekan tombol back
+  //   pada perangkat, melainkan akan melakukan reset searching terlebih dahulu.
+  // * jika tidak, aplikasi akan keluar jika menekan tombol back.
+  Future<bool> onWillPop(RestaurantSearchProvider searchProvider) {
+    if (searchProvider.isSearching) {
+      searchProvider.isSearching = false;
+
+      return Future.value(false);
+    }
+
+    return Future.value(true);
   }
 }
