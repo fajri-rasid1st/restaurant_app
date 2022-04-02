@@ -6,12 +6,20 @@ import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
 
 class RestaurantApi {
+  static RestaurantApi? _restaurantApi;
+
+  RestaurantApi._internal() {
+    _restaurantApi = this;
+  }
+
+  factory RestaurantApi() => _restaurantApi ?? RestaurantApi._internal();
+
   /// Mengambil data daftar restaurant dari server. Jika [query] dimasukkan,
   /// maka akan mengambil daftar restaurant sesuai [query]. mengembalikan nilai berupa:
   ///
   /// * List restaurant, jika berhasil.
   /// * Throw exception error, jika gagal.
-  static Future<List<Restaurant>> getRestaurants([String? query]) async {
+  Future<List<Restaurant>> getRestaurants([String? query]) async {
     // Definisikan terlebih dahulu url-nya
     final url = (query == null || query.isEmpty)
         ? '${Const.baseUrl}/list'
@@ -52,7 +60,7 @@ class RestaurantApi {
   ///
   /// * Object Restaurant, jika berhasil.
   /// * Throw exception error, jika gagal.
-  static Future<RestaurantDetail> getRestaurantDetail(String id) async {
+  Future<RestaurantDetail> getRestaurantDetail(String id) async {
     // Parsing string url ke bentuk uri
     final uri = Uri.parse('${Const.baseUrl}/detail/$id');
 
@@ -84,7 +92,7 @@ class RestaurantApi {
   ///
   /// * true , jika berhasil.
   /// * false, jika gagal.
-  static Future<List<CustomerReview>> sendCustomerReview(
+  Future<List<CustomerReview>> sendCustomerReview(
     String id,
     String name,
     String review,

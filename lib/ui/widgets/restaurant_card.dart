@@ -31,7 +31,7 @@ class RestaurantCard extends StatelessWidget {
                       imgUrl: '${Const.imgUrl}/${restaurant.pictureId}',
                       width: double.infinity,
                       height: 100,
-                      placeHolderSize: 100,
+                      placeHolderSize: 40,
                     ),
                   ),
                 ),

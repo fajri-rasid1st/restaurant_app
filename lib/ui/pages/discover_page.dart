@@ -51,14 +51,11 @@ class DiscoverPage extends StatelessWidget {
           return const ErrorScreen();
         }
 
-        var restaurants = <Restaurant>[];
+        var restaurants = restaurantProvider.restaurants;
 
-        if (searchProvider.isSearching && searchProvider.query.isNotEmpty) {
+        if (searchProvider.isSearching && searchProvider.query.isNotEmpty ||
+            categoryProvider.category.isNotEmpty) {
           restaurants = searchProvider.restaurants;
-        } else if (categoryProvider.category.isNotEmpty) {
-          restaurants = searchProvider.restaurants;
-        } else {
-          restaurants = restaurantProvider.restaurants;
         }
 
         return restaurants.isEmpty

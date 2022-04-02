@@ -50,7 +50,6 @@ class _ErrorScreenState extends State<ErrorScreen> {
                                   reloadPage(
                                     restaurantProvider,
                                     detailProvider,
-                                    searchProvider,
                                     reloadProvider,
                                     widget.restaurantId,
                                   );
@@ -58,7 +57,6 @@ class _ErrorScreenState extends State<ErrorScreen> {
                                   reloadPage(
                                     restaurantProvider,
                                     detailProvider,
-                                    searchProvider,
                                     reloadProvider,
                                   );
                                 }
@@ -101,7 +99,6 @@ class _ErrorScreenState extends State<ErrorScreen> {
   Future<void> reloadPage(
       RestaurantProvider restaurantProvider,
       RestaurantDetailProvider detailProvider,
-      RestaurantSearchProvider searchProvider,
       PageReloadProvider reloadProvider,
       [String? restaurantId]) async {
     reloadProvider.isPageReload = true;
@@ -114,7 +111,6 @@ class _ErrorScreenState extends State<ErrorScreen> {
         detailProvider.getRestaurantDetail(restaurantId),
       ] else ...[
         restaurantProvider.fetchAllRestaurants(),
-        searchProvider.searchRestaurants(searchProvider.query),
       ]
     ]).then((value) {
       reloadProvider.isPageReload = false;
@@ -125,8 +121,6 @@ class _ErrorScreenState extends State<ErrorScreen> {
       } else {
         restaurantProvider.restaurants = value[1];
         restaurantProvider.state = ResultState.hasData;
-
-        searchProvider.restaurants = value[2];
       }
 
       if (restaurantId != null) {
@@ -143,11 +137,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
       if (restaurantId != null) {
         message = detailProvider.message;
       } else {
-        if (restaurantProvider.message.isEmpty) {
-          message = searchProvider.message;
-        } else {
-          message = restaurantProvider.message;
-        }
+        message = restaurantProvider.message;
       }
 
       if (mounted) {

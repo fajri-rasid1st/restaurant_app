@@ -2,6 +2,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/const.dart';
+import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/provider/bottom_nav_provider.dart';
 import 'package:restaurant_app/provider/category_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
@@ -13,14 +14,14 @@ import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/category_list.dart';
 import 'package:restaurant_app/ui/widgets/search_field.dart';
 
-class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class MainScreen extends StatefulWidget {
+  const MainScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomeScreen> createState() => _HomeScreenState();
+  State<MainScreen> createState() => _MainScreenState();
 }
 
-class _HomeScreenState extends State<HomeScreen> {
+class _MainScreenState extends State<MainScreen> {
   Timer? _debouncer;
 
   final List<Widget> _pages = <Widget>[
@@ -57,7 +58,6 @@ class _HomeScreenState extends State<HomeScreen> {
                   SliverAppBar(
                     floating: true,
                     pinned: true,
-                    snap: true,
                     title: _buildTitle(searchProvider, bottomNavProvider),
                     leading: _buildLeading(searchProvider, restaurantProvider),
                     actions: _buildActions(
@@ -65,7 +65,7 @@ class _HomeScreenState extends State<HomeScreen> {
                       restaurantProvider,
                       categoryProvider,
                     ),
-                    bottom: _buildBottom(searchProvider),
+                    bottom: _buildBottom(restaurantProvider, searchProvider),
                     titleSpacing: 0,
                     toolbarHeight: 64,
                     leadingWidth: 68,
@@ -131,11 +131,13 @@ class _HomeScreenState extends State<HomeScreen> {
     return <Widget>[
       if (!searchProvider.isSearching) ...[
         IconButton(
-          onPressed: () {
-            categoryProvider.index = 0;
-            searchProvider.restaurants = restaurantProvider.restaurants;
-            searchProvider.isSearching = true;
-          },
+          onPressed: restaurantProvider.state == ResultState.error
+              ? null
+              : () {
+                  categoryProvider.index = 0;
+                  searchProvider.restaurants = restaurantProvider.restaurants;
+                  searchProvider.isSearching = true;
+                },
           icon: const Icon(
             Icons.search_rounded,
             size: 28,
@@ -146,10 +148,15 @@ class _HomeScreenState extends State<HomeScreen> {
     ];
   }
 
-  CategoryList? _buildBottom(RestaurantSearchProvider searchProvider) {
-    return searchProvider.isSearching == true
+  CategoryList? _buildBottom(
+    RestaurantProvider restaurantProvider,
+    RestaurantSearchProvider searchProvider,
+  ) {
+    return restaurantProvider.state == ResultState.error
         ? null
-        : const CategoryList(categories: Const.categories);
+        : searchProvider.isSearching == true
+            ? null
+            : const CategoryList(categories: Const.categories);
   }
 
   Widget _buildBody(BottomNavProvider bottomNavProvider) {

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:restaurant_app/data/api/restaurant_api.dart';
 import 'package:restaurant_app/provider/bottom_nav_provider.dart';
 import 'package:restaurant_app/provider/category_provider.dart';
 import 'package:restaurant_app/provider/customer_review_provider.dart';
@@ -10,7 +11,7 @@ import 'package:restaurant_app/provider/page_reload_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/provider/restaurant_search_provider.dart';
-import 'package:restaurant_app/ui/screens/home_screen.dart';
+import 'package:restaurant_app/ui/screens/main_screen.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/themes/text_theme.dart';
 
@@ -33,16 +34,24 @@ void main() {
     MultiProvider(
       providers: <SingleChildWidget>[
         ChangeNotifierProvider<RestaurantProvider>(
-          create: (_) => RestaurantProvider(),
+          create: (_) {
+            return RestaurantProvider(restaurantApi: RestaurantApi());
+          },
         ),
         ChangeNotifierProvider<RestaurantDetailProvider>(
-          create: (_) => RestaurantDetailProvider(),
+          create: (_) {
+            return RestaurantDetailProvider(restaurantApi: RestaurantApi());
+          },
         ),
         ChangeNotifierProvider<RestaurantSearchProvider>(
-          create: (_) => RestaurantSearchProvider(),
+          create: (_) {
+            return RestaurantSearchProvider(restaurantApi: RestaurantApi());
+          },
         ),
         ChangeNotifierProvider<CustomerReviewProvider>(
-          create: (_) => CustomerReviewProvider(),
+          create: (_) {
+            return CustomerReviewProvider(restaurantApi: RestaurantApi());
+          },
         ),
         ChangeNotifierProvider<PageReloadProvider>(
           create: (_) => PageReloadProvider(),
@@ -88,7 +97,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: backGroundColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: const HomeScreen(),
+      home: const MainScreen(),
     );
   }
 }

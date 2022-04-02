@@ -14,9 +14,9 @@ class LoadingScreen extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              SpinKitPulse(
-                size: 100,
-                color: primaryColor,
+              SpinKitRing(
+                lineWidth: 4,
+                color: secondaryColor,
               ),
               const SizedBox(height: 24),
               Text(

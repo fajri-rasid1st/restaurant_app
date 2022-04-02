@@ -4,6 +4,10 @@ import 'package:restaurant_app/data/api/restaurant_api.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 
 class RestaurantSearchProvider extends ChangeNotifier {
+  final RestaurantApi restaurantApi;
+
+  RestaurantSearchProvider({required this.restaurantApi});
+
   List<Restaurant> _restaurants = <Restaurant>[];
   ResultState _state = ResultState.hasData;
   String _message = '';
@@ -35,7 +39,7 @@ class RestaurantSearchProvider extends ChangeNotifier {
 
       _query = query;
 
-      final result = await RestaurantApi.getRestaurants(query);
+      final result = await restaurantApi.getRestaurants(query);
 
       _restaurants = result;
 

@@ -31,7 +31,10 @@ class CustomNetworkImage extends StatelessWidget {
           child: SizedBox(
             width: placeHolderSize,
             height: placeHolderSize,
-            child: SpinKitPulse(color: primaryColor),
+            child: SpinKitRing(
+              lineWidth: 4,
+              color: secondaryColor,
+            ),
           ),
         );
       },

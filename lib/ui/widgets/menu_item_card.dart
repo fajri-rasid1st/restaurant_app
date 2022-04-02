@@ -25,7 +25,7 @@ class MenuItemCard extends StatelessWidget {
                 : Const.imgFoodPlaceholder,
             width: 300,
             height: 300,
-            placeHolderSize: 100,
+            placeHolderSize: 40,
           ),
           Positioned.fill(
             child: Container(

@@ -4,6 +4,10 @@ import 'package:restaurant_app/data/api/restaurant_api.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
 
 class RestaurantDetailProvider extends ChangeNotifier {
+  final RestaurantApi restaurantApi;
+
+  RestaurantDetailProvider({required this.restaurantApi});
+
   late RestaurantDetail _detail;
   late ResultState _state;
   String _message = '';
@@ -27,7 +31,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
     try {
       _state = ResultState.loading;
 
-      final result = await RestaurantApi.getRestaurantDetail(id);
+      final result = await restaurantApi.getRestaurantDetail(id);
 
       _detail = result;
 
