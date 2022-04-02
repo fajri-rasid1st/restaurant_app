@@ -79,7 +79,7 @@ class DiscoverPage extends StatelessWidget {
   /// Widget untuk membuat list restaurant jika data berhasil didapatkan
   ListView _buildRestaurantList(List<Restaurant> restaurants) {
     return ListView.separated(
-      padding: const EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+      padding: const EdgeInsets.fromLTRB(16, 16, 16, 48),
       itemBuilder: (context, index) {
         return RestaurantCard(restaurant: restaurants[index]);
       },

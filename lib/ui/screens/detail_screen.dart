@@ -107,11 +107,12 @@ class DetailScreen extends StatelessWidget {
           child: Container(
             color: Theme.of(context).scaffoldBackgroundColor,
             child: SingleChildScrollView(
+              padding: const EdgeInsets.symmetric(vertical: 24),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
+                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 4),
                     child: Text(
                       restaurant.name,
                       maxLines: 2,
@@ -258,38 +259,35 @@ class DetailScreen extends StatelessWidget {
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
                     child: Text(
-                      'Ulasan Ringkas',
+                      'Ulasan',
                       style: Theme.of(context).textTheme.headline5,
                     ),
                   ),
                   _buildReviews(restaurant.customerReviews),
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
-                    child: Center(
-                      child: TextButton.icon(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: ((context) {
-                                return ReviewFormScreen(
-                                  id: restaurant.id,
-                                  name: restaurant.name,
-                                );
-                              }),
-                            ),
-                          );
-                        },
-                        icon: const Icon(Icons.add_rounded),
-                        label: const Text('Tambah Ulasan'),
-                        style: TextButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 12,
+                  Center(
+                    child: OutlinedButton.icon(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: ((context) {
+                              return ReviewFormScreen(
+                                id: restaurant.id,
+                                name: restaurant.name,
+                              );
+                            }),
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
+                        );
+                      },
+                      label: const Text('Tambah Ulasan'),
+                      icon: const Icon(Icons.add_rounded),
+                      style: TextButton.styleFrom(
+                        padding: const EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 12,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                     ),

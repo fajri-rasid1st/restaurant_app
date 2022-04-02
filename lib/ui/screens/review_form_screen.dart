@@ -50,7 +50,7 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
           icon: const Icon(Icons.arrow_back_rounded),
           tooltip: 'Back',
         ),
-        title: Text(widget.name),
+        title: const Text('Ulasan'),
         centerTitle: true,
       ),
       body: SingleChildScrollView(
@@ -62,8 +62,8 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Text(
-                'Beri ulasan untuk: ${widget.name}',
-                style: Theme.of(context).textTheme.headline6,
+                'Beri tanggapan Anda tentang ${widget.name}.',
+                style: Theme.of(context).textTheme.subtitle1,
               ),
               const SizedBox(height: 16),
               _buildNameField(),
@@ -129,7 +129,7 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
       width: double.infinity,
       child: Consumer2<CustomerReviewProvider, RestaurantDetailProvider>(
         builder: (context, reviewProvider, detailProvider, child) {
-          return ElevatedButton(
+          return ElevatedButton.icon(
             onPressed: () async {
               // Hilangkan fokus dari keybooard
               FocusScope.of(context).unfocus();
@@ -161,15 +161,13 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
                 Navigator.pop(context);
               }
             },
-            child: const Text(
+            label: const Text(
               'Tambah Ulasan',
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
+            icon: const Icon(Icons.add_rounded),
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 16),
+              padding: const EdgeInsets.symmetric(vertical: 12),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

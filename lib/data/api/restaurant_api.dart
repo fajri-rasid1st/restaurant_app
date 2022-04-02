@@ -39,11 +39,11 @@ class RestaurantApi {
         }).toList();
       } else {
         // Kembalikan exception error jika gagal
-        throw Exception('Gagal memuat daftar restoran. Silahkan coba lagi.');
+        throw Exception();
       }
     } catch (e) {
       // Kembalikan exception error jika gagal
-      throw Exception('Gagal memuat daftar restoran. Silahkan coba lagi.');
+      throw Exception();
     }
   }
 
@@ -72,11 +72,11 @@ class RestaurantApi {
         return RestaurantDetail.fromMap(restaurant);
       } else {
         // Kembalikan exception error jika gagal
-        throw Exception('Gagal memuat detail restoran. Silahkan coba lagi.');
+        throw Exception();
       }
     } catch (e) {
       // Kembalikan exception error jika gagal
-      throw Exception('Gagal memuat detail restoran. Silahkan coba lagi.');
+      throw Exception();
     }
   }
 
@@ -120,11 +120,11 @@ class RestaurantApi {
         }).toList();
       } else {
         // Jika server tidak mengembalikan kode 201, maka throw exception
-        throw Exception('Gagal menambah ulasan. Silahkan coba lagi.');
+        throw Exception();
       }
     } catch (e) {
       // Kembalikan exception error jika gagal
-      throw Exception('Gagal menambah ulasan. Silahkan coba lagi.');
+      throw Exception();
     }
   }
 }

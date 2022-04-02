@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/common/utilities.dart';
-import 'package:restaurant_app/data/api/restaurant_api.dart';
 import 'package:restaurant_app/provider/page_reload_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
@@ -11,17 +10,22 @@ import 'package:restaurant_app/ui/screens/detail_screen.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
 
-class ErrorScreen extends StatelessWidget {
+class ErrorScreen extends StatefulWidget {
   final String? restaurantId;
 
   const ErrorScreen({Key? key, this.restaurantId}) : super(key: key);
 
   @override
+  State<ErrorScreen> createState() => _ErrorScreenState();
+}
+
+class _ErrorScreenState extends State<ErrorScreen> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-	  physics: const NeverScrollableScrollPhysics(),
+          physics: const NeverScrollableScrollPhysics(),
           child: CustomInformation(
             imgPath: 'assets/svg/404_error_lost_in_space_cuate.svg',
             title: 'Terjadi Masalah Koneksi',
@@ -42,18 +46,16 @@ class ErrorScreen extends StatelessWidget {
                         onPressed: reloadProvider.isPageReload
                             ? null
                             : () {
-                                if (restaurantId != null) {
+                                if (widget.restaurantId != null) {
                                   reloadPage(
-                                    context,
                                     restaurantProvider,
                                     detailProvider,
                                     searchProvider,
                                     reloadProvider,
-                                    restaurantId,
+                                    widget.restaurantId,
                                   );
                                 } else {
                                   reloadPage(
-                                    context,
                                     restaurantProvider,
                                     detailProvider,
                                     searchProvider,
@@ -97,7 +99,6 @@ class ErrorScreen extends StatelessWidget {
   /// * memunculkuan peson error jika data gagal dimuat
   /// * menuju ke halaman tertentu jika data berhasil dimuat
   Future<void> reloadPage(
-      BuildContext context,
       RestaurantProvider restaurantProvider,
       RestaurantDetailProvider detailProvider,
       RestaurantSearchProvider searchProvider,
@@ -105,13 +106,15 @@ class ErrorScreen extends StatelessWidget {
       [String? restaurantId]) async {
     reloadProvider.isPageReload = true;
 
+    var message = '';
+
     Future.wait([
       Future.delayed(const Duration(milliseconds: 2000)),
       if (restaurantId != null) ...[
-        RestaurantApi.getRestaurantDetail(restaurantId),
+        detailProvider.getRestaurantDetail(restaurantId),
       ] else ...[
-        RestaurantApi.getRestaurants(),
-        RestaurantApi.getRestaurants(searchProvider.query),
+        restaurantProvider.fetchAllRestaurants(),
+        searchProvider.searchRestaurants(searchProvider.query),
       ]
     ]).then((value) {
       reloadProvider.isPageReload = false;
@@ -134,10 +137,22 @@ class ErrorScreen extends StatelessWidget {
           ),
         );
       }
-    }).catchError((error) {
+    }).catchError((_) {
       reloadProvider.isPageReload = false;
 
-      Utilities.showSnackBarMessage(context: context, text: error.message);
+      if (restaurantId != null) {
+        message = detailProvider.message;
+      } else {
+        if (restaurantProvider.message.isEmpty) {
+          message = searchProvider.message;
+        } else {
+          message = restaurantProvider.message;
+        }
+      }
+
+      if (mounted) {
+        Utilities.showSnackBarMessage(context: context, text: message);
+      }
     });
   }
 }

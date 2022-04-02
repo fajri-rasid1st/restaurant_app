@@ -10,7 +10,7 @@ class RestaurantProvider extends ChangeNotifier {
 
   List<Restaurant> _restaurants = <Restaurant>[];
   late ResultState _state;
-  late String _message;
+  String _message = '';
 
   List<Restaurant> get restaurants => _restaurants;
   ResultState get state => _state;
@@ -30,7 +30,6 @@ class RestaurantProvider extends ChangeNotifier {
   Future<dynamic> fetchAllRestaurants() async {
     try {
       _state = ResultState.loading;
-      notifyListeners();
 
       final result = await RestaurantApi.getRestaurants();
 

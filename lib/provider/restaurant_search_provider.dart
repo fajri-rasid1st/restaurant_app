@@ -31,10 +31,9 @@ class RestaurantSearchProvider extends ChangeNotifier {
   /// Melukan pencarian data restaurant sesuai query yang dimasukkan
   Future<dynamic> searchRestaurants(String query) async {
     try {
-      _query = query;
-
       _state = ResultState.loading;
-      notifyListeners();
+
+      _query = query;
 
       final result = await RestaurantApi.getRestaurants(query);
 

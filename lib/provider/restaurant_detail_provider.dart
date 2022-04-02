@@ -6,7 +6,7 @@ import 'package:restaurant_app/data/models/restaurant_detail.dart';
 class RestaurantDetailProvider extends ChangeNotifier {
   late RestaurantDetail _detail;
   late ResultState _state;
-  late String _message;
+  String _message = '';
 
   RestaurantDetail get detail => _detail;
   ResultState get state => _state;
@@ -26,7 +26,6 @@ class RestaurantDetailProvider extends ChangeNotifier {
   Future<dynamic> getRestaurantDetail(String id) async {
     try {
       _state = ResultState.loading;
-      notifyListeners();
 
       final result = await RestaurantApi.getRestaurantDetail(id);
 

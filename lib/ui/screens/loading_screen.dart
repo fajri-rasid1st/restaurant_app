@@ -20,7 +20,7 @@ class LoadingScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
               Text(
-                'Sedang memuat data...',
+                'Sedang Memuat Data...',
                 style: Theme.of(context).textTheme.bodyText1,
               ),
             ],
