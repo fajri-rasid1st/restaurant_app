@@ -21,17 +21,18 @@ class CategoryList extends StatelessWidget implements PreferredSizeWidget {
         scrollDirection: Axis.horizontal,
         itemBuilder: ((context, index) {
           return Consumer2<CategoryProvider, RestaurantSearchProvider>(
-            builder: (context, categoryProvier, searchProvider, child) {
+            builder: (context, categoryProvider, searchProvider, child) {
               return RawChip(
                 label: Text(categories[index]),
                 labelStyle: Theme.of(context).textTheme.subtitle2,
-                selected: categoryProvier.index == index ? true : false,
+                selected: categoryProvider.index == index ? true : false,
                 selectedColor: secondaryColor,
                 onSelected: (value) {
-                  if (categoryProvier.index != index) {
-                    categoryProvier.index = index;
-                    categoryProvier.category = categories[index];
-                    searchProvider.searchRestaurants(categoryProvier.category);
+                  if (categoryProvider.index != index) {
+                    categoryProvider.index = index;
+                    categoryProvider.category = categories[index];
+
+                    searchProvider.searchRestaurants(categoryProvider.category);
                   }
                 },
               );

@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/common/utilities.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
+import 'package:restaurant_app/data/models/restaurant_detail.dart';
 import 'package:restaurant_app/provider/page_reload_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
@@ -26,51 +27,62 @@ class ErrorScreen extends StatelessWidget {
             imgPath: 'assets/svg/404_error_lost_in_space_cuate.svg',
             title: 'Terjadi Masalah Koneksi',
             subtitle: 'Periksa koneksi internet, lalu coba lagi.',
-            child: Consumer3<RestaurantDetailProvider, RestaurantSearchProvider,
-                PageReloadProvider>(
+            child: Consumer4<RestaurantProvider, RestaurantDetailProvider,
+                RestaurantSearchProvider, PageReloadProvider>(
               builder: (
                 context,
+                restaurantProvider,
                 detailProvider,
                 searchProvider,
-                pageReloadProvider,
+                reloadProvider,
                 child,
               ) {
-                return restaurantId != null
-                    ? ElevatedButton.icon(
-                        onPressed: pageReloadProvider.isPageReload
-                            ? null
-                            : () {
-                                reloadPage(
-                                  context,
-                                  pageReloadProvider,
-                                  detailProvider,
-                                  restaurantId!,
-                                );
-                              },
-                        icon: pageReloadProvider.isPageReload
-                            ? SizedBox(
-                                width: 18,
-                                height: 18,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                  color: secondaryTextColor,
-                                ),
-                              )
-                            : const Icon(Icons.replay_rounded),
-                        label: pageReloadProvider.isPageReload
-                            ? const Text('Memuat Data...')
-                            : const Text('Coba Lagi'),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: 8,
-                            horizontal: 12,
+                return ElevatedButton.icon(
+                  onPressed: reloadProvider.isPageReload
+                      ? null
+                      : () {
+                          if (restaurantId != null) {
+                            reloadPage(
+                              context,
+                              restaurantProvider,
+                              detailProvider,
+                              searchProvider,
+                              reloadProvider,
+                              restaurantId,
+                            );
+                          } else {
+                            reloadPage(
+                              context,
+                              restaurantProvider,
+                              detailProvider,
+                              searchProvider,
+                              reloadProvider,
+                            );
+                          }
+                        },
+                  icon: reloadProvider.isPageReload
+                      ? SizedBox(
+                          width: 18,
+                          height: 18,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: secondaryTextColor,
                           ),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                        ),
-                      )
-                    : const SizedBox();
+                        )
+                      : const Icon(Icons.replay_rounded),
+                  label: reloadProvider.isPageReload
+                      ? const Text('Memuat Data...')
+                      : const Text('Coba Lagi'),
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 8,
+                      horizontal: 12,
+                    ),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                  ),
+                );
               },
             ),
           ),
@@ -84,30 +96,45 @@ class ErrorScreen extends StatelessWidget {
   /// * memunculkuan peson error jika data gagal dimuat
   /// * menuju ke halaman tertentu jika data berhasil dimuat
   Future<void> reloadPage(
-    BuildContext context,
-    PageReloadProvider pageReloadProvider,
-    RestaurantDetailProvider restaurantDetailProvider,
-    String restaurantId,
-  ) async {
-    pageReloadProvider.isPageReload = true;
+      BuildContext context,
+      RestaurantProvider restaurantProvider,
+      RestaurantDetailProvider detailProvider,
+      RestaurantSearchProvider searchProvider,
+      PageReloadProvider reloadProvider,
+      [String? restaurantId]) async {
+    reloadProvider.isPageReload = true;
 
     Future.wait([
-      Future.delayed(const Duration(milliseconds: 3000)),
-      RestaurantApi.getRestaurantDetail(restaurantId),
+      Future.delayed(const Duration(milliseconds: 2000)),
+      if (restaurantId != null) ...[
+        RestaurantApi.getRestaurantDetail(restaurantId),
+      ] else ...[
+        RestaurantApi.getRestaurants(),
+        RestaurantApi.getRestaurants(searchProvider.query),
+      ]
     ]).then((value) {
-      pageReloadProvider.isPageReload = false;
+      reloadProvider.isPageReload = false;
 
-      restaurantDetailProvider.detail = value[1];
-      restaurantDetailProvider.state = ResultState.hasData;
+      if (restaurantId != null) {
+        detailProvider.detail = value[1];
+        detailProvider.state = ResultState.hasData;
+      } else {
+        restaurantProvider.restaurants = value[1];
+        restaurantProvider.state = ResultState.hasData;
 
-      Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: ((context) => DetailScreen(restaurantId: restaurantId)),
-        ),
-      );
+        searchProvider.restaurants = value[2];
+      }
+
+      if (restaurantId != null) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: ((context) => DetailScreen(restaurantId: restaurantId)),
+          ),
+        );
+      }
     }).catchError((error) {
-      pageReloadProvider.isPageReload = false;
+      reloadProvider.isPageReload = false;
 
       Utilities.showSnackBarMessage(context: context, text: error.message);
     });
