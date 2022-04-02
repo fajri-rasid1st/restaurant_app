@@ -102,6 +102,7 @@ flutter:
         - assets/img/user_pict.png
         - assets/svg/404_Error_cuate.svg
         - assets/svg/No_data_cuate.svg
+        - assets/svg/404_error_lost_in_space_cuate.svg
 
     # An image asset can refer to one or more resolution-specific "variants", see
     # https://flutter.dev/assets-and-images/#resolution-aware.

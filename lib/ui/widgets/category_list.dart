@@ -6,7 +6,7 @@ import 'package:restaurant_app/ui/themes/color_scheme.dart';
 
 class CategoryList extends StatelessWidget implements PreferredSizeWidget {
   @override
-  final Size preferredSize = const Size.fromHeight(40);
+  final Size preferredSize = const Size.fromHeight(64);
 
   final List<String> categories;
 
@@ -14,40 +14,34 @@ class CategoryList extends StatelessWidget implements PreferredSizeWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 8),
-      child: SizedBox(
-        height: 40,
-        child: ListView.separated(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          scrollDirection: Axis.horizontal,
-          itemBuilder: ((context, index) {
-            return Consumer2<CategoryProvider, RestaurantSearchProvider>(
-              builder: (context, categoryProvier, searchProvider, child) {
-                return RawChip(
-                  label: Text(categories[index]),
-                  labelStyle: Theme.of(context).textTheme.subtitle2,
-                  selected: categoryProvier.index == index ? true : false,
-                  selectedColor: backGroundColor,
-                  onSelected: (value) {
-                    if (categoryProvier.index != index) {
-                      categoryProvier.index = index;
-                      categoryProvier.category = categories[index];
-
-                      searchProvider.searchRestaurants(
-                        categoryProvier.category,
-                      );
-                    }
-                  },
-                );
-              },
-            );
-          }),
-          separatorBuilder: (context, index) {
-            return const SizedBox(width: 8);
-          },
-          itemCount: categories.length,
-        ),
+    return SizedBox(
+      height: 64,
+      child: ListView.separated(
+        padding: const EdgeInsets.symmetric(horizontal: 16),
+        scrollDirection: Axis.horizontal,
+        itemBuilder: ((context, index) {
+          return Consumer2<CategoryProvider, RestaurantSearchProvider>(
+            builder: (context, categoryProvier, searchProvider, child) {
+              return RawChip(
+                label: Text(categories[index]),
+                labelStyle: Theme.of(context).textTheme.subtitle2,
+                selected: categoryProvier.index == index ? true : false,
+                selectedColor: secondaryColor,
+                onSelected: (value) {
+                  if (categoryProvier.index != index) {
+                    categoryProvier.index = index;
+                    categoryProvier.category = categories[index];
+                    searchProvider.searchRestaurants(categoryProvier.category);
+                  }
+                },
+              );
+            },
+          );
+        }),
+        separatorBuilder: (context, index) {
+          return const SizedBox(width: 8);
+        },
+        itemCount: categories.length,
       ),
     );
   }

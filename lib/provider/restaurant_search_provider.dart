@@ -14,7 +14,7 @@ class RestaurantSearchProvider extends ChangeNotifier {
   List<Restaurant> get restaurants => _restaurants;
   ResultState get state => _state;
   String get message => _message;
-  
+
   bool get isSearching => _isSearching;
   String get query => _query;
 
@@ -44,6 +44,9 @@ class RestaurantSearchProvider extends ChangeNotifier {
       return result;
     } catch (_) {
       _message = 'Gagal mencari restoran. Silahkan coba lagi.';
+
+      _state = ResultState.error;
+      notifyListeners();
 
       return _message;
     }

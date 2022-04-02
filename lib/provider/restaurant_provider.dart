@@ -8,7 +8,7 @@ class RestaurantProvider extends ChangeNotifier {
     fetchAllRestaurants();
   }
 
-  late List<Restaurant> _restaurants;
+  List<Restaurant> _restaurants = <Restaurant>[];
   late ResultState _state;
   late String _message;
 

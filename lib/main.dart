@@ -2,16 +2,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
-import 'package:restaurant_app/common/result_state.dart';
+import 'package:restaurant_app/provider/bottom_nav_provider.dart';
 import 'package:restaurant_app/provider/category_provider.dart';
 import 'package:restaurant_app/provider/customer_review_provider.dart';
+import 'package:restaurant_app/provider/database_provider.dart';
 import 'package:restaurant_app/provider/page_reload_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/provider/restaurant_search_provider.dart';
-import 'package:restaurant_app/ui/screens/error_screen.dart';
 import 'package:restaurant_app/ui/screens/home_screen.dart';
-import 'package:restaurant_app/ui/screens/loading_screen.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/themes/text_theme.dart';
 
@@ -51,6 +50,12 @@ void main() {
         ChangeNotifierProvider<CategoryProvider>(
           create: (_) => CategoryProvider(),
         ),
+        ChangeNotifierProvider<DatabaseProvider>(
+          create: (_) => DatabaseProvider(),
+        ),
+        ChangeNotifierProvider<BottomNavProvider>(
+          create: (_) => BottomNavProvider(),
+        ),
       ],
       child: const MyApp(),
     ),
@@ -66,6 +71,7 @@ class MyApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: 'Restaurant App',
       theme: ThemeData(
+        fontFamily: 'Quicksand',
         colorScheme: ColorScheme.fromSeed(
           seedColor: primaryColor,
           brightness: Brightness.light,
@@ -82,17 +88,7 @@ class MyApp extends StatelessWidget {
         scaffoldBackgroundColor: backGroundColor,
         visualDensity: VisualDensity.adaptivePlatformDensity,
       ),
-      home: Consumer<RestaurantProvider>(
-        builder: ((context, value, child) {
-          if (value.state == ResultState.loading) {
-            return const LoadingScreen();
-          } else if (value.state == ResultState.error) {
-            return const ErrorScreen();
-          }
-
-          return const HomeScreen();
-        }),
-      ),
+      home: const HomeScreen(),
     );
   }
 }
