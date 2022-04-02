@@ -21,7 +21,7 @@ class ErrorScreen extends StatelessWidget {
     return Scaffold(
       body: Center(
         child: SingleChildScrollView(
-          reverse: true,
+	  physics: const NeverScrollableScrollPhysics(),
           child: CustomInformation(
             imgPath: 'assets/svg/404_error_lost_in_space_cuate.svg',
             title: 'Terjadi Masalah Koneksi',

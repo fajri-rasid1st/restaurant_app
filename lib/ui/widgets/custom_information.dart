@@ -21,7 +21,6 @@ class CustomInformation extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
-          mainAxisSize: MainAxisSize.min,
           children: <Widget>[
             SvgPicture.asset(
               imgPath,

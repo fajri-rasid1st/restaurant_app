@@ -57,6 +57,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SliverAppBar(
                     floating: true,
                     pinned: true,
+                    snap: true,
                     title: _buildTitle(searchProvider, bottomNavProvider),
                     leading: _buildLeading(searchProvider, restaurantProvider),
                     actions: _buildActions(

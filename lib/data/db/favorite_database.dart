@@ -43,15 +43,6 @@ class FavoriteDatabase {
     ''');
   }
 
-  /// Membuat record favorite dan masukkannya ke database
-  Future<Favorite> createFavorite(Favorite favorite) async {
-    final db = await database;
-
-    final id = await db.insert(favoriteTable, favorite.toMap());
-
-    return favorite.copyWith(id: id);
-  }
-
   /// Menampilkan seluruh favorite list yang disimpan dalam database
   Future<List<Favorite>> readFavorites() async {
     final db = await database;
@@ -72,8 +63,17 @@ class FavoriteDatabase {
     return <Favorite>[];
   }
 
+  /// Membuat record favorite dan masukkannya ke database
+  Future<Favorite> createFavorite(Favorite favorite) async {
+    final db = await database;
+
+    final id = await db.insert(favoriteTable, favorite.toMap());
+
+    return favorite.copyWith(id: id);
+  }
+
   /// Mengecek baris pada table database yang sesuai dengan [restaurantId]
-  Future<bool> isFavoriteAlreadyExist(int restaurantId) async {
+  Future<bool> isFavoriteAlreadyExist(String restaurantId) async {
     final db = await database;
 
     final maps = await db.query(

@@ -36,6 +36,7 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
+  /// Untuk membuat screen detail utama
   Scaffold _buildDetailScreen(
     BuildContext context,
     RestaurantDetail restaurant,
