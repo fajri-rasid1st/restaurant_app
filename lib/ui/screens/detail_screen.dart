@@ -9,26 +9,26 @@ import 'package:restaurant_app/data/models/menu_item.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
 import 'package:restaurant_app/provider/customer_review_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
-import 'package:restaurant_app/ui/pages/error_page.dart';
-import 'package:restaurant_app/ui/pages/loading_page.dart';
-import 'package:restaurant_app/ui/pages/review_form_page.dart';
+import 'package:restaurant_app/ui/screens/error_screen.dart';
+import 'package:restaurant_app/ui/screens/loading_screen.dart';
+import 'package:restaurant_app/ui/screens/review_form_screen.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 import 'package:restaurant_app/ui/widgets/menu_item_card.dart';
 
-class DetailPage extends StatelessWidget {
+class DetailScreen extends StatelessWidget {
   final String restaurantId;
 
-  const DetailPage({Key? key, required this.restaurantId}) : super(key: key);
+  const DetailScreen({Key? key, required this.restaurantId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Consumer2<RestaurantDetailProvider, CustomerReviewProvider>(
       builder: (context, provider, _, child) {
         if (provider.state == ResultState.loading) {
-          return const LoadingPage();
+          return const LoadingScreen();
         } else if (provider.state == ResultState.error) {
-          return ErrorPage(restaurantId: restaurantId);
+          return ErrorScreen(restaurantId: restaurantId);
         }
 
         return _buildDetailScreen(context, provider.detail);
@@ -120,7 +120,7 @@ class DetailPage extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 40,
-                    child: _buildBannerChip(restaurant.categories),
+                    child: _buildCategoryChips(restaurant.categories),
                   ),
                   const SizedBox(height: 16),
                   SizedBox(
@@ -228,7 +228,7 @@ class DetailPage extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 140,
-                    child: _buildMenuItem(
+                    child: _buildMenuItems(
                       foods: restaurant.menus.foods,
                       crossAxisCount: 1,
                       childAspectRatio: 2 / 3,
@@ -246,7 +246,7 @@ class DetailPage extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 140,
-                    child: _buildMenuItem(
+                    child: _buildMenuItems(
                       drinks: restaurant.menus.drinks,
                       crossAxisCount: 1,
                       childAspectRatio: 5 / 4,
@@ -261,7 +261,7 @@ class DetailPage extends StatelessWidget {
                       style: Theme.of(context).textTheme.headline5,
                     ),
                   ),
-                  _buildReviewList(restaurant.customerReviews),
+                  _buildReviews(restaurant.customerReviews),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                     child: Center(
@@ -271,7 +271,7 @@ class DetailPage extends StatelessWidget {
                             context,
                             MaterialPageRoute(
                               builder: ((context) {
-                                return ReviewFormPage(
+                                return ReviewFormScreen(
                                   id: restaurant.id,
                                   name: restaurant.name,
                                 );
@@ -302,8 +302,8 @@ class DetailPage extends StatelessWidget {
     );
   }
 
-  /// Untuk membuat widget banner chip kategori restaurant
-  ListView _buildBannerChip(List<Category> categories) {
+  /// Untuk membuat widget chip kategori restaurant
+  ListView _buildCategoryChips(List<Category> categories) {
     return ListView.separated(
       padding: const EdgeInsets.symmetric(horizontal: 16),
       scrollDirection: Axis.horizontal,
@@ -323,7 +323,7 @@ class DetailPage extends StatelessWidget {
   }
 
   /// Untuk membuat widget menu item dengan kustomisasi jumlah grid dan rasio
-  GridView _buildMenuItem({
+  GridView _buildMenuItems({
     List<MenuItem>? foods,
     List<MenuItem>? drinks,
     required int crossAxisCount,
@@ -345,7 +345,7 @@ class DetailPage extends StatelessWidget {
   }
 
   /// Untuk membuat widget list review restaurant
-  ListView _buildReviewList(List<CustomerReview> reviews) {
+  ListView _buildReviews(List<CustomerReview> reviews) {
     return ListView.builder(
       padding: const EdgeInsets.all(0),
       physics: const NeverScrollableScrollPhysics(),

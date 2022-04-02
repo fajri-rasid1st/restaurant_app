@@ -1,26 +1,27 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/flutter_svg.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/const.dart';
 import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/provider/bottom_nav_provider.dart';
 import 'package:restaurant_app/provider/category_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/provider/restaurant_search_provider.dart';
-import 'package:restaurant_app/ui/pages/loading_page.dart';
+import 'package:restaurant_app/ui/screens/loading_screen.dart';
 import 'package:restaurant_app/ui/widgets/category_list.dart';
+import 'package:restaurant_app/ui/widgets/custom_information.dart';
 import 'package:restaurant_app/ui/widgets/restaurant_card.dart';
 import 'package:restaurant_app/ui/widgets/search_field.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   Timer? _debouncer;
 
   @override
@@ -37,20 +38,21 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<RestaurantProvider, RestaurantSearchProvider,
-        CategoryProvider>(
+    return Consumer4<RestaurantProvider, RestaurantSearchProvider,
+        CategoryProvider, BottomNavProvider>(
       builder: (
         context,
         restaurantProvider,
         searchProvider,
         categoryProvider,
+        bottomNavProvider,
         child,
       ) {
         return WillPopScope(
           onWillPop: () => onWillPop(searchProvider, restaurantProvider),
           child: Scaffold(
             appBar: AppBar(
-              title: _buildTitle(searchProvider),
+              title: _buildTitle(searchProvider, bottomNavProvider),
               leading: _buildLeading(searchProvider, restaurantProvider),
               actions: _buildActions(
                 searchProvider,
@@ -68,6 +70,40 @@ class _HomePageState extends State<HomePage> {
               restaurantProvider,
               categoryProvider,
             ),
+            bottomNavigationBar: BottomNavigationBar(
+              currentIndex: bottomNavProvider.index,
+              selectedFontSize: 12,
+              unselectedFontSize: 12,
+              type: BottomNavigationBarType.fixed,
+              items: const <BottomNavigationBarItem>[
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.explore_outlined),
+                  activeIcon: Icon(Icons.explore),
+                  label: 'Discover',
+                ),
+                BottomNavigationBarItem(
+                  icon: Icon(Icons.settings_outlined),
+                  activeIcon: Icon(Icons.settings),
+                  label: 'Settings',
+                ),
+              ],
+              onTap: (index) {
+                setState(() {
+                  bottomNavProvider.index = index;
+
+                  switch (bottomNavProvider.index) {
+                    case 0:
+                      bottomNavProvider.title = 'Restaurant App';
+
+                      break;
+                    case 1:
+                      bottomNavProvider.title = 'Settings';
+
+                      break;
+                  }
+                });
+              },
+            ),
           ),
         );
       },
@@ -75,7 +111,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   /// Widget untuk membuat appbar title
-  Widget _buildTitle(RestaurantSearchProvider searchProvider) {
+  Widget _buildTitle(
+    RestaurantSearchProvider searchProvider,
+    BottomNavProvider bottomNavProvider,
+  ) {
     return searchProvider.isSearching
         ? SearchField(
             hintText: 'Search Restaurants, Categories, or Menu',
@@ -83,7 +122,7 @@ class _HomePageState extends State<HomePage> {
               debounce(() => searchProvider.searchRestaurants(query));
             },
           )
-        : const Text('Restaurant App');
+        : Text(bottomNavProvider.title);
   }
 
   /// Widget untuk membuat appbar leading
@@ -94,8 +133,8 @@ class _HomePageState extends State<HomePage> {
     return searchProvider.isSearching
         ? IconButton(
             onPressed: () {
-              searchProvider.isSearching = false;
               searchProvider.restaurants = restaurantProvider.restaurants;
+              searchProvider.isSearching = false;
             },
             icon: const Icon(
               Icons.arrow_back_rounded,
@@ -156,7 +195,7 @@ class _HomePageState extends State<HomePage> {
           restaurants = searchProvider.restaurants;
         } else if (categoryProvider.category.isNotEmpty) {
           if (searchProvider.state == ResultState.loading) {
-            return const LoadingPage();
+            return const LoadingScreen();
           }
 
           restaurants = searchProvider.restaurants;
@@ -172,25 +211,11 @@ class _HomePageState extends State<HomePage> {
   }
 
   /// Widget untuk membuat page kosong jika data tidak ditemukan
-  Center _buildRestaurantEmpty() {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Stack(
-          alignment: AlignmentDirectional.bottomCenter,
-          children: <Widget>[
-            SvgPicture.asset(
-              'assets/svg/404_Error_cuate.svg',
-              width: 300,
-              fit: BoxFit.fill,
-            ),
-            Text(
-              'Oops, Restoran Tidak Ditemukan!',
-              style: Theme.of(context).textTheme.bodyText1,
-            ),
-          ],
-        ),
-      ),
+  CustomInformation _buildRestaurantEmpty() {
+    return const CustomInformation(
+      imgPath: 'assets/svg/404_Error_cuate.svg',
+      title: 'Oops, Restaurant Tidak Ditemukan!',
+      subtitle: 'Coba masukkan kata kunci lainnya.',
     );
   }
 

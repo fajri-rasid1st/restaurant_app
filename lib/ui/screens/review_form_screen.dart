@@ -5,21 +5,21 @@ import 'package:restaurant_app/common/utilities.dart';
 import 'package:restaurant_app/provider/customer_review_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 
-class ReviewFormPage extends StatefulWidget {
+class ReviewFormScreen extends StatefulWidget {
   final String id;
   final String name;
 
-  const ReviewFormPage({
+  const ReviewFormScreen({
     Key? key,
     required this.id,
     required this.name,
   }) : super(key: key);
 
   @override
-  State<ReviewFormPage> createState() => _ReviewFormPageState();
+  State<ReviewFormScreen> createState() => _ReviewFormScreenState();
 }
 
-class _ReviewFormPageState extends State<ReviewFormPage> {
+class _ReviewFormScreenState extends State<ReviewFormScreen> {
   late final GlobalKey<FormState> _formKey;
   late final TextEditingController _nameController;
   late final TextEditingController _reviewController;
@@ -163,13 +163,13 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
             },
             child: const Text(
               'Tambah Ulasan',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+              ),
             ),
             style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(
-                vertical: 8,
-                horizontal: 12,
-              ),
+              padding: const EdgeInsets.symmetric(vertical: 16),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(12),
               ),

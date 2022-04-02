@@ -34,8 +34,9 @@ class CategoryList extends StatelessWidget implements PreferredSizeWidget {
                       categoryProvier.index = index;
                       categoryProvier.category = categories[index];
 
-                      searchProvider
-                          .searchRestaurants(categoryProvier.category);
+                      searchProvider.searchRestaurants(
+                        categoryProvier.category,
+                      );
                     }
                   },
                 );

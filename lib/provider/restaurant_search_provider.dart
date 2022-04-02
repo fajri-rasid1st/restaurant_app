@@ -12,9 +12,9 @@ class RestaurantSearchProvider extends ChangeNotifier {
   String _query = '';
 
   List<Restaurant> get restaurants => _restaurants;
-  String get message => _message;
   ResultState get state => _state;
-
+  String get message => _message;
+  
   bool get isSearching => _isSearching;
   String get query => _query;
 

@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/const.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
-import 'package:restaurant_app/ui/pages/detail_page.dart';
+import 'package:restaurant_app/ui/screens/detail_screen.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 
 class RestaurantCard extends StatelessWidget {
@@ -94,7 +94,7 @@ class RestaurantCard extends StatelessWidget {
                     context,
                     MaterialPageRoute(
                       builder: ((context) {
-                        return DetailPage(restaurantId: restaurant.id);
+                        return DetailScreen(restaurantId: restaurant.id);
                       }),
                     ),
                   );

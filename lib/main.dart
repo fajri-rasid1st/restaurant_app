@@ -9,9 +9,9 @@ import 'package:restaurant_app/provider/page_reload_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/provider/restaurant_search_provider.dart';
-import 'package:restaurant_app/ui/pages/error_page.dart';
-import 'package:restaurant_app/ui/pages/home_page.dart';
-import 'package:restaurant_app/ui/pages/loading_page.dart';
+import 'package:restaurant_app/ui/screens/error_screen.dart';
+import 'package:restaurant_app/ui/screens/home_screen.dart';
+import 'package:restaurant_app/ui/screens/loading_screen.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/themes/text_theme.dart';
 
@@ -85,12 +85,12 @@ class MyApp extends StatelessWidget {
       home: Consumer<RestaurantProvider>(
         builder: ((context, value, child) {
           if (value.state == ResultState.loading) {
-            return const LoadingPage();
+            return const LoadingScreen();
           } else if (value.state == ResultState.error) {
-            return const ErrorPage();
+            return const ErrorScreen();
           }
 
-          return const HomePage();
+          return const HomeScreen();
         }),
       ),
     );

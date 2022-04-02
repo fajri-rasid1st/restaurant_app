@@ -31,26 +31,26 @@ class RestaurantDetail extends Restaurant {
 
   /// Constructor untuk membuat objek RestaurantDetail dari bentuk map
   /// (hasil parsing json)
-  factory RestaurantDetail.fromMap(Map<String, dynamic> map) {
+  factory RestaurantDetail.fromMap(Map<String, dynamic> detail) {
     return RestaurantDetail(
-      id: map['id'] ?? '',
-      name: map['name'] ?? '',
-      description: map['description'] ?? '',
-      pictureId: map['pictureId'] ?? '',
-      city: map['city'] ?? '',
-      rating: map['rating']?.toDouble() ?? 0.0,
-      address: map['address'] ?? '',
+      id: detail['id'] ?? '',
+      name: detail['name'] ?? '',
+      description: detail['description'] ?? '',
+      pictureId: detail['pictureId'] ?? '',
+      city: detail['city'] ?? '',
+      rating: detail['rating']?.toDouble() ?? 0.0,
+      address: detail['address'] ?? '',
       categories: List<Category>.from(
-        map['categories']?.map((category) {
+        detail['categories']?.map((category) {
           return Category.fromMap(category);
         }),
       ),
       customerReviews: List<CustomerReview>.from(
-        map['customerReviews']?.map((customerReview) {
+        detail['customerReviews']?.map((customerReview) {
           return CustomerReview.fromMap(customerReview);
         }),
       ),
-      menus: Menu.fromMap(map['menus']),
+      menus: Menu.fromMap(detail['menus']),
     );
   }
 }

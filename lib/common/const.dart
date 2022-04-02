@@ -14,6 +14,7 @@ class Const {
   static const String imgDrinkPlaceholder =
       'https://raw.githubusercontent.com/fajri-rasid1st/assets/main/foods_and_beverages/drink_placeholder.png';
 
+  // List beberapa kategori restaurant
   static const List<String> categories = <String>[
     'Semua',
     'Italia',
@@ -22,6 +23,6 @@ class Const {
     'Sop',
     'Bali',
     'Spanyol',
-    'Sunda',
+    'Sunda'
   ];
 }
