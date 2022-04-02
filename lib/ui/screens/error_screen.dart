@@ -3,7 +3,6 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/common/utilities.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
-import 'package:restaurant_app/data/models/restaurant_detail.dart';
 import 'package:restaurant_app/provider/page_reload_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
@@ -37,52 +36,54 @@ class ErrorScreen extends StatelessWidget {
                 reloadProvider,
                 child,
               ) {
-                return ElevatedButton.icon(
-                  onPressed: reloadProvider.isPageReload
-                      ? null
-                      : () {
-                          if (restaurantId != null) {
-                            reloadPage(
-                              context,
-                              restaurantProvider,
-                              detailProvider,
-                              searchProvider,
-                              reloadProvider,
-                              restaurantId,
-                            );
-                          } else {
-                            reloadPage(
-                              context,
-                              restaurantProvider,
-                              detailProvider,
-                              searchProvider,
-                              reloadProvider,
-                            );
-                          }
-                        },
-                  icon: reloadProvider.isPageReload
-                      ? SizedBox(
-                          width: 18,
-                          height: 18,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: secondaryTextColor,
+                return searchProvider.isSearching
+                    ? const SizedBox()
+                    : ElevatedButton.icon(
+                        onPressed: reloadProvider.isPageReload
+                            ? null
+                            : () {
+                                if (restaurantId != null) {
+                                  reloadPage(
+                                    context,
+                                    restaurantProvider,
+                                    detailProvider,
+                                    searchProvider,
+                                    reloadProvider,
+                                    restaurantId,
+                                  );
+                                } else {
+                                  reloadPage(
+                                    context,
+                                    restaurantProvider,
+                                    detailProvider,
+                                    searchProvider,
+                                    reloadProvider,
+                                  );
+                                }
+                              },
+                        icon: reloadProvider.isPageReload
+                            ? SizedBox(
+                                width: 18,
+                                height: 18,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  color: secondaryTextColor,
+                                ),
+                              )
+                            : const Icon(Icons.replay_rounded),
+                        label: reloadProvider.isPageReload
+                            ? const Text('Memuat Data...')
+                            : const Text('Coba Lagi'),
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(
+                            vertical: 8,
+                            horizontal: 12,
                           ),
-                        )
-                      : const Icon(Icons.replay_rounded),
-                  label: reloadProvider.isPageReload
-                      ? const Text('Memuat Data...')
-                      : const Text('Coba Lagi'),
-                  style: ElevatedButton.styleFrom(
-                    padding: const EdgeInsets.symmetric(
-                      vertical: 8,
-                      horizontal: 12,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                  ),
-                );
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                        ),
+                      );
               },
             ),
           ),

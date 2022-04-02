@@ -45,6 +45,12 @@ class DiscoverPage extends StatelessWidget {
       case ResultState.error:
         return const ErrorScreen();
       default:
+        if (searchProvider.state == ResultState.loading) {
+          return const LoadingScreen();
+        } else if (searchProvider.state == ResultState.error) {
+          return const ErrorScreen();
+        }
+
         var restaurants = <Restaurant>[];
 
         if (searchProvider.isSearching && searchProvider.query.isNotEmpty) {
@@ -53,12 +59,6 @@ class DiscoverPage extends StatelessWidget {
           restaurants = searchProvider.restaurants;
         } else {
           restaurants = restaurantProvider.restaurants;
-        }
-
-        if (searchProvider.state == ResultState.loading) {
-          return const LoadingScreen();
-        } else if (searchProvider.state == ResultState.error) {
-          return const ErrorScreen();
         }
 
         return restaurants.isEmpty
