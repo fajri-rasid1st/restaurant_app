@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/common/utilities.dart';
+import 'package:restaurant_app/provider/page_reload_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/provider/restaurant_search_provider.dart';
@@ -19,8 +20,6 @@ class ErrorScreen extends StatefulWidget {
 }
 
 class _ErrorScreenState extends State<ErrorScreen> {
-  bool _isPageReload = false;
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -30,19 +29,20 @@ class _ErrorScreenState extends State<ErrorScreen> {
           imgPath: 'assets/svg/404_error_lost_in_space_cuate.svg',
           title: 'Anda Sedang Offline',
           subtitle: 'Periksa koneksi internet, lalu coba lagi.',
-          child: Consumer3<RestaurantProvider, RestaurantDetailProvider,
-              RestaurantSearchProvider>(
+          child: Consumer4<RestaurantProvider, RestaurantDetailProvider,
+              RestaurantSearchProvider, PageReloadProvider>(
             builder: (
               context,
               restaurantProvider,
               detailProvider,
               searchProvider,
+              reloadProvider,
               child,
             ) {
               return searchProvider.isSearching
                   ? const SizedBox()
                   : ElevatedButton.icon(
-                      onPressed: _isPageReload
+                      onPressed: reloadProvider.isReload
                           ? null
                           : () {
                               if (widget.restaurantId != null) {
@@ -50,6 +50,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
                                   restaurantProvider: restaurantProvider,
                                   detailProvider: detailProvider,
                                   searchProvider: searchProvider,
+                                  reloadProvider: reloadProvider,
                                   restaurantId: widget.restaurantId,
                                 );
                               } else {
@@ -57,10 +58,11 @@ class _ErrorScreenState extends State<ErrorScreen> {
                                   restaurantProvider: restaurantProvider,
                                   detailProvider: detailProvider,
                                   searchProvider: searchProvider,
+                                  reloadProvider: reloadProvider,
                                 );
                               }
                             },
-                      icon: _isPageReload
+                      icon: reloadProvider.isReload
                           ? SizedBox(
                               width: 18,
                               height: 18,
@@ -70,7 +72,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
                               ),
                             )
                           : const Icon(Icons.replay_rounded),
-                      label: _isPageReload
+                      label: reloadProvider.isReload
                           ? const Text('Memuat Data...')
                           : const Text('Coba Lagi'),
                       style: ElevatedButton.styleFrom(
@@ -98,9 +100,10 @@ class _ErrorScreenState extends State<ErrorScreen> {
     required RestaurantProvider restaurantProvider,
     required RestaurantDetailProvider detailProvider,
     required RestaurantSearchProvider searchProvider,
+    required PageReloadProvider reloadProvider,
     String? restaurantId,
   }) async {
-    setState(() => _isPageReload = true);
+    reloadProvider.isReload = true;
 
     var message = '';
 
@@ -113,7 +116,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
         searchProvider.searchRestaurants(searchProvider.query),
       ]
     ]).then((value) {
-      setState(() => _isPageReload = false);
+      reloadProvider.isReload = false;
 
       if (restaurantId != null) {
         detailProvider.detail = value[1];
@@ -134,7 +137,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
         );
       }
     }).catchError((_) {
-      setState(() => _isPageReload = false);
+      reloadProvider.isReload = false;
 
       if (restaurantId != null) {
         message = detailProvider.message;

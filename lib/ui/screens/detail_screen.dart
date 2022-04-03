@@ -124,32 +124,43 @@ class DetailScreen extends StatelessWidget {
                     height: 40,
                     child: _buildCategoryChips(restaurant.categories),
                   ),
-                  const SizedBox(height: 16),
+                  const SizedBox(height: 8),
                   SizedBox(
-                    height: 100,
+                    height: 120,
                     child: Row(
                       children: <Widget>[
                         Expanded(
-                          flex: 1,
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
                             children: <Widget>[
-                              Icon(
-                                Icons.place_rounded,
-                                size: 48,
-                                color: Colors.red[400],
+                              Flexible(
+                                child: Icon(
+                                  Icons.place_rounded,
+                                  size: 48,
+                                  color: Colors.red[400],
+                                ),
                               ),
-                              const Spacer(),
-                              Text(
-                                restaurant.city,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.headline6,
-                              ),
-                              Text(
-                                restaurant.address,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.caption,
+                              Flexible(
+                                child: Column(
+                                  children: <Text>[
+                                    Text(
+                                      restaurant.city,
+                                      maxLines: 1,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      style:
+                                          Theme.of(context).textTheme.headline6,
+                                    ),
+                                    Text(
+                                      restaurant.address,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.ellipsis,
+                                      textAlign: TextAlign.center,
+                                      style:
+                                          Theme.of(context).textTheme.caption,
+                                    ),
+                                  ],
+                                ),
                               ),
                             ],
                           ),
@@ -159,26 +170,32 @@ class DetailScreen extends StatelessWidget {
                           child: VerticalDivider(width: 1, thickness: 1),
                         ),
                         Expanded(
-                          flex: 1,
                           child: Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
                             children: <Widget>[
-                              Icon(
-                                Icons.star_rate_rounded,
-                                size: 58,
-                                color: Colors.orange[400],
+                              Flexible(
+                                child: Icon(
+                                  Icons.star_rate_rounded,
+                                  size: 58,
+                                  color: Colors.orange[400],
+                                ),
                               ),
-                              const Spacer(),
-                              Text(
-                                '${restaurant.rating}/5.0',
-                                style: Theme.of(context).textTheme.headline4,
-                              )
+                              Flexible(
+                                child: Text(
+                                  '${restaurant.rating}/5.0',
+                                  maxLines: 1,
+                                  overflow: TextOverflow.ellipsis,
+                                  textAlign: TextAlign.center,
+                                  style: Theme.of(context).textTheme.headline4,
+                                ),
+                              ),
                             ],
                           ),
                         ),
                       ],
                     ),
                   ),
-                  const SizedBox(height: 24),
+                  const SizedBox(height: 16),
                   const Divider(height: 1, thickness: 1),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),

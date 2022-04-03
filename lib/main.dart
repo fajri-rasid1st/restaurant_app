@@ -5,6 +5,7 @@ import 'package:provider/single_child_widget.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
 import 'package:restaurant_app/provider/category_provider.dart';
 import 'package:restaurant_app/provider/customer_review_provider.dart';
+import 'package:restaurant_app/provider/page_reload_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/provider/restaurant_search_provider.dart';
@@ -51,9 +52,10 @@ void main() {
           },
         ),
         ChangeNotifierProvider<CategoryProvider>(
-          create: (_) {
-            return CategoryProvider();
-          },
+          create: (_) => CategoryProvider(),
+        ),
+        ChangeNotifierProvider<PageReloadProvider>(
+          create: (_) => PageReloadProvider(),
         ),
       ],
       child: const MyApp(),
