@@ -39,9 +39,7 @@ class CategoryList extends StatelessWidget implements PreferredSizeWidget {
             },
           );
         }),
-        separatorBuilder: (context, index) {
-          return const SizedBox(width: 8);
-        },
+        separatorBuilder: (context, index) => const SizedBox(width: 8),
         itemCount: categories.length,
       ),
     );

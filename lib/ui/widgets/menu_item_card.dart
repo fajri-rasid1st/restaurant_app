@@ -44,7 +44,7 @@ class MenuItemCard extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(8),
             child: Text(
-              food == null ? drink!.name : food!.name,
+              drink?.name ?? food!.name,
               style: Theme.of(context)
                   .textTheme
                   .subtitle2

@@ -6,6 +6,7 @@ class Utilities {
   static void showSnackBarMessage({
     required BuildContext context,
     required String text,
+    SnackBarAction? action,
   }) {
     // Create snackbar
     SnackBar snackBar = SnackBar(
@@ -13,6 +14,8 @@ class Utilities {
         text,
         style: GoogleFonts.quicksand(),
       ),
+      action: action,
+      duration: const Duration(seconds: 3),
     );
 
     // Show snackbar

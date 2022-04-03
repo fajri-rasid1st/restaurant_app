@@ -31,7 +31,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void dispose() {
-    if (_debouncer != null) _debouncer!.cancel();
+    _debouncer?.cancel();
 
     super.dispose();
   }
@@ -51,6 +51,7 @@ class _MainScreenState extends State<MainScreen> {
         return WillPopScope(
           onWillPop: () => onWillPop(searchProvider, restaurantProvider),
           child: Scaffold(
+            resizeToAvoidBottomInset: false,
             body: NestedScrollView(
               floatHeaderSlivers: true,
               headerSliverBuilder: (BuildContext context, bool scrolled) {
@@ -67,7 +68,6 @@ class _MainScreenState extends State<MainScreen> {
                     ),
                     bottom: _buildBottom(restaurantProvider, searchProvider),
                     titleSpacing: 0,
-                    toolbarHeight: 64,
                     leadingWidth: 68,
                   )
                 ];
@@ -224,7 +224,7 @@ class _MainScreenState extends State<MainScreen> {
   /// Method untuk memberikan jeda saat melakukan searching selama 0.5 detik
   /// untuk mencegah pemanggilan method GET secara terus-menerus.
   void debounce(VoidCallback callback) {
-    if (_debouncer != null) _debouncer!.cancel();
+    _debouncer?.cancel();
 
     _debouncer = Timer(const Duration(milliseconds: 500), callback);
   }

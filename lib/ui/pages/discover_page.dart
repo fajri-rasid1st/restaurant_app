@@ -33,6 +33,7 @@ class DiscoverPage extends StatelessWidget {
     );
   }
 
+  /// Widget untuk membuat tampilan utama
   Widget _buildMainPage(
     RestaurantProvider restaurantProvider,
     RestaurantSearchProvider searchProvider,
@@ -64,26 +65,26 @@ class DiscoverPage extends StatelessWidget {
     }
   }
 
+  /// Widget untuk membuat list restaurant jika data berhasil didapatkan
+  ListView _buildRestaurantList(List<Restaurant> restaurants) {
+    return ListView.separated(
+      padding: const EdgeInsets.all(0),
+      itemBuilder: (context, index) {
+        return RestaurantCard(restaurant: restaurants[index]);
+      },
+      separatorBuilder: (context, index) {
+        return const Divider(height: 1, thickness: 1);
+      },
+      itemCount: restaurants.length,
+    );
+  }
+
   /// Widget untuk membuat page kosong jika data tidak ditemukan
   CustomInformation _buildRestaurantEmpty() {
     return const CustomInformation(
       imgPath: 'assets/svg/404_Error_cuate.svg',
       title: 'Ups, Restoran Tidak Ditemukan!',
       subtitle: 'Coba masukkan kata kunci lainnya.',
-    );
-  }
-
-  /// Widget untuk membuat list restaurant jika data berhasil didapatkan
-  ListView _buildRestaurantList(List<Restaurant> restaurants) {
-    return ListView.separated(
-      padding: const EdgeInsets.fromLTRB(16, 16, 16, 48),
-      itemBuilder: (context, index) {
-        return RestaurantCard(restaurant: restaurants[index]);
-      },
-      separatorBuilder: (context, index) {
-        return const SizedBox(height: 12);
-      },
-      itemCount: restaurants.length,
     );
   }
 }

@@ -1,13 +1,17 @@
+import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
-import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/const.dart';
 import 'package:restaurant_app/common/result_state.dart';
+import 'package:restaurant_app/common/utilities.dart';
 import 'package:restaurant_app/data/models/category.dart';
 import 'package:restaurant_app/data/models/customer_review.dart';
+import 'package:restaurant_app/data/models/favorite.dart';
 import 'package:restaurant_app/data/models/menu_item.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
 import 'package:restaurant_app/provider/customer_review_provider.dart';
+import 'package:restaurant_app/provider/database_provider.dart';
+import 'package:restaurant_app/provider/favorite_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/ui/screens/error_screen.dart';
 import 'package:restaurant_app/ui/screens/loading_screen.dart';
@@ -23,15 +27,35 @@ class DetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<RestaurantDetailProvider, CustomerReviewProvider>(
-      builder: (context, provider, _, child) {
-        if (provider.state == ResultState.loading) {
+    return Consumer4<RestaurantDetailProvider, CustomerReviewProvider,
+        DatabaseProvider, FavoriteProvider>(
+      builder: (
+        context,
+        detailProvider,
+        reviewProvider,
+        databaseProvider,
+        favoriteProvider,
+        child,
+      ) {
+        if (detailProvider.state == ResultState.loading) {
           return const LoadingScreen();
-        } else if (provider.state == ResultState.error) {
+        } else if (detailProvider.state == ResultState.error) {
           return ErrorScreen(restaurantId: restaurantId);
         }
 
-        return _buildDetailScreen(context, provider.detail);
+        setFavoriteIconButton(
+          context,
+          restaurantId,
+          databaseProvider,
+          favoriteProvider,
+          detailProvider,
+        );
+
+        return _buildDetailScreen(
+          context,
+          detailProvider.detail,
+          favoriteProvider,
+        );
       },
     );
   }
@@ -40,6 +64,7 @@ class DetailScreen extends StatelessWidget {
   Scaffold _buildDetailScreen(
     BuildContext context,
     RestaurantDetail restaurant,
+    FavoriteProvider favoriteProvider,
   ) {
     return Scaffold(
       backgroundColor: Colors.black,
@@ -56,6 +81,7 @@ class DetailScreen extends StatelessWidget {
               ),
               title: Text(restaurant.name),
               centerTitle: true,
+              actions: [favoriteProvider.favoriteButton],
               flexibleSpace: FlexibleSpaceBar(
                 background: Stack(
                   children: <Widget>[
@@ -301,6 +327,60 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
+  Future<void> setFavoriteIconButton(
+    BuildContext context,
+    String restaurantId,
+    DatabaseProvider databaseProvider,
+    FavoriteProvider favoriteProvider,
+    RestaurantDetailProvider detailProvider,
+  ) async {
+    final isExist = await databaseProvider.isFavoriteAlreadyExist(restaurantId);
+
+    if (isExist) {
+      favoriteProvider.favoriteIcon = Icon(
+        Icons.favorite,
+        color: Colors.red[400],
+      );
+
+      favoriteProvider.onPressed = () {
+        databaseProvider.deleteFavoriteByRestaurantId(restaurantId);
+
+        favoriteProvider.favoriteIcon = Icon(
+          Icons.favorite_outline,
+          color: backGroundColor,
+        );
+
+        Utilities.showSnackBarMessage(
+          context: context,
+          text: 'Berhasil dihapus dari favorite.',
+        );
+      };
+    } else {
+      favoriteProvider.favoriteIcon = Icon(
+        Icons.favorite_outline,
+        color: backGroundColor,
+      );
+
+      favoriteProvider.onPressed = () {
+        final favorite = Favorite(
+          restaurantId: detailProvider.detail.id,
+          name: detailProvider.detail.name,
+          pictureId: detailProvider.detail.name,
+          city: detailProvider.detail.city,
+          rating: detailProvider.detail.rating,
+          createdAt: DateTime.now(),
+        );
+
+        databaseProvider.createFavorite(favorite);
+
+        favoriteProvider.favoriteIcon = Icon(
+          Icons.favorite,
+          color: Colors.red[400],
+        );
+      };
+    }
+  }
+
   /// Untuk membuat widget chip kategori restaurant
   ListView _buildCategoryChips(List<Category> categories) {
     return ListView.separated(
@@ -314,9 +394,7 @@ class DetailScreen extends StatelessWidget {
           ),
         );
       }),
-      separatorBuilder: (context, index) {
-        return const SizedBox(width: 8);
-      },
+      separatorBuilder: (context, index) => const SizedBox(width: 8),
       itemCount: categories.length,
     );
   }
@@ -339,7 +417,7 @@ class DetailScreen extends StatelessWidget {
       itemBuilder: (context, index) {
         return MenuItemCard(food: foods?[index], drink: drinks?[index]);
       },
-      itemCount: foods != null ? foods.length : drinks!.length,
+      itemCount: foods?.length ?? drinks!.length,
     );
   }
 

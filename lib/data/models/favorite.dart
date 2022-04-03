@@ -11,7 +11,7 @@ class FavoriteFields {
 }
 
 class Favorite {
-  final int id;
+  final int? id;
   final String restaurantId;
   final String name;
   final String pictureId;
@@ -20,7 +20,7 @@ class Favorite {
   final DateTime createdAt;
 
   Favorite({
-    required this.id,
+    this.id,
     required this.restaurantId,
     required this.name,
     required this.pictureId,

@@ -7,7 +7,7 @@ import 'package:restaurant_app/provider/bottom_nav_provider.dart';
 import 'package:restaurant_app/provider/category_provider.dart';
 import 'package:restaurant_app/provider/customer_review_provider.dart';
 import 'package:restaurant_app/provider/database_provider.dart';
-import 'package:restaurant_app/provider/page_reload_provider.dart';
+import 'package:restaurant_app/provider/favorite_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/provider/restaurant_search_provider.dart';
@@ -53,17 +53,17 @@ void main() {
             return CustomerReviewProvider(restaurantApi: RestaurantApi());
           },
         ),
-        ChangeNotifierProvider<PageReloadProvider>(
-          create: (_) => PageReloadProvider(),
-        ),
         ChangeNotifierProvider<CategoryProvider>(
           create: (_) => CategoryProvider(),
+        ),
+        ChangeNotifierProvider<BottomNavProvider>(
+          create: (_) => BottomNavProvider(),
         ),
         ChangeNotifierProvider<DatabaseProvider>(
           create: (_) => DatabaseProvider(),
         ),
-        ChangeNotifierProvider<BottomNavProvider>(
-          create: (_) => BottomNavProvider(),
+        ChangeNotifierProvider<FavoriteProvider>(
+          create: (_) => FavoriteProvider(),
         ),
       ],
       child: const MyApp(),
