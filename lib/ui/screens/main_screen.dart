@@ -3,15 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/const.dart';
 import 'package:restaurant_app/common/result_state.dart';
-import 'package:restaurant_app/provider/bottom_nav_provider.dart';
+import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/provider/category_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/provider/restaurant_search_provider.dart';
-import 'package:restaurant_app/ui/pages/discover_page.dart';
-import 'package:restaurant_app/ui/pages/settings_page.dart';
-import 'package:restaurant_app/ui/screens/favorite_screen.dart';
-import 'package:restaurant_app/ui/themes/color_scheme.dart';
+import 'package:restaurant_app/ui/screens/error_screen.dart';
+import 'package:restaurant_app/ui/screens/loading_screen.dart';
 import 'package:restaurant_app/ui/widgets/category_list.dart';
+import 'package:restaurant_app/ui/widgets/custom_information.dart';
+import 'package:restaurant_app/ui/widgets/restaurant_card.dart';
 import 'package:restaurant_app/ui/widgets/search_field.dart';
 
 class MainScreen extends StatefulWidget {
@@ -24,11 +24,6 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   Timer? _debouncer;
 
-  final List<Widget> _pages = <Widget>[
-    const DiscoverPage(),
-    const SettingsPage(),
-  ];
-
   @override
   void dispose() {
     _debouncer?.cancel();
@@ -38,14 +33,13 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer4<RestaurantProvider, RestaurantSearchProvider,
-        CategoryProvider, BottomNavProvider>(
+    return Consumer3<RestaurantProvider, RestaurantSearchProvider,
+        CategoryProvider>(
       builder: (
         context,
         restaurantProvider,
         searchProvider,
         categoryProvider,
-        bottomNavProvider,
         child,
       ) {
         return WillPopScope(
@@ -59,7 +53,7 @@ class _MainScreenState extends State<MainScreen> {
                   SliverAppBar(
                     floating: true,
                     pinned: true,
-                    title: _buildTitle(searchProvider, bottomNavProvider),
+                    title: _buildTitle(searchProvider),
                     leading: _buildLeading(searchProvider, restaurantProvider),
                     actions: _buildActions(
                       searchProvider,
@@ -72,22 +66,19 @@ class _MainScreenState extends State<MainScreen> {
                   )
                 ];
               },
-              body: _buildBody(bottomNavProvider),
+              body: _buildBody(
+                restaurantProvider,
+                searchProvider,
+                categoryProvider,
+              ),
             ),
-            bottomNavigationBar: _buildBottomNav(bottomNavProvider),
-            floatingActionButton: _buildFab(context),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
           ),
         );
       },
     );
   }
 
-  Widget _buildTitle(
-    RestaurantSearchProvider searchProvider,
-    BottomNavProvider bottomNavProvider,
-  ) {
+  Widget _buildTitle(RestaurantSearchProvider searchProvider) {
     return searchProvider.isSearching
         ? SearchField(
             hintText: 'Search Restaurants, Categories, or Menu',
@@ -95,7 +86,7 @@ class _MainScreenState extends State<MainScreen> {
               debounce(() => searchProvider.searchRestaurants(query));
             },
           )
-        : Text(bottomNavProvider.title);
+        : const Text('Restaurant App');
   }
 
   Widget _buildLeading(
@@ -159,65 +150,58 @@ class _MainScreenState extends State<MainScreen> {
             : const CategoryList(categories: Const.categories);
   }
 
-  Widget _buildBody(BottomNavProvider bottomNavProvider) {
-    return _pages[bottomNavProvider.index];
+  /// Widget untuk membuat tampilan utama
+  Widget _buildBody(
+    RestaurantProvider restaurantProvider,
+    RestaurantSearchProvider searchProvider,
+    CategoryProvider categoryProvider,
+  ) {
+    switch (restaurantProvider.state) {
+      case ResultState.loading:
+        return const LoadingScreen();
+
+      case ResultState.error:
+        return const ErrorScreen();
+      default:
+        if (searchProvider.state == ResultState.loading) {
+          return const LoadingScreen();
+        } else if (searchProvider.state == ResultState.error) {
+          return const ErrorScreen();
+        }
+
+        var restaurants = restaurantProvider.restaurants;
+
+        if (searchProvider.isSearching && searchProvider.query.isNotEmpty ||
+            categoryProvider.category.isNotEmpty) {
+          restaurants = searchProvider.restaurants;
+        }
+
+        return restaurants.isEmpty
+            ? _buildRestaurantEmpty()
+            : _buildRestaurantList(restaurants);
+    }
   }
 
-  BottomNavigationBar _buildBottomNav(BottomNavProvider bottomNavProvider) {
-    return BottomNavigationBar(
-      currentIndex: bottomNavProvider.index,
-      selectedFontSize: 12,
-      selectedItemColor: primaryColor,
-      selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-      unselectedFontSize: 12,
-      unselectedItemColor: secondaryTextColor,
-      type: BottomNavigationBarType.fixed,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.explore_outlined),
-          activeIcon: Icon(Icons.explore),
-          label: 'Discover',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.settings_outlined),
-          activeIcon: Icon(Icons.settings),
-          label: 'Settings',
-        ),
-      ],
-      onTap: (index) {
-        setState(() {
-          bottomNavProvider.index = index;
-
-          switch (bottomNavProvider.index) {
-            case 0:
-              bottomNavProvider.title = 'Restaurant App';
-
-              break;
-            case 1:
-              bottomNavProvider.title = 'Settings';
-
-              break;
-          }
-        });
+  /// Widget untuk membuat list restaurant jika data berhasil didapatkan
+  ListView _buildRestaurantList(List<Restaurant> restaurants) {
+    return ListView.separated(
+      padding: const EdgeInsets.all(0),
+      itemBuilder: (context, index) {
+        return RestaurantCard(restaurant: restaurants[index]);
       },
+      separatorBuilder: (context, index) {
+        return const Divider(height: 1, thickness: 1);
+      },
+      itemCount: restaurants.length,
     );
   }
 
-  Visibility _buildFab(BuildContext context) {
-    final isVisible = MediaQuery.of(context).viewInsets.bottom == 0;
-
-    return Visibility(
-      visible: isVisible,
-      child: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const FavoriteScreen()),
-          );
-        },
-        child: const Icon(Icons.favorite),
-        tooltip: 'Favorite',
-      ),
+  /// Widget untuk membuat page kosong jika data tidak ditemukan
+  CustomInformation _buildRestaurantEmpty() {
+    return const CustomInformation(
+      imgPath: 'assets/svg/404_Error_cuate.svg',
+      title: 'Ups, Restoran Tidak Ditemukan!',
+      subtitle: 'Coba masukkan kata kunci lainnya.',
     );
   }
 

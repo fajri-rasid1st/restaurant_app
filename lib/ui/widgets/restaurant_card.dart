@@ -1,30 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/const.dart';
-import 'package:restaurant_app/data/models/favorite.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/ui/screens/detail_screen.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 
 class RestaurantCard extends StatelessWidget {
-  final Restaurant? restaurant;
-  final Favorite? favorite;
+  final Restaurant restaurant;
 
-  const RestaurantCard({
-    Key? key,
-    this.restaurant,
-    this.favorite,
-  }) : super(key: key);
+  const RestaurantCard({Key? key, required this.restaurant}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final id = restaurant?.id ?? favorite!.restaurantId;
-    final pictureId = restaurant?.pictureId ?? favorite!.pictureId;
-    final name = restaurant?.name ?? favorite!.name;
-    final city = restaurant?.city ?? favorite!.city;
-    final rating = restaurant?.rating ?? favorite!.rating;
-
     return Stack(
       children: <Widget>[
         Padding(
@@ -37,9 +25,9 @@ class RestaurantCard extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Hero(
-                    tag: id,
+                    tag: restaurant.id,
                     child: CustomNetworkImage(
-                      imgUrl: '${Const.imgUrl}/$pictureId',
+                      imgUrl: '${Const.imgUrl}/${restaurant.pictureId}',
                       width: double.infinity,
                       height: 120,
                       placeHolderSize: 40,
@@ -55,7 +43,7 @@ class RestaurantCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       Text(
-                        name,
+                        restaurant.name,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context).textTheme.headline6,
@@ -70,7 +58,7 @@ class RestaurantCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            city,
+                            restaurant.city,
                             style: Theme.of(context).textTheme.bodyText1,
                           )
                         ],
@@ -85,7 +73,7 @@ class RestaurantCard extends StatelessWidget {
                           ),
                           const SizedBox(width: 4),
                           Text(
-                            '$rating',
+                            '${restaurant.rating}',
                             style: Theme.of(context).textTheme.bodyText1,
                           )
                         ],
@@ -104,13 +92,13 @@ class RestaurantCard extends StatelessWidget {
               onTap: () {
                 context
                     .read<RestaurantDetailProvider>()
-                    .getRestaurantDetail(id);
+                    .getRestaurantDetail(restaurant.id);
 
                 Navigator.push(
                   context,
                   MaterialPageRoute(
                     builder: ((context) {
-                      return DetailScreen(restaurantId: id);
+                      return DetailScreen(restaurantId: restaurant.id);
                     }),
                   ),
                 );

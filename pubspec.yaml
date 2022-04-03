@@ -60,21 +60,6 @@ dependencies:
     # a state management approach
     provider: ^6.0.2
 
-    # to create local database
-    sqflite: ^2.0.2
-
-    # to create local persistent data
-    shared_preferences: ^2.0.13
-
-    # to create notification
-    flutter_local_notifications: ^9.4.0
-
-    # for asynchronous programming (used for get notification when app closed)
-    rxdart: ^0.27.3
-
-    # for finding commonly used locations on the files ystem
-    path_provider: ^2.0.9
-
 dev_dependencies:
     flutter_test:
         sdk: flutter
@@ -101,7 +86,6 @@ flutter:
         - assets/img/restaurant_icon.png
         - assets/img/user_pict.png
         - assets/svg/404_Error_cuate.svg
-        - assets/svg/No_data_cuate.svg
         - assets/svg/404_error_lost_in_space_cuate.svg
 
     # An image asset can refer to one or more resolution-specific "variants", see
