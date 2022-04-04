@@ -31,9 +31,9 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   void dispose() {
-    _debouncer?.cancel();
-
     super.dispose();
+    
+    _debouncer?.cancel();
   }
 
   @override
@@ -49,7 +49,7 @@ class _MainScreenState extends State<MainScreen> {
         child,
       ) {
         return WillPopScope(
-          onWillPop: () => onWillPop(searchProvider, restaurantProvider),
+          onWillPop: () => onWillPop(restaurantProvider, searchProvider),
           child: Scaffold(
             resizeToAvoidBottomInset: false,
             body: NestedScrollView(
@@ -60,10 +60,10 @@ class _MainScreenState extends State<MainScreen> {
                     floating: true,
                     pinned: true,
                     title: _buildTitle(searchProvider, bottomNavProvider),
-                    leading: _buildLeading(searchProvider, restaurantProvider),
+                    leading: _buildLeading(restaurantProvider, searchProvider),
                     actions: _buildActions(
-                      searchProvider,
                       restaurantProvider,
+                      searchProvider,
                       categoryProvider,
                     ),
                     bottom: _buildBottom(restaurantProvider, searchProvider),
@@ -99,8 +99,8 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   Widget _buildLeading(
-    RestaurantSearchProvider searchProvider,
     RestaurantProvider restaurantProvider,
+    RestaurantSearchProvider searchProvider,
   ) {
     return searchProvider.isSearching
         ? IconButton(
@@ -124,8 +124,8 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   List<Widget> _buildActions(
-    RestaurantSearchProvider searchProvider,
     RestaurantProvider restaurantProvider,
+    RestaurantSearchProvider searchProvider,
     CategoryProvider categoryProvider,
   ) {
     return <Widget>[
@@ -235,8 +235,8 @@ class _MainScreenState extends State<MainScreen> {
   //   pada perangkat, melainkan akan melakukan reset searching terlebih dahulu.
   // * jika tidak, aplikasi akan keluar jika menekan tombol back.
   Future<bool> onWillPop(
-    RestaurantSearchProvider searchProvider,
     RestaurantProvider restaurantProvider,
+    RestaurantSearchProvider searchProvider,
   ) {
     if (searchProvider.isSearching) {
       searchProvider.restaurants = restaurantProvider.restaurants;

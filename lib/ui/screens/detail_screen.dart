@@ -41,21 +41,25 @@ class DetailScreen extends StatelessWidget {
           return const LoadingScreen();
         } else if (detailProvider.state == ResultState.error) {
           return ErrorScreen(restaurantId: restaurantId);
+        } else {
+          if (favoriteProvider.state == ResultState.loading) {
+            setFavoriteIconButton(
+              restaurantId,
+              databaseProvider,
+              favoriteProvider,
+            );
+
+            return const LoadingScreen();
+          } else {
+            return _buildDetailScreen(
+              context,
+              detailProvider.detail,
+              detailProvider,
+              databaseProvider,
+              favoriteProvider,
+            );
+          }
         }
-
-        setFavoriteIconButton(
-          context,
-          restaurantId,
-          databaseProvider,
-          favoriteProvider,
-          detailProvider,
-        );
-
-        return _buildDetailScreen(
-          context,
-          detailProvider.detail,
-          favoriteProvider,
-        );
       },
     );
   }
@@ -64,6 +68,8 @@ class DetailScreen extends StatelessWidget {
   Scaffold _buildDetailScreen(
     BuildContext context,
     RestaurantDetail restaurant,
+    RestaurantDetailProvider detailProvider,
+    DatabaseProvider databaseProvider,
     FavoriteProvider favoriteProvider,
   ) {
     return Scaffold(
@@ -81,7 +87,29 @@ class DetailScreen extends StatelessWidget {
               ),
               title: Text(restaurant.name),
               centerTitle: true,
-              actions: [favoriteProvider.favoriteButton],
+              actions: <Widget>[
+                IconButton(
+                  onPressed: favoriteProvider.isFavorite
+                      ? () {
+                          removeFromFavorite(
+                            context,
+                            detailProvider,
+                            databaseProvider,
+                            favoriteProvider,
+                          );
+                        }
+                      : () {
+                          addToFavorite(
+                            context,
+                            detailProvider,
+                            databaseProvider,
+                            favoriteProvider,
+                          );
+                        },
+                  icon: favoriteProvider.icon,
+                  tooltip: 'Favorite',
+                )
+              ],
               flexibleSpace: FlexibleSpaceBar(
                 background: Stack(
                   children: <Widget>[
@@ -257,9 +285,9 @@ class DetailScreen extends StatelessWidget {
                   SizedBox(
                     height: 140,
                     child: _buildMenuItems(
-                      foods: restaurant.menus.foods,
                       crossAxisCount: 1,
                       childAspectRatio: 2 / 3,
+                      foods: restaurant.menus.foods,
                     ),
                   ),
                   Padding(
@@ -275,9 +303,9 @@ class DetailScreen extends StatelessWidget {
                   SizedBox(
                     height: 140,
                     child: _buildMenuItems(
-                      drinks: restaurant.menus.drinks,
                       crossAxisCount: 1,
                       childAspectRatio: 5 / 4,
+                      drinks: restaurant.menus.drinks,
                     ),
                   ),
                   const SizedBox(height: 16),
@@ -328,57 +356,81 @@ class DetailScreen extends StatelessWidget {
   }
 
   Future<void> setFavoriteIconButton(
-    BuildContext context,
     String restaurantId,
     DatabaseProvider databaseProvider,
     FavoriteProvider favoriteProvider,
-    RestaurantDetailProvider detailProvider,
   ) async {
     final isExist = await databaseProvider.isFavoriteAlreadyExist(restaurantId);
 
     if (isExist) {
-      favoriteProvider.favoriteIcon = Icon(
+      favoriteProvider.icon = Icon(
         Icons.favorite,
         color: Colors.red[400],
       );
 
-      favoriteProvider.onPressed = () {
-        databaseProvider.deleteFavoriteByRestaurantId(restaurantId);
-
-        favoriteProvider.favoriteIcon = Icon(
-          Icons.favorite_outline,
-          color: backGroundColor,
-        );
-
-        Utilities.showSnackBarMessage(
-          context: context,
-          text: 'Berhasil dihapus dari favorite.',
-        );
-      };
+      favoriteProvider.isFavorite = true;
     } else {
-      favoriteProvider.favoriteIcon = Icon(
+      favoriteProvider.icon = Icon(
         Icons.favorite_outline,
         color: backGroundColor,
       );
 
-      favoriteProvider.onPressed = () {
-        final favorite = Favorite(
-          restaurantId: detailProvider.detail.id,
-          name: detailProvider.detail.name,
-          pictureId: detailProvider.detail.name,
-          city: detailProvider.detail.city,
-          rating: detailProvider.detail.rating,
-          createdAt: DateTime.now(),
-        );
-
-        databaseProvider.createFavorite(favorite);
-
-        favoriteProvider.favoriteIcon = Icon(
-          Icons.favorite,
-          color: Colors.red[400],
-        );
-      };
+      favoriteProvider.isFavorite = false;
     }
+
+    favoriteProvider.state = ResultState.hasData;
+  }
+
+  Future<void> addToFavorite(
+    BuildContext context,
+    RestaurantDetailProvider detailProvider,
+    DatabaseProvider databaseProvider,
+    FavoriteProvider favoriteProvider,
+  ) async {
+    final favorite = Favorite(
+      restaurantId: detailProvider.detail.id,
+      name: detailProvider.detail.name,
+      pictureId: detailProvider.detail.pictureId,
+      city: detailProvider.detail.city,
+      rating: detailProvider.detail.rating,
+      createdAt: DateTime.now(),
+    );
+
+    await databaseProvider.createFavorite(favorite);
+
+    favoriteProvider.icon = Icon(
+      Icons.favorite,
+      color: Colors.red[400],
+    );
+
+    favoriteProvider.isFavorite = true;
+
+    Utilities.showSnackBarMessage(
+      context: context,
+      text: 'Berhasil ditambahkan ke favorite.',
+    );
+  }
+
+  Future<void> removeFromFavorite(
+    BuildContext context,
+    RestaurantDetailProvider detailProvider,
+    DatabaseProvider databaseProvider,
+    FavoriteProvider favoriteProvider,
+  ) async {
+    await databaseProvider
+        .deleteFavoriteByRestaurantId(detailProvider.detail.id);
+
+    favoriteProvider.icon = Icon(
+      Icons.favorite_outline,
+      color: backGroundColor,
+    );
+
+    favoriteProvider.isFavorite = false;
+
+    Utilities.showSnackBarMessage(
+      context: context,
+      text: 'Berhasil dihapus dari favorite.',
+    );
   }
 
   /// Untuk membuat widget chip kategori restaurant
@@ -401,10 +453,10 @@ class DetailScreen extends StatelessWidget {
 
   /// Untuk membuat widget menu item dengan kustomisasi jumlah grid dan rasio
   GridView _buildMenuItems({
-    List<MenuItem>? foods,
-    List<MenuItem>? drinks,
     required int crossAxisCount,
     required double childAspectRatio,
+    List<MenuItem>? foods,
+    List<MenuItem>? drinks,
   }) {
     return GridView.builder(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),

@@ -3,16 +3,15 @@ import 'package:restaurant_app/data/db/favorite_database.dart';
 import 'package:restaurant_app/data/models/favorite.dart';
 
 class DatabaseProvider extends ChangeNotifier {
-  late FavoriteDatabase favoriteDatabase;
+  final FavoriteDatabase favoriteDatabase;
+
+  DatabaseProvider({required this.favoriteDatabase}) {
+    _readFavorites();
+  }
 
   List<Favorite> _favorites = <Favorite>[];
 
   List<Favorite> get favorites => _favorites;
-
-  DatabaseProvider() {
-    favoriteDatabase = FavoriteDatabase();
-    _readFavorites();
-  }
 
   Future<void> _readFavorites() async {
     _favorites = await favoriteDatabase.readFavorites();

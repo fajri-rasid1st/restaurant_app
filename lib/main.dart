@@ -3,11 +3,13 @@ import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
+import 'package:restaurant_app/data/db/favorite_database.dart';
 import 'package:restaurant_app/provider/bottom_nav_provider.dart';
 import 'package:restaurant_app/provider/category_provider.dart';
 import 'package:restaurant_app/provider/customer_review_provider.dart';
 import 'package:restaurant_app/provider/database_provider.dart';
 import 'package:restaurant_app/provider/favorite_provider.dart';
+import 'package:restaurant_app/provider/page_reload_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/provider/restaurant_search_provider.dart';
@@ -53,17 +55,22 @@ void main() {
             return CustomerReviewProvider(restaurantApi: RestaurantApi());
           },
         ),
+        ChangeNotifierProvider<DatabaseProvider>(
+          create: (_) {
+            return DatabaseProvider(favoriteDatabase: FavoriteDatabase());
+          },
+        ),
         ChangeNotifierProvider<CategoryProvider>(
           create: (_) => CategoryProvider(),
         ),
         ChangeNotifierProvider<BottomNavProvider>(
           create: (_) => BottomNavProvider(),
         ),
-        ChangeNotifierProvider<DatabaseProvider>(
-          create: (_) => DatabaseProvider(),
-        ),
         ChangeNotifierProvider<FavoriteProvider>(
           create: (_) => FavoriteProvider(),
+        ),
+        ChangeNotifierProvider<PageReloadProvider>(
+          create: (_) => PageReloadProvider(),
         ),
       ],
       child: const MyApp(),

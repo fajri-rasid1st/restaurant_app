@@ -1,27 +1,27 @@
 import 'package:flutter/material.dart';
+import 'package:restaurant_app/common/result_state.dart';
 
 class FavoriteProvider extends ChangeNotifier {
-  Icon _favoriteIcon = const Icon(Icons.favorite_outline);
-  VoidCallback _onPressed = () {};
+  ResultState _state = ResultState.loading;
+  late Icon _icon;
+  late bool _isFavorite;
 
-  Icon get favoriteIcon => _favoriteIcon;
-  VoidCallback get onPressed => _onPressed;
+  ResultState get state => _state;
+  Icon get icon => _icon;
+  bool get isFavorite => _isFavorite;
 
-  IconButton get favoriteButton {
-    return IconButton(
-      onPressed: onPressed,
-      icon: favoriteIcon,
-      tooltip: 'Favorite',
-    );
-  }
-
-  set favoriteIcon(Icon value) {
-    favoriteIcon = value;
+  set state(ResultState value) {
+    _state = value;
     notifyListeners();
   }
 
-  set onPressed(VoidCallback value) {
-    _onPressed = value;
+  set icon(Icon value) {
+    _icon = value;
+    notifyListeners();
+  }
+
+  set isFavorite(bool value) {
+    _isFavorite = value;
     notifyListeners();
   }
 }
