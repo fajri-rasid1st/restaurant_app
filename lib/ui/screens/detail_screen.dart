@@ -41,25 +41,15 @@ class DetailScreen extends StatelessWidget {
           return const LoadingScreen();
         } else if (detailProvider.state == ResultState.error) {
           return ErrorScreen(restaurantId: restaurantId);
-        } else {
-          if (favoriteProvider.state == ResultState.loading) {
-            setFavoriteIconButton(
-              restaurantId,
-              databaseProvider,
-              favoriteProvider,
-            );
-
-            return const LoadingScreen();
-          } else {
-            return _buildDetailScreen(
-              context,
-              detailProvider.detail,
-              detailProvider,
-              databaseProvider,
-              favoriteProvider,
-            );
-          }
         }
+
+        return _buildDetailScreen(
+          context,
+          detailProvider.detail,
+          detailProvider,
+          databaseProvider,
+          favoriteProvider,
+        );
       },
     );
   }
@@ -178,61 +168,86 @@ class DetailScreen extends StatelessWidget {
                     height: 40,
                     child: _buildCategoryChips(restaurant.categories),
                   ),
-                  const SizedBox(height: 16),
-                  SizedBox(
-                    height: 100,
-                    child: Row(
-                      children: <Widget>[
-                        Expanded(
-                          flex: 1,
-                          child: Column(
-                            children: <Widget>[
-                              Icon(
-                                Icons.place_rounded,
-                                size: 48,
-                                color: Colors.red[400],
-                              ),
-                              const Spacer(),
-                              Text(
-                                restaurant.city,
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.headline6,
-                              ),
-                              Text(
-                                restaurant.address,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.caption,
-                              ),
-                            ],
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: SizedBox(
+                      height: 112,
+                      child: Row(
+                        children: <Widget>[
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Flexible(
+                                  child: Icon(
+                                    Icons.place_rounded,
+                                    size: 48,
+                                    color: Colors.red[400],
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Column(
+                                    children: <Flexible>[
+                                      Flexible(
+                                        child: Text(
+                                          restaurant.city,
+                                          maxLines: 1,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .headline6,
+                                        ),
+                                      ),
+                                      Flexible(
+                                        child: Text(
+                                          restaurant.address,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                          textAlign: TextAlign.center,
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .caption,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 8),
-                          child: VerticalDivider(width: 1, thickness: 1),
-                        ),
-                        Expanded(
-                          flex: 1,
-                          child: Column(
-                            children: <Widget>[
-                              Icon(
-                                Icons.star_rate_rounded,
-                                size: 58,
-                                color: Colors.orange[400],
-                              ),
-                              const Spacer(),
-                              Text(
-                                '${restaurant.rating}/5.0',
-                                style: Theme.of(context).textTheme.headline4,
-                              )
-                            ],
+                          const Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 8),
+                            child: VerticalDivider(width: 1, thickness: 1),
                           ),
-                        ),
-                      ],
+                          Expanded(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: <Widget>[
+                                Flexible(
+                                  child: Icon(
+                                    Icons.star_rate_rounded,
+                                    size: 58,
+                                    color: Colors.orange[400],
+                                  ),
+                                ),
+                                Flexible(
+                                  child: Text(
+                                    '${restaurant.rating}/5.0',
+                                    maxLines: 1,
+                                    overflow: TextOverflow.ellipsis,
+                                    textAlign: TextAlign.center,
+                                    style:
+                                        Theme.of(context).textTheme.headline4,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
-                  const SizedBox(height: 24),
                   const Divider(height: 1, thickness: 1),
                   Padding(
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
@@ -353,32 +368,6 @@ class DetailScreen extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<void> setFavoriteIconButton(
-    String restaurantId,
-    DatabaseProvider databaseProvider,
-    FavoriteProvider favoriteProvider,
-  ) async {
-    final isExist = await databaseProvider.isFavoriteAlreadyExist(restaurantId);
-
-    if (isExist) {
-      favoriteProvider.icon = Icon(
-        Icons.favorite,
-        color: Colors.red[400],
-      );
-
-      favoriteProvider.isFavorite = true;
-    } else {
-      favoriteProvider.icon = Icon(
-        Icons.favorite_outline,
-        color: backGroundColor,
-      );
-
-      favoriteProvider.isFavorite = false;
-    }
-
-    favoriteProvider.state = ResultState.hasData;
   }
 
   Future<void> addToFavorite(

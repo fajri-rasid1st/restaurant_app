@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/const.dart';
 import 'package:restaurant_app/data/models/favorite.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/provider/favorite_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/ui/screens/detail_screen.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
@@ -33,7 +34,6 @@ class RestaurantCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
               Expanded(
-                flex: 2,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Hero(
@@ -41,14 +41,14 @@ class RestaurantCard extends StatelessWidget {
                     child: CustomNetworkImage(
                       imgUrl: '${Const.imgUrl}/$pictureId',
                       width: double.infinity,
-                      height: 120,
+                      height: 100,
                       placeHolderSize: 40,
                     ),
                   ),
                 ),
               ),
               Expanded(
-                flex: 3,
+                flex: 2,
                 child: Padding(
                   padding: const EdgeInsets.all(12),
                   child: Column(
@@ -58,9 +58,12 @@ class RestaurantCard extends StatelessWidget {
                         name,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context)
+                            .textTheme
+                            .headline6
+                            ?.copyWith(fontSize: 18),
                       ),
-                      const SizedBox(height: 16),
+                      const SizedBox(height: 12),
                       Row(
                         children: <Widget>[
                           Icon(
@@ -71,11 +74,11 @@ class RestaurantCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             city,
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyText2,
                           )
                         ],
                       ),
-                      const SizedBox(height: 4),
+                      const SizedBox(height: 2),
                       Row(
                         children: <Widget>[
                           Icon(
@@ -86,7 +89,7 @@ class RestaurantCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             '$rating',
-                            style: Theme.of(context).textTheme.bodyText1,
+                            style: Theme.of(context).textTheme.bodyText2,
                           )
                         ],
                       ),
@@ -102,6 +105,8 @@ class RestaurantCard extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               onTap: () {
+                context.read<FavoriteProvider>().setFavoriteIconButton(id);
+
                 context
                     .read<RestaurantDetailProvider>()
                     .getRestaurantDetail(id);

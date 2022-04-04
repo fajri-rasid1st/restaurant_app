@@ -113,11 +113,4 @@ class FavoriteDatabase {
 
     return count;
   }
-
-  /// Menutup database
-  Future<void> close() async {
-    final db = await database;
-
-    db.close();
-  }
 }

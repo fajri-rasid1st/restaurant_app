@@ -60,14 +60,16 @@ void main() {
             return DatabaseProvider(favoriteDatabase: FavoriteDatabase());
           },
         ),
+        ChangeNotifierProvider<FavoriteProvider>(
+          create: (_) {
+            return FavoriteProvider(favoriteDatabase: FavoriteDatabase());
+          },
+        ),
         ChangeNotifierProvider<CategoryProvider>(
           create: (_) => CategoryProvider(),
         ),
         ChangeNotifierProvider<BottomNavProvider>(
           create: (_) => BottomNavProvider(),
-        ),
-        ChangeNotifierProvider<FavoriteProvider>(
-          create: (_) => FavoriteProvider(),
         ),
         ChangeNotifierProvider<PageReloadProvider>(
           create: (_) => PageReloadProvider(),

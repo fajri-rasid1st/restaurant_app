@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/data/models/favorite.dart';
 import 'package:restaurant_app/provider/database_provider.dart';
+import 'package:restaurant_app/ui/screens/loading_screen.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
 import 'package:restaurant_app/ui/widgets/restaurant_card.dart';
 
@@ -16,7 +18,13 @@ class FavoriteScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: Consumer<DatabaseProvider>(
-        builder: (context, provider, child) => _buildBody(provider),
+        builder: (context, provider, child) {
+          if (provider.state == ResultState.loading) {
+            return const LoadingScreen();
+          }
+
+          return _buildBody(provider);
+        },
       ),
     );
   }

@@ -51,6 +51,9 @@ dependencies:
     # to get widgets that can render svg format
     flutter_svg: ^1.0.3
 
+    # to perfom slidable list item
+    flutter_slidable: ^1.2.0
+
     # to get widget that can collapse and expand text
     readmore: ^2.1.0
 

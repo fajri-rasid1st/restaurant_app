@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/common/utilities.dart';
+import 'package:restaurant_app/provider/favorite_provider.dart';
 import 'package:restaurant_app/provider/page_reload_provider.dart';
 import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
@@ -29,14 +30,15 @@ class _ErrorScreenState extends State<ErrorScreen> {
           imgPath: 'assets/svg/404_error_lost_in_space_cuate.svg',
           title: 'Anda Sedang Offline',
           subtitle: 'Periksa koneksi internet, lalu coba lagi.',
-          child: Consumer4<RestaurantProvider, RestaurantDetailProvider,
-              RestaurantSearchProvider, PageReloadProvider>(
+          child: Consumer5<RestaurantProvider, RestaurantDetailProvider,
+              RestaurantSearchProvider, PageReloadProvider, FavoriteProvider>(
             builder: (
               context,
               restaurantProvider,
               detailProvider,
               searchProvider,
               reloadProvider,
+              favoriteProvider,
               child,
             ) {
               return searchProvider.isSearching
@@ -50,6 +52,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
                                   restaurantProvider: restaurantProvider,
                                   detailProvider: detailProvider,
                                   searchProvider: searchProvider,
+                                  favoriteProvider: favoriteProvider,
                                   reloadProvider: reloadProvider,
                                   restaurantId: widget.restaurantId,
                                 );
@@ -58,6 +61,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
                                   restaurantProvider: restaurantProvider,
                                   detailProvider: detailProvider,
                                   searchProvider: searchProvider,
+                                  favoriteProvider: favoriteProvider,
                                   reloadProvider: reloadProvider,
                                 );
                               }
@@ -100,6 +104,7 @@ class _ErrorScreenState extends State<ErrorScreen> {
     required RestaurantProvider restaurantProvider,
     required RestaurantDetailProvider detailProvider,
     required RestaurantSearchProvider searchProvider,
+    required FavoriteProvider favoriteProvider,
     required PageReloadProvider reloadProvider,
     String? restaurantId,
   }) async {
@@ -108,9 +113,10 @@ class _ErrorScreenState extends State<ErrorScreen> {
     var message = '';
 
     Future.wait([
-      Future.delayed(const Duration(milliseconds: 2000)),
+      Future.delayed(const Duration(milliseconds: 1000)),
       if (restaurantId != null) ...[
         detailProvider.getRestaurantDetail(restaurantId),
+        favoriteProvider.setFavoriteIconButton(restaurantId),
       ] else ...[
         restaurantProvider.fetchAllRestaurants(),
         searchProvider.searchRestaurants(searchProvider.query),

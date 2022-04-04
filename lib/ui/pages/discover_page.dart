@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
@@ -70,7 +71,29 @@ class DiscoverPage extends StatelessWidget {
     return ListView.separated(
       padding: const EdgeInsets.all(0),
       itemBuilder: (context, index) {
-        return RestaurantCard(restaurant: restaurants[index]);
+        return Slidable(
+          startActionPane: const ActionPane(
+            motion: ScrollMotion(),
+            children: [
+              // A SlidableAction can have an icon and/or a label.
+              SlidableAction(
+                onPressed: null,
+                backgroundColor: Color(0xFFFE4A49),
+                foregroundColor: Colors.white,
+                icon: Icons.delete,
+                label: 'Delete',
+              ),
+              SlidableAction(
+                onPressed: null,
+                backgroundColor: Color(0xFF21B7CA),
+                foregroundColor: Colors.white,
+                icon: Icons.share,
+                label: 'Share',
+              ),
+            ],
+          ),
+          child: RestaurantCard(restaurant: restaurants[index]),
+        );
       },
       separatorBuilder: (context, index) {
         return const Divider(height: 1, thickness: 1);
