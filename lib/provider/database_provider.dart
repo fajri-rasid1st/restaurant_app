@@ -18,7 +18,6 @@ class DatabaseProvider extends ChangeNotifier {
 
   Future<void> _readFavorites() async {
     _state = ResultState.loading;
-    notifyListeners();
 
     _favorites = await favoriteDatabase.readFavorites();
 
@@ -39,5 +38,9 @@ class DatabaseProvider extends ChangeNotifier {
   Future<void> deleteFavoriteById(int id) async {
     await favoriteDatabase.deleteFavoriteById(id);
     _readFavorites();
+  }
+
+  Future<bool> isFavoriteAlreadyExist(String restaurantId) async {
+    return await favoriteDatabase.isFavoriteAlreadyExist(restaurantId);
   }
 }

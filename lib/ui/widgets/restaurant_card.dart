@@ -1,11 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/const.dart';
+import 'package:restaurant_app/common/utilities.dart';
 import 'package:restaurant_app/data/models/favorite.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
-import 'package:restaurant_app/provider/favorite_provider.dart';
-import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
-import 'package:restaurant_app/ui/screens/detail_screen.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 
 class RestaurantCard extends StatelessWidget {
@@ -20,11 +17,12 @@ class RestaurantCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final id = restaurant?.id ?? favorite!.restaurantId;
     final pictureId = restaurant?.pictureId ?? favorite!.pictureId;
     final name = restaurant?.name ?? favorite!.name;
     final city = restaurant?.city ?? favorite!.city;
     final rating = restaurant?.rating ?? favorite!.rating;
+    final heroTag =
+        restaurant != null ? '${restaurant?.id}_res' : '${favorite!.id}_fav';
 
     return Stack(
       children: <Widget>[
@@ -37,7 +35,7 @@ class RestaurantCard extends StatelessWidget {
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Hero(
-                    tag: id,
+                    tag: heroTag,
                     child: CustomNetworkImage(
                       imgUrl: '${Const.imgUrl}/$pictureId',
                       width: double.infinity,
@@ -105,17 +103,10 @@ class RestaurantCard extends StatelessWidget {
             color: Colors.transparent,
             child: InkWell(
               onTap: () {
-                context.read<FavoriteProvider>().setFavoriteIconButton(id);
-
-                context
-                    .read<RestaurantDetailProvider>()
-                    .getRestaurantDetail(id);
-
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: ((context) => DetailScreen(restaurantId: id)),
-                  ),
+                return Utilities.navigateToDetailScreen(
+                  context: context,
+                  restaurant: restaurant,
+                  favorite: favorite,
                 );
               },
             ),

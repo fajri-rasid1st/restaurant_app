@@ -21,8 +21,13 @@ import 'package:restaurant_app/ui/widgets/menu_item_card.dart';
 
 class DetailScreen extends StatelessWidget {
   final String restaurantId;
+  final String heroTag;
 
-  const DetailScreen({Key? key, required this.restaurantId}) : super(key: key);
+  const DetailScreen({
+    Key? key,
+    required this.restaurantId,
+    required this.heroTag,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -101,7 +106,7 @@ class DetailScreen extends StatelessWidget {
                 background: Stack(
                   children: <Widget>[
                     Hero(
-                      tag: restaurant.id,
+                      tag: heroTag,
                       child: CustomNetworkImage(
                         imgUrl: '${Const.imgUrl}/${restaurant.pictureId}',
                         width: double.infinity,

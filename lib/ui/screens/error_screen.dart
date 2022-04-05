@@ -138,7 +138,9 @@ class _ErrorScreenState extends State<ErrorScreen> {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: ((context) => DetailScreen(restaurantId: restaurantId)),
+            builder: ((context) {
+              return DetailScreen(restaurantId: restaurantId, heroTag: '');
+            }),
           ),
         );
       }

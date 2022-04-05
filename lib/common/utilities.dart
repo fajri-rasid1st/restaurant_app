@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:provider/provider.dart';
 import 'package:restaurant_app/data/models/favorite.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
 import 'package:restaurant_app/provider/database_provider.dart';
 import 'package:restaurant_app/provider/favorite_provider.dart';
+import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
+import 'package:restaurant_app/ui/screens/detail_screen.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 
 class Utilities {
@@ -28,6 +31,30 @@ class Utilities {
     ScaffoldMessenger.of(context)
       ..hideCurrentSnackBar()
       ..showSnackBar(snackBar);
+  }
+
+  /// Pindah ke halaman detail dengan terlebih dahulu menentukan icon favorite
+  /// apa yang akan muncul dan mengambil data detail restaurant.
+  static void navigateToDetailScreen({
+    required BuildContext context,
+    Restaurant? restaurant,
+    Favorite? favorite,
+  }) {
+    final id = restaurant?.id ?? favorite!.restaurantId;
+    final heroTag =
+        restaurant != null ? '${restaurant.id}_res' : '${favorite!.id}_fav';
+
+    context.read<FavoriteProvider>().setFavoriteIconButton(id);
+    context.read<RestaurantDetailProvider>().getRestaurantDetail(id);
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: ((context) {
+          return DetailScreen(restaurantId: id, heroTag: heroTag);
+        }),
+      ),
+    );
   }
 
   /// Menambah restaurant ke favorite database

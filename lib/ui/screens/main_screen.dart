@@ -106,10 +106,7 @@ class _MainScreenState extends State<MainScreen> {
   ) {
     return searchProvider.isSearching
         ? IconButton(
-            onPressed: () {
-              searchProvider.restaurants = restaurantProvider.restaurants;
-              searchProvider.isSearching = false;
-            },
+            onPressed: () => searchProvider.isSearching = false,
             icon: const Icon(
               Icons.arrow_back_rounded,
               size: 28,
@@ -136,9 +133,8 @@ class _MainScreenState extends State<MainScreen> {
           onPressed: restaurantProvider.state == ResultState.error
               ? null
               : () {
-                  categoryProvider.index = 0;
-                  searchProvider.restaurants = restaurantProvider.restaurants;
                   searchProvider.isSearching = true;
+                  categoryProvider.index = -1;
                 },
           icon: const Icon(
             Icons.search_rounded,
@@ -236,7 +232,6 @@ class _MainScreenState extends State<MainScreen> {
     RestaurantSearchProvider searchProvider,
   ) {
     if (searchProvider.isSearching) {
-      searchProvider.restaurants = restaurantProvider.restaurants;
       searchProvider.isSearching = false;
 
       return Future.value(false);
