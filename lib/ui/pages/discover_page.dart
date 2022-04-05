@@ -4,10 +4,15 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/provider/category_provider.dart';
+import 'package:restaurant_app/provider/database_provider.dart';
+import 'package:restaurant_app/provider/favorite_provider.dart';
+import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
 import 'package:restaurant_app/provider/restaurant_provider.dart';
 import 'package:restaurant_app/provider/restaurant_search_provider.dart';
+import 'package:restaurant_app/ui/screens/detail_screen.dart';
 import 'package:restaurant_app/ui/screens/error_screen.dart';
 import 'package:restaurant_app/ui/screens/loading_screen.dart';
+import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
 import 'package:restaurant_app/ui/widgets/restaurant_card.dart';
 
@@ -16,19 +21,23 @@ class DiscoverPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer3<RestaurantProvider, RestaurantSearchProvider,
-        CategoryProvider>(
+    return Consumer5<RestaurantProvider, RestaurantSearchProvider,
+        CategoryProvider, FavoriteProvider, DatabaseProvider>(
       builder: (
         context,
         restaurantProvider,
         searchProvider,
         categoryProvider,
+        favoriteProvider,
+        databaseProvider,
         child,
       ) {
         return _buildMainPage(
           restaurantProvider,
           searchProvider,
           categoryProvider,
+          favoriteProvider,
+          databaseProvider,
         );
       },
     );
@@ -39,6 +48,8 @@ class DiscoverPage extends StatelessWidget {
     RestaurantProvider restaurantProvider,
     RestaurantSearchProvider searchProvider,
     CategoryProvider categoryProvider,
+    FavoriteProvider favoriteProvider,
+    DatabaseProvider databaseProvider,
   ) {
     switch (restaurantProvider.state) {
       case ResultState.loading:
@@ -62,37 +73,61 @@ class DiscoverPage extends StatelessWidget {
 
         return restaurants.isEmpty
             ? _buildRestaurantEmpty()
-            : _buildRestaurantList(restaurants);
+            : _buildRestaurantList(
+                restaurants,
+                databaseProvider,
+                favoriteProvider,
+              );
     }
   }
 
   /// Widget untuk membuat list restaurant jika data berhasil didapatkan
-  ListView _buildRestaurantList(List<Restaurant> restaurants) {
+  ListView _buildRestaurantList(
+    List<Restaurant> restaurants,
+    DatabaseProvider databaseProvider,
+    FavoriteProvider favoriteProvider,
+  ) {
     return ListView.separated(
       padding: const EdgeInsets.all(0),
       itemBuilder: (context, index) {
+        final restaurant = restaurants[index];
+
         return Slidable(
-          startActionPane: const ActionPane(
-            motion: ScrollMotion(),
+          startActionPane: ActionPane(
+            motion: const ScrollMotion(),
             children: [
-              // A SlidableAction can have an icon and/or a label.
               SlidableAction(
-                onPressed: null,
-                backgroundColor: Color(0xFFFE4A49),
-                foregroundColor: Colors.white,
-                icon: Icons.delete,
-                label: 'Delete',
+                onPressed: (context) {
+                  context
+                      .read<FavoriteProvider>()
+                      .setFavoriteIconButton(restaurant.id);
+
+                  context
+                      .read<RestaurantDetailProvider>()
+                      .getRestaurantDetail(restaurant.id);
+
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: ((context) {
+                        return DetailScreen(restaurantId: restaurant.id);
+                      }),
+                    ),
+                  );
+                },
+                icon: Icons.open_in_new_rounded,
+                foregroundColor: backGroundColor,
+                backgroundColor: primaryColor,
               ),
               SlidableAction(
-                onPressed: null,
-                backgroundColor: Color(0xFF21B7CA),
-                foregroundColor: Colors.white,
-                icon: Icons.share,
-                label: 'Share',
+                onPressed: (_) {},
+                icon: Icons.favorite_border_rounded,
+                foregroundColor: primaryColor,
+                backgroundColor: secondaryColor,
               ),
             ],
           ),
-          child: RestaurantCard(restaurant: restaurants[index]),
+          child: RestaurantCard(restaurant: restaurant),
         );
       },
       separatorBuilder: (context, index) {

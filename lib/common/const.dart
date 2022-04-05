@@ -23,6 +23,6 @@ class Const {
     'Sop',
     'Bali',
     'Spanyol',
-    'Sunda'
+    'Sunda',
   ];
 }

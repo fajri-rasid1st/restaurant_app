@@ -32,12 +32,14 @@ class _MainScreenState extends State<MainScreen> {
   @override
   void dispose() {
     super.dispose();
-    
+
     _debouncer?.cancel();
   }
 
   @override
   Widget build(BuildContext context) {
+    final isFabVisible = MediaQuery.of(context).viewInsets.bottom == 0;
+
     return Consumer4<RestaurantProvider, RestaurantSearchProvider,
         CategoryProvider, BottomNavProvider>(
       builder: (
@@ -75,7 +77,7 @@ class _MainScreenState extends State<MainScreen> {
               body: _buildBody(bottomNavProvider),
             ),
             bottomNavigationBar: _buildBottomNav(bottomNavProvider),
-            floatingActionButton: _buildFab(context),
+            floatingActionButton: isFabVisible ? _buildFab(context) : null,
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
           ),
@@ -203,21 +205,16 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
-  Visibility _buildFab(BuildContext context) {
-    final isVisible = MediaQuery.of(context).viewInsets.bottom == 0;
-
-    return Visibility(
-      visible: isVisible,
-      child: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const FavoriteScreen()),
-          );
-        },
-        child: const Icon(Icons.favorite),
-        tooltip: 'Favorite',
-      ),
+  FloatingActionButton _buildFab(BuildContext context) {
+    return FloatingActionButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => const FavoriteScreen()),
+        );
+      },
+      child: const Icon(Icons.favorite_rounded),
+      tooltip: 'Favorite',
     );
   }
 

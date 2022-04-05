@@ -6,7 +6,6 @@ import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/common/utilities.dart';
 import 'package:restaurant_app/data/models/category.dart';
 import 'package:restaurant_app/data/models/customer_review.dart';
-import 'package:restaurant_app/data/models/favorite.dart';
 import 'package:restaurant_app/data/models/menu_item.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
 import 'package:restaurant_app/provider/customer_review_provider.dart';
@@ -46,7 +45,6 @@ class DetailScreen extends StatelessWidget {
         return _buildDetailScreen(
           context,
           detailProvider.detail,
-          detailProvider,
           databaseProvider,
           favoriteProvider,
         );
@@ -58,7 +56,6 @@ class DetailScreen extends StatelessWidget {
   Scaffold _buildDetailScreen(
     BuildContext context,
     RestaurantDetail restaurant,
-    RestaurantDetailProvider detailProvider,
     DatabaseProvider databaseProvider,
     FavoriteProvider favoriteProvider,
   ) {
@@ -81,19 +78,19 @@ class DetailScreen extends StatelessWidget {
                 IconButton(
                   onPressed: favoriteProvider.isFavorite
                       ? () {
-                          removeFromFavorite(
-                            context,
-                            detailProvider,
-                            databaseProvider,
-                            favoriteProvider,
+                          Utilities.removeFromFavorite(
+                            context: context,
+                            databaseProvider: databaseProvider,
+                            favoriteProvider: favoriteProvider,
+                            restaurantDetail: restaurant,
                           );
                         }
                       : () {
-                          addToFavorite(
-                            context,
-                            detailProvider,
-                            databaseProvider,
-                            favoriteProvider,
+                          Utilities.addToFavorite(
+                            context: context,
+                            databaseProvider: databaseProvider,
+                            favoriteProvider: favoriteProvider,
+                            restaurantDetail: restaurant,
                           );
                         },
                   icon: favoriteProvider.icon,
@@ -367,58 +364,6 @@ class DetailScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Future<void> addToFavorite(
-    BuildContext context,
-    RestaurantDetailProvider detailProvider,
-    DatabaseProvider databaseProvider,
-    FavoriteProvider favoriteProvider,
-  ) async {
-    final favorite = Favorite(
-      restaurantId: detailProvider.detail.id,
-      name: detailProvider.detail.name,
-      pictureId: detailProvider.detail.pictureId,
-      city: detailProvider.detail.city,
-      rating: detailProvider.detail.rating,
-      createdAt: DateTime.now(),
-    );
-
-    await databaseProvider.createFavorite(favorite);
-
-    favoriteProvider.icon = Icon(
-      Icons.favorite,
-      color: Colors.red[400],
-    );
-
-    favoriteProvider.isFavorite = true;
-
-    Utilities.showSnackBarMessage(
-      context: context,
-      text: 'Berhasil ditambahkan ke favorite.',
-    );
-  }
-
-  Future<void> removeFromFavorite(
-    BuildContext context,
-    RestaurantDetailProvider detailProvider,
-    DatabaseProvider databaseProvider,
-    FavoriteProvider favoriteProvider,
-  ) async {
-    await databaseProvider
-        .deleteFavoriteByRestaurantId(detailProvider.detail.id);
-
-    favoriteProvider.icon = Icon(
-      Icons.favorite_outline,
-      color: backGroundColor,
-    );
-
-    favoriteProvider.isFavorite = false;
-
-    Utilities.showSnackBarMessage(
-      context: context,
-      text: 'Berhasil dihapus dari favorite.',
     );
   }
 

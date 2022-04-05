@@ -54,7 +54,7 @@ class _SearchFieldState extends State<SearchField> {
           suffixIcon: _controller.text.isEmpty
               ? const Icon(Icons.search_rounded)
               : IconButton(
-                  icon: const Icon(Icons.close),
+                  icon: const Icon(Icons.close_rounded),
                   onPressed: () {
                     _controller.clear();
                     widget.onChanged('');
