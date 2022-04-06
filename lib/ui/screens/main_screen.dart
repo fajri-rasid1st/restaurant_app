@@ -56,22 +56,39 @@ class _MainScreenState extends State<MainScreen> {
             resizeToAvoidBottomInset: false,
             body: NestedScrollView(
               floatHeaderSlivers: true,
-              headerSliverBuilder: (context, innerBoxIsScrolled) {
+              headerSliverBuilder: (context, isScrolled) {
                 return <Widget>[
-                  SliverAppBar(
-                    floating: true,
-                    pinned: true,
-                    snap: true,
-                    title: _buildTitle(searchProvider, bottomNavProvider),
-                    leading: _buildLeading(restaurantProvider, searchProvider),
-                    actions: _buildActions(
-                      restaurantProvider,
-                      searchProvider,
-                      categoryProvider,
+                  SliverOverlapAbsorber(
+                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
+                      context,
                     ),
-                    bottom: _buildBottom(restaurantProvider, searchProvider),
-                    titleSpacing: 0,
-                    leadingWidth: 68,
+                    sliver: SliverSafeArea(
+                      top: false,
+                      sliver: SliverAppBar(
+                        floating: true,
+                        pinned: true,
+                        snap: true,
+                        title: _buildTitle(
+                          searchProvider,
+                          bottomNavProvider,
+                        ),
+                        leading: _buildLeading(
+                          restaurantProvider,
+                          searchProvider,
+                        ),
+                        actions: _buildActions(
+                          restaurantProvider,
+                          searchProvider,
+                          categoryProvider,
+                        ),
+                        bottom: _buildBottom(
+                          restaurantProvider,
+                          searchProvider,
+                        ),
+                        titleSpacing: 0,
+                        leadingWidth: 68,
+                      ),
+                    ),
                   )
                 ];
               },

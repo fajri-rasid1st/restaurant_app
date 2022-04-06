@@ -81,68 +81,97 @@ class DiscoverPage extends StatelessWidget {
   }
 
   /// Widget untuk membuat list restaurant jika data berhasil didapatkan
-  SlidableAutoCloseBehavior _buildRestaurantList(
+  Builder _buildRestaurantList(
     List<Restaurant> restaurants,
     DatabaseProvider databaseProvider,
     FavoriteProvider favoriteProvider,
   ) {
-    return SlidableAutoCloseBehavior(
-      child: ListView.separated(
-        key: const PageStorageKey<String>('restaurant_list'),
-        padding: const EdgeInsets.all(0),
-        itemBuilder: (context, index) {
-          final restaurant = restaurants[index];
+    return Builder(
+      builder: (context) {
+        return CustomScrollView(
+          slivers: <Widget>[
+            SliverOverlapInjector(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            ),
+            SlidableAutoCloseBehavior(
+              child: SliverList(
+                delegate: SliverChildBuilderDelegate(
+                  (context, index) {
+                    final count = restaurants.length;
+                    final hasSeparator = index != count - 1;
 
-          return Slidable(
-            groupTag: 0,
-            startActionPane: ActionPane(
-              motion: const ScrollMotion(),
-              children: [
-                SlidableAction(
-                  onPressed: (context) {
-                    Utilities.navigateToDetailScreen(
-                      context: context,
-                      restaurant: restaurant,
+                    return Column(
+                      children: <Widget>[
+                        _buildSlidableTile(
+                          restaurants[index],
+                          databaseProvider,
+                          favoriteProvider,
+                        ),
+                        if (hasSeparator) ...[
+                          const Divider(height: 1, thickness: 1),
+                        ]
+                      ],
                     );
                   },
-                  icon: Icons.open_in_new_rounded,
-                  foregroundColor: backGroundColor,
-                  backgroundColor: primaryColor,
+                  childCount: restaurants.length,
                 ),
-                SlidableAction(
-                  onPressed: (context) {
-                    databaseProvider
-                        .isFavoriteAlreadyExist(restaurant.id)
-                        .then((isExist) {
-                      if (isExist) {
-                        Utilities.showSnackBarMessage(
-                          context: context,
-                          text: 'Sudah ada di daftar favorite Anda.',
-                        );
-                      } else {
-                        Utilities.addToFavorite(
-                          context: context,
-                          databaseProvider: databaseProvider,
-                          favoriteProvider: favoriteProvider,
-                          restaurant: restaurant,
-                        );
-                      }
-                    });
-                  },
-                  icon: Icons.add_rounded,
-                  foregroundColor: primaryColor,
-                  backgroundColor: secondaryColor,
-                ),
-              ],
+              ),
             ),
-            child: RestaurantCard(restaurant: restaurant),
-          );
-        },
-        separatorBuilder: (context, index) {
-          return const Divider(height: 1, thickness: 1);
-        },
-        itemCount: restaurants.length,
+          ],
+        );
+      },
+    );
+  }
+
+  /// Widget untuk membuat tile dan menambahkan fitur slidable ke kenan
+  Slidable _buildSlidableTile(
+    Restaurant restaurant,
+    DatabaseProvider databaseProvider,
+    FavoriteProvider favoriteProvider,
+  ) {
+    return Slidable(
+      groupTag: 0,
+      startActionPane: ActionPane(
+        motion: const ScrollMotion(),
+        children: [
+          SlidableAction(
+            onPressed: (context) {
+              Utilities.navigateToDetailScreen(
+                context: context,
+                restaurant: restaurant,
+              );
+            },
+            icon: Icons.open_in_new_rounded,
+            foregroundColor: backGroundColor,
+            backgroundColor: primaryColor,
+          ),
+          SlidableAction(
+            onPressed: (context) {
+              databaseProvider
+                  .isFavoriteAlreadyExist(restaurant.id)
+                  .then((isExist) {
+                if (isExist) {
+                  Utilities.showSnackBarMessage(
+                    context: context,
+                    text: 'Sudah ada di daftar favorite Anda.',
+                  );
+                } else {
+                  Utilities.addToFavorite(
+                    context: context,
+                    databaseProvider: databaseProvider,
+                    favoriteProvider: favoriteProvider,
+                    restaurant: restaurant,
+                  );
+                }
+              });
+            },
+            icon: Icons.add_rounded,
+            foregroundColor: primaryColor,
+            backgroundColor: secondaryColor,
+          ),
+        ],
       ),
+      child: RestaurantCard(restaurant: restaurant),
     );
   }
 

@@ -50,7 +50,6 @@ class FavoriteScreen extends StatelessWidget {
   ) {
     return SlidableAutoCloseBehavior(
       child: ListView.separated(
-        key: const PageStorageKey<String>('favorite_list'),
         padding: const EdgeInsets.all(0),
         itemBuilder: (context, index) {
           final favorite = databaseProvider.favorites[index];
