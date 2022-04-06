@@ -63,13 +63,11 @@ class DiscoverPage extends StatelessWidget {
           return const ErrorScreen();
         }
 
-        var restaurants = <Restaurant>[];
+        var restaurants = restaurantProvider.restaurants;
 
         if (searchProvider.isSearching && searchProvider.query.isNotEmpty ||
             categoryProvider.category.isNotEmpty) {
           restaurants = searchProvider.restaurants;
-        } else {
-          restaurants = restaurantProvider.restaurants;
         }
 
         return restaurants.isEmpty
@@ -90,6 +88,7 @@ class DiscoverPage extends StatelessWidget {
   ) {
     return SlidableAutoCloseBehavior(
       child: ListView.separated(
+        key: const PageStorageKey<String>('restaurant_list'),
         padding: const EdgeInsets.all(0),
         itemBuilder: (context, index) {
           final restaurant = restaurants[index];
@@ -111,23 +110,24 @@ class DiscoverPage extends StatelessWidget {
                   backgroundColor: primaryColor,
                 ),
                 SlidableAction(
-                  onPressed: (context) async {
-                    final isExist = await databaseProvider
-                        .isFavoriteAlreadyExist(restaurant.id);
-
-                    if (isExist) {
-                      Utilities.showSnackBarMessage(
-                        context: context,
-                        text: 'Sudah ada di daftar favorite Anda.',
-                      );
-                    } else {
-                      Utilities.addToFavorite(
-                        context: context,
-                        databaseProvider: databaseProvider,
-                        favoriteProvider: favoriteProvider,
-                        restaurant: restaurant,
-                      );
-                    }
+                  onPressed: (context) {
+                    databaseProvider
+                        .isFavoriteAlreadyExist(restaurant.id)
+                        .then((isExist) {
+                      if (isExist) {
+                        Utilities.showSnackBarMessage(
+                          context: context,
+                          text: 'Sudah ada di daftar favorite Anda.',
+                        );
+                      } else {
+                        Utilities.addToFavorite(
+                          context: context,
+                          databaseProvider: databaseProvider,
+                          favoriteProvider: favoriteProvider,
+                          restaurant: restaurant,
+                        );
+                      }
+                    });
                   },
                   icon: Icons.add_rounded,
                   foregroundColor: primaryColor,

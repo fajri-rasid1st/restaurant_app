@@ -56,11 +56,12 @@ class _MainScreenState extends State<MainScreen> {
             resizeToAvoidBottomInset: false,
             body: NestedScrollView(
               floatHeaderSlivers: true,
-              headerSliverBuilder: (BuildContext context, bool scrolled) {
+              headerSliverBuilder: (context, innerBoxIsScrolled) {
                 return <Widget>[
                   SliverAppBar(
                     floating: true,
                     pinned: true,
+                    snap: true,
                     title: _buildTitle(searchProvider, bottomNavProvider),
                     leading: _buildLeading(restaurantProvider, searchProvider),
                     actions: _buildActions(
@@ -106,7 +107,10 @@ class _MainScreenState extends State<MainScreen> {
   ) {
     return searchProvider.isSearching
         ? IconButton(
-            onPressed: () => searchProvider.isSearching = false,
+            onPressed: () {
+              searchProvider.isSearching = false;
+              searchProvider.query = '';
+            },
             icon: const Icon(
               Icons.arrow_back_rounded,
               size: 28,
@@ -135,6 +139,7 @@ class _MainScreenState extends State<MainScreen> {
               : () {
                   searchProvider.isSearching = true;
                   categoryProvider.index = -1;
+                  categoryProvider.category = '';
                 },
           icon: const Icon(
             Icons.search_rounded,
@@ -183,20 +188,18 @@ class _MainScreenState extends State<MainScreen> {
         ),
       ],
       onTap: (index) {
-        setState(() {
-          bottomNavProvider.index = index;
+        bottomNavProvider.index = index;
 
-          switch (bottomNavProvider.index) {
-            case 0:
-              bottomNavProvider.title = 'Restaurant App';
+        switch (bottomNavProvider.index) {
+          case 0:
+            bottomNavProvider.title = 'Restaurant App';
 
-              break;
-            case 1:
-              bottomNavProvider.title = 'Settings';
+            break;
+          case 1:
+            bottomNavProvider.title = 'Settings';
 
-              break;
-          }
-        });
+            break;
+        }
       },
     );
   }
@@ -233,6 +236,7 @@ class _MainScreenState extends State<MainScreen> {
   ) {
     if (searchProvider.isSearching) {
       searchProvider.isSearching = false;
+      searchProvider.query = '';
 
       return Future.value(false);
     }

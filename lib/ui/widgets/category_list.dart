@@ -17,6 +17,7 @@ class CategoryList extends StatelessWidget implements PreferredSizeWidget {
     return SizedBox(
       height: 64,
       child: ListView.separated(
+        key: const PageStorageKey<String>('category_list'),
         padding: const EdgeInsets.symmetric(horizontal: 16),
         scrollDirection: Axis.horizontal,
         itemBuilder: ((context, index) {

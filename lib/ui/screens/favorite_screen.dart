@@ -50,6 +50,7 @@ class FavoriteScreen extends StatelessWidget {
   ) {
     return SlidableAutoCloseBehavior(
       child: ListView.separated(
+        key: const PageStorageKey<String>('favorite_list'),
         padding: const EdgeInsets.all(0),
         itemBuilder: (context, index) {
           final favorite = databaseProvider.favorites[index];
@@ -109,7 +110,7 @@ class FavoriteScreen extends StatelessWidget {
     );
   }
 
-  // Mengembalikan kembali restaurant yang telah dihapus dari favorite
+  /// Mengembalikan kembali restaurant yang telah dihapus dari favorite
   SnackBarAction retrieveDeletedFavorite(
     Favorite favorite,
     DatabaseProvider databaseProvider,

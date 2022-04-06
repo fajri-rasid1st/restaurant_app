@@ -96,10 +96,10 @@ class _ErrorScreenState extends State<ErrorScreen> {
     );
   }
 
-  /// melakukan reload halaman dan menghasilkan beberapa kondisi, yaitu:
+  /// Melakukan reload halaman dan menghasilkan beberapa kondisi, yaitu:
   ///
-  /// * memunculkuan peson error jika data gagal dimuat
-  /// * menuju ke halaman tertentu jika data berhasil dimuat
+  /// * Memunculkuan peson error jika data gagal dimuat
+  /// * Menuju ke halaman tertentu jika data berhasil dimuat
   Future<void> reloadPage({
     required RestaurantProvider restaurantProvider,
     required RestaurantDetailProvider detailProvider,
@@ -130,7 +130,6 @@ class _ErrorScreenState extends State<ErrorScreen> {
       } else {
         restaurantProvider.restaurants = value[1];
         restaurantProvider.state = ResultState.hasData;
-
         searchProvider.restaurants = value[2];
       }
 
