@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 
 class BottomNavProvider extends ChangeNotifier {
   int _index = 0;
-  String _title = 'Restaurant App';
+  String _title = 'Discover';
 
   int get index => _index;
   String get title => _title;

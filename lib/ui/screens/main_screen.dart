@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/const.dart';
 import 'package:restaurant_app/common/result_state.dart';
-import 'package:restaurant_app/provider/bottom_nav_provider.dart';
-import 'package:restaurant_app/provider/category_provider.dart';
-import 'package:restaurant_app/provider/restaurant_provider.dart';
-import 'package:restaurant_app/provider/restaurant_search_provider.dart';
+import 'package:restaurant_app/providers/bottom_nav_provider.dart';
+import 'package:restaurant_app/providers/category_provider.dart';
+import 'package:restaurant_app/providers/restaurant_provider.dart';
+import 'package:restaurant_app/providers/restaurant_search_provider.dart';
 import 'package:restaurant_app/ui/pages/discover_page.dart';
 import 'package:restaurant_app/ui/pages/settings_page.dart';
 import 'package:restaurant_app/ui/screens/favorite_screen.dart';
@@ -38,7 +38,7 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isFabVisible = MediaQuery.of(context).viewInsets.bottom == 0;
+    final isInvisible = MediaQuery.of(context).viewInsets.bottom != 0;
 
     return Consumer4<RestaurantProvider, RestaurantSearchProvider,
         CategoryProvider, BottomNavProvider>(
@@ -50,52 +50,23 @@ class _MainScreenState extends State<MainScreen> {
         bottomNavProvider,
         child,
       ) {
+        final currentIndex = bottomNavProvider.index;
+
         return WillPopScope(
-          onWillPop: () => onWillPop(restaurantProvider, searchProvider),
+          onWillPop: () => onWillPop(searchProvider),
           child: Scaffold(
             resizeToAvoidBottomInset: false,
-            body: NestedScrollView(
-              floatHeaderSlivers: true,
-              headerSliverBuilder: (context, isScrolled) {
-                return <Widget>[
-                  SliverOverlapAbsorber(
-                    handle: NestedScrollView.sliverOverlapAbsorberHandleFor(
-                      context,
-                    ),
-                    sliver: SliverSafeArea(
-                      top: false,
-                      sliver: SliverAppBar(
-                        floating: true,
-                        pinned: true,
-                        snap: true,
-                        title: _buildTitle(
-                          searchProvider,
-                          bottomNavProvider,
-                        ),
-                        leading: _buildLeading(
-                          restaurantProvider,
-                          searchProvider,
-                        ),
-                        actions: _buildActions(
-                          restaurantProvider,
-                          searchProvider,
-                          categoryProvider,
-                        ),
-                        bottom: _buildBottom(
-                          restaurantProvider,
-                          searchProvider,
-                        ),
-                        titleSpacing: 0,
-                        leadingWidth: 68,
-                      ),
-                    ),
+            appBar: currentIndex == 0 ? null : _buildAppBar(),
+            body: currentIndex == 0
+                ? _buildScaffoldBody(
+                    bottomNavProvider,
+                    searchProvider,
+                    restaurantProvider,
+                    categoryProvider,
                   )
-                ];
-              },
-              body: _buildBody(bottomNavProvider),
-            ),
+                : _buildBody(currentIndex),
             bottomNavigationBar: _buildBottomNav(bottomNavProvider),
-            floatingActionButton: isFabVisible ? _buildFab(context) : null,
+            floatingActionButton: isInvisible ? null : _buildFab(context),
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerDocked,
           ),
@@ -104,13 +75,61 @@ class _MainScreenState extends State<MainScreen> {
     );
   }
 
+  /// Widget app bar khusus untuk page settings
+  AppBar _buildAppBar() {
+    return AppBar(
+      title: const Text('Settings'),
+      titleSpacing: 0,
+      leading: const Icon(Icons.settings),
+    );
+  }
+
+  /// Widget untuk membuat [NestedScrollView] yang diisi sliver app bar dan body
+  NestedScrollView _buildScaffoldBody(
+    BottomNavProvider bottomNavProvider,
+    RestaurantSearchProvider searchProvider,
+    RestaurantProvider restaurantProvider,
+    CategoryProvider categoryProvider,
+  ) {
+    return NestedScrollView(
+      floatHeaderSlivers: true,
+      headerSliverBuilder: (context, isScrolled) {
+        return <Widget>[
+          SliverOverlapAbsorber(
+            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            sliver: SliverSafeArea(
+              top: false,
+              sliver: SliverAppBar(
+                floating: true,
+                pinned: true,
+                snap: true,
+                title: _buildTitle(searchProvider, bottomNavProvider),
+                leading: _buildLeading(searchProvider),
+                actions: _buildActions(
+                  restaurantProvider,
+                  searchProvider,
+                  categoryProvider,
+                ),
+                bottom: _buildBottom(restaurantProvider, searchProvider),
+                titleSpacing: 0,
+                leadingWidth: 68,
+              ),
+            ),
+          )
+        ];
+      },
+      body: _buildBody(bottomNavProvider.index),
+    );
+  }
+
+  /// Widget untuk membuat title app bar
   Widget _buildTitle(
     RestaurantSearchProvider searchProvider,
     BottomNavProvider bottomNavProvider,
   ) {
     return searchProvider.isSearching
         ? SearchField(
-            hintText: 'Search Restaurants, Categories, or Menu',
+            hintText: 'Search Restaurants or Menu',
             onChanged: (query) {
               debounce(() => searchProvider.searchRestaurants(query));
             },
@@ -118,10 +137,8 @@ class _MainScreenState extends State<MainScreen> {
         : Text(bottomNavProvider.title);
   }
 
-  Widget _buildLeading(
-    RestaurantProvider restaurantProvider,
-    RestaurantSearchProvider searchProvider,
-  ) {
+  /// Widget untuk membuat leading app bar
+  Widget _buildLeading(RestaurantSearchProvider searchProvider) {
     return searchProvider.isSearching
         ? IconButton(
             onPressed: () {
@@ -143,6 +160,7 @@ class _MainScreenState extends State<MainScreen> {
           );
   }
 
+  /// Widget untuk membuat action app bar
   List<Widget> _buildActions(
     RestaurantProvider restaurantProvider,
     RestaurantSearchProvider searchProvider,
@@ -168,6 +186,7 @@ class _MainScreenState extends State<MainScreen> {
     ];
   }
 
+  /// Widget untuk membuat list category pada bottom app bar
   CategoryList? _buildBottom(
     RestaurantProvider restaurantProvider,
     RestaurantSearchProvider searchProvider,
@@ -179,48 +198,46 @@ class _MainScreenState extends State<MainScreen> {
             : const CategoryList(categories: Const.categories);
   }
 
-  Widget _buildBody(BottomNavProvider bottomNavProvider) {
-    return _pages[bottomNavProvider.index];
-  }
+  /// Widget untuk membuat body
+  Widget _buildBody(int index) => _pages[index];
 
+  /// Widget untuk membuat bottom navigation bar
   BottomNavigationBar _buildBottomNav(BottomNavProvider bottomNavProvider) {
     return BottomNavigationBar(
-      currentIndex: bottomNavProvider.index,
-      selectedFontSize: 12,
-      selectedItemColor: primaryColor,
-      selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-      unselectedFontSize: 12,
-      unselectedItemColor: secondaryTextColor,
-      type: BottomNavigationBarType.fixed,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.explore_outlined),
-          activeIcon: Icon(Icons.explore),
-          label: 'Discover',
-        ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.settings_outlined),
-          activeIcon: Icon(Icons.settings),
-          label: 'Settings',
-        ),
-      ],
-      onTap: (index) {
-        bottomNavProvider.index = index;
+        currentIndex: bottomNavProvider.index,
+        selectedFontSize: 12,
+        selectedItemColor: primaryColor,
+        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+        unselectedFontSize: 12,
+        unselectedItemColor: secondaryTextColor,
+        type: BottomNavigationBarType.fixed,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.explore_outlined),
+            activeIcon: Icon(Icons.explore),
+            label: 'Discover',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.settings_outlined),
+            activeIcon: Icon(Icons.settings),
+            label: 'Settings',
+          ),
+        ],
+        onTap: (index) {
+          bottomNavProvider.index = index;
 
-        switch (bottomNavProvider.index) {
-          case 0:
-            bottomNavProvider.title = 'Restaurant App';
-
-            break;
-          case 1:
-            bottomNavProvider.title = 'Settings';
-
-            break;
-        }
-      },
-    );
+          switch (index) {
+            case 0:
+              bottomNavProvider.title = 'Discover';
+              break;
+            case 1:
+              bottomNavProvider.title = 'Settings';
+              break;
+          }
+        });
   }
 
+  /// Widget untuk membuat floating action button
   FloatingActionButton _buildFab(BuildContext context) {
     return FloatingActionButton(
       onPressed: () {
@@ -247,10 +264,7 @@ class _MainScreenState extends State<MainScreen> {
   // * jika iya, maka aplikasi tidak akan keluar jika menekan tombol back
   //   pada perangkat, melainkan akan melakukan reset searching terlebih dahulu.
   // * jika tidak, aplikasi akan keluar jika menekan tombol back.
-  Future<bool> onWillPop(
-    RestaurantProvider restaurantProvider,
-    RestaurantSearchProvider searchProvider,
-  ) {
+  Future<bool> onWillPop(RestaurantSearchProvider searchProvider) {
     if (searchProvider.isSearching) {
       searchProvider.isSearching = false;
       searchProvider.query = '';

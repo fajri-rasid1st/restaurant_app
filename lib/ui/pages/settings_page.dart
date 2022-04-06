@@ -5,8 +5,29 @@ class SettingsPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Settings'),
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: ListTile(
+        leading: Text(
+          'Nyalakan Notifikasi',
+          style: Theme.of(context)
+              .textTheme
+              .bodyText1
+              ?.copyWith(fontWeight: FontWeight.w700),
+        ),
+        trailing: StatefulBuilder(
+          builder: (context, setState) {
+            var isOn = false;
+
+            return Switch(
+              value: isOn,
+              onChanged: (value) {
+                setState(() => isOn = value);
+              },
+            );
+          },
+        ),
+      ),
     );
   }
 }

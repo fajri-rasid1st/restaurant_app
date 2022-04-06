@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/utilities.dart';
-import 'package:restaurant_app/provider/customer_review_provider.dart';
-import 'package:restaurant_app/provider/restaurant_detail_provider.dart';
+import 'package:restaurant_app/providers/customer_review_provider.dart';
+import 'package:restaurant_app/providers/restaurant_detail_provider.dart';
 
 class ReviewFormScreen extends StatefulWidget {
   final String id;

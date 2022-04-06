@@ -3,8 +3,7 @@ class Const {
   static const String baseUrl = 'https://restaurant-api.dicoding.dev';
 
   // Url untuk mengambil gambar restaurant (ukuran kecil)
-  static const String imgUrl =
-      'https://restaurant-api.dicoding.dev/images/small';
+  static const String imgUrl = '$baseUrl/images/small';
 
   // Url untuk mengambil gambar placeholder food
   static const String imgFoodPlaceholder =

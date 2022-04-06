@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app/provider/category_provider.dart';
-import 'package:restaurant_app/provider/restaurant_search_provider.dart';
+import 'package:restaurant_app/providers/category_provider.dart';
+import 'package:restaurant_app/providers/restaurant_search_provider.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 
 class CategoryList extends StatelessWidget implements PreferredSizeWidget {

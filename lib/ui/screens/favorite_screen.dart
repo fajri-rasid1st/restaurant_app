@@ -4,8 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/common/utilities.dart';
 import 'package:restaurant_app/data/models/favorite.dart';
-import 'package:restaurant_app/provider/database_provider.dart';
-import 'package:restaurant_app/provider/favorite_provider.dart';
+import 'package:restaurant_app/providers/database_provider.dart';
 import 'package:restaurant_app/ui/screens/loading_screen.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
@@ -20,33 +19,34 @@ class FavoriteScreen extends StatelessWidget {
       appBar: AppBar(
         title: const Text('Favorite'),
         centerTitle: true,
+        leading: IconButton(
+          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_rounded),
+          tooltip: 'Back',
+        ),
       ),
-      body: Consumer2<DatabaseProvider, FavoriteProvider>(
-        builder: (context, databaseProvider, favoriteProvider, child) {
+      body: Consumer<DatabaseProvider>(
+        builder: (context, databaseProvider, child) {
           if (databaseProvider.state == ResultState.loading) {
             return const LoadingScreen();
           }
 
-          return _buildBody(databaseProvider, favoriteProvider);
+          return _buildBody(databaseProvider);
         },
       ),
     );
   }
 
   /// Widget untuk membuat tampilan utama
-  Widget _buildBody(
-    DatabaseProvider databaseProvider,
-    FavoriteProvider favoriteProvider,
-  ) {
+  Widget _buildBody(DatabaseProvider databaseProvider) {
     return databaseProvider.favorites.isEmpty
         ? _buildFavoriteEmpty()
-        : _buildFavoriteList(databaseProvider, favoriteProvider);
+        : _buildFavoriteList(databaseProvider);
   }
 
   /// Widget untuk membuat list restaurant favorite
   SlidableAutoCloseBehavior _buildFavoriteList(
     DatabaseProvider databaseProvider,
-    FavoriteProvider favoriteProvider,
   ) {
     return SlidableAutoCloseBehavior(
       child: ListView.separated(
