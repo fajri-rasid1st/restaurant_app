@@ -3,7 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
 import 'package:restaurant_app/common/const.dart';
 import 'package:restaurant_app/common/result_state.dart';
-import 'package:restaurant_app/common/utilities.dart';
+import 'package:restaurant_app/utilities/utilities.dart';
 import 'package:restaurant_app/data/models/category.dart';
 import 'package:restaurant_app/data/models/customer_review.dart';
 import 'package:restaurant_app/data/models/menu_item.dart';

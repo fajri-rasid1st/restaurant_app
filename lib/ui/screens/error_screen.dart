@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/result_state.dart';
-import 'package:restaurant_app/common/utilities.dart';
+import 'package:restaurant_app/utilities/utilities.dart';
 import 'package:restaurant_app/providers/favorite_provider.dart';
 import 'package:restaurant_app/providers/page_reload_provider.dart';
 import 'package:restaurant_app/providers/restaurant_detail_provider.dart';

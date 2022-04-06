@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app/common/utilities.dart';
+import 'package:restaurant_app/utilities/utilities.dart';
 import 'package:restaurant_app/providers/customer_review_provider.dart';
 import 'package:restaurant_app/providers/restaurant_detail_provider.dart';
 
@@ -85,15 +85,15 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
       keyboardType: TextInputType.name,
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        labelText: "Nama",
-        hintText: "Masukkan nama anda",
+        labelText: 'Nama',
+        hintText: 'Masukkan nama anda',
       ),
       style: GoogleFonts.quicksand(
         fontSize: 16,
         fontWeight: FontWeight.w500,
       ),
       validator: (value) {
-        if (value!.trim().isEmpty) return "Form harus diisi";
+        if (value!.trim().isEmpty) return 'Form harus diisi';
 
         return null;
       },
@@ -108,8 +108,8 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
       maxLines: 4,
       decoration: InputDecoration(
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
-        labelText: "Ulasan",
-        hintText: "Bagaimana tempat ini menurut Anda?",
+        labelText: 'Ulasan',
+        hintText: 'Bagaimana tempat ini menurut Anda?',
         alignLabelWithHint: true,
       ),
       style: GoogleFonts.quicksand(
@@ -117,7 +117,7 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
         fontWeight: FontWeight.w500,
       ),
       validator: (value) {
-        if (value!.trim().isEmpty) return "Form harus diisi";
+        if (value!.trim().isEmpty) return 'Form harus diisi';
 
         return null;
       },

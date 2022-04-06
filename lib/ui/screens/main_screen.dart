@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/const.dart';
 import 'package:restaurant_app/common/result_state.dart';
+import 'package:restaurant_app/data/api/notification_api.dart';
 import 'package:restaurant_app/providers/bottom_nav_provider.dart';
 import 'package:restaurant_app/providers/category_provider.dart';
 import 'package:restaurant_app/providers/restaurant_provider.dart';
@@ -22,18 +23,29 @@ class MainScreen extends StatefulWidget {
 }
 
 class _MainScreenState extends State<MainScreen> {
-  Timer? _debouncer;
+  final NotificationApi _notificationApi = NotificationApi();
 
   final List<Widget> _pages = <Widget>[
     const DiscoverPage(),
     const SettingsPage(),
   ];
 
+  Timer? _debouncer;
+
+  @override
+  void initState() {
+    _notificationApi.configureSelectNotificationSubject(context);
+
+    super.initState();
+  }
+
   @override
   void dispose() {
-    super.dispose();
+    selectNotificationSubject.close();
 
     _debouncer?.cancel();
+
+    super.dispose();
   }
 
   @override

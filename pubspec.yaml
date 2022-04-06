@@ -78,6 +78,12 @@ dependencies:
     # for finding commonly used locations on the files ystem
     path_provider: ^2.0.9
 
+    #  for accessing the Android AlarmManager service
+    android_alarm_manager_plus: ^2.0.5
+
+    # for construct date time format
+    intl: ^0.17.0
+
 dev_dependencies:
     flutter_test:
         sdk: flutter

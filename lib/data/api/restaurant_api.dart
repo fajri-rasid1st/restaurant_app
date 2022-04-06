@@ -108,9 +108,9 @@ class RestaurantApi {
           'Content-Type': 'application/json',
         },
         body: jsonEncode(<String, String>{
-          "id": id,
-          "name": name,
-          "review": review,
+          'id': id,
+          'name': name,
+          'review': review,
         }),
       );
 

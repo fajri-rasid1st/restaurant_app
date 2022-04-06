@@ -1,7 +1,11 @@
+import 'dart:io';
+import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:provider/provider.dart';
 import 'package:provider/single_child_widget.dart';
+import 'package:restaurant_app/data/api/notification_api.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
 import 'package:restaurant_app/data/db/favorite_database.dart';
 import 'package:restaurant_app/providers/bottom_nav_provider.dart';
@@ -13,11 +17,16 @@ import 'package:restaurant_app/providers/page_reload_provider.dart';
 import 'package:restaurant_app/providers/restaurant_detail_provider.dart';
 import 'package:restaurant_app/providers/restaurant_provider.dart';
 import 'package:restaurant_app/providers/restaurant_search_provider.dart';
+import 'package:restaurant_app/providers/scheduling_provider.dart';
 import 'package:restaurant_app/ui/screens/main_screen.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/themes/text_theme.dart';
+import 'package:restaurant_app/utilities/background_service.dart';
 
-void main() {
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+    FlutterLocalNotificationsPlugin();
+
+Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   // untuk mencegah orientasi landskap
@@ -31,6 +40,17 @@ void main() {
     statusBarColor: Colors.transparent,
     systemNavigationBarColor: backGroundColor,
   ));
+
+  final notificationApi = NotificationApi();
+  final service = BackgroundService();
+
+  service.initIsolate();
+
+  if (Platform.isAndroid) {
+    await AndroidAlarmManager.initialize();
+  }
+
+  await notificationApi.initNotifications(flutterLocalNotificationsPlugin);
 
   runApp(
     MultiProvider(
@@ -73,6 +93,9 @@ void main() {
         ),
         ChangeNotifierProvider<PageReloadProvider>(
           create: (_) => PageReloadProvider(),
+        ),
+        ChangeNotifierProvider<SchedulingProvider>(
+          create: (_) => SchedulingProvider(),
         ),
       ],
       child: const MyApp(),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/const.dart';
-import 'package:restaurant_app/common/utilities.dart';
+import 'package:restaurant_app/utilities/utilities.dart';
 import 'package:restaurant_app/data/models/favorite.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';

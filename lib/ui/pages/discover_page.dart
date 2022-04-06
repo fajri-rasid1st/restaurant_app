@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/result_state.dart';
-import 'package:restaurant_app/common/utilities.dart';
+import 'package:restaurant_app/utilities/utilities.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/providers/category_provider.dart';
 import 'package:restaurant_app/providers/database_provider.dart';
