@@ -78,6 +78,7 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
     );
   }
 
+  /// Membuat textfield untuk menginput nama
   TextFormField _buildNameField() {
     return TextFormField(
       controller: _nameController,
@@ -100,6 +101,7 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
     );
   }
 
+  /// Membuat textfield untuk menginput review
   TextFormField _buildReviewField() {
     return TextFormField(
       controller: _reviewController,
@@ -124,6 +126,7 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
     );
   }
 
+  /// Membuat button untuk submit
   SizedBox _buildSubmitButton() {
     return SizedBox(
       width: double.infinity,

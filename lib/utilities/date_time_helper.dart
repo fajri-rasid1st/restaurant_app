@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 class DateTimeHelper {
   static DateTime dateTimeScheduled() {
     // Mengatur waktu secara spesifik
-    const timeSpecific = '09:58:00';
+    const timeSpecific = '11:00:00';
 
     // Format tanggal dan waktu
     // ex. output: 2022-04-07 11:00:00.000

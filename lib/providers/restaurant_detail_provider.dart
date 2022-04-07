@@ -26,7 +26,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Melukan pengambilan data detail restauran sesuai id
+  /// Melukan pengambilan data detail restauran sesuai [id]
   Future<dynamic> getRestaurantDetail(String id) async {
     try {
       _state = ResultState.loading;

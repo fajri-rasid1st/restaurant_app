@@ -25,21 +25,25 @@ class DatabaseProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Menambahkan restaurant [favorite]
   Future<void> createFavorite(Favorite favorite) async {
     await favoriteDatabase.createFavorite(favorite);
     _readFavorites();
   }
 
+  /// Menghapus restaurant sesuai [restaurantId]
   Future<void> deleteFavoriteByRestaurantId(String restaurantId) async {
     await favoriteDatabase.deleteFavoriteByRestaurantId(restaurantId);
     _readFavorites();
   }
 
+  /// Menghapus restaurant sesuai [id]
   Future<void> deleteFavoriteById(int id) async {
     await favoriteDatabase.deleteFavoriteById(id);
     _readFavorites();
   }
 
+  /// Mengecek apakah favorite dengan id [restaurantId] terdapat di database
   Future<bool> isFavoriteAlreadyExist(String restaurantId) async {
     return await favoriteDatabase.isFavoriteAlreadyExist(restaurantId);
   }

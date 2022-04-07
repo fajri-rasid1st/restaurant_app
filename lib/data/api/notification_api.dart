@@ -5,6 +5,7 @@ import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/utilities/utilities.dart';
 import 'package:rxdart/rxdart.dart';
 
+// Inisialisasi behavior subject, meng-handle notifikasi dan payload saat ditekan
 final selectNotificationSubject = BehaviorSubject<String>();
 
 class NotificationApi {
@@ -33,10 +34,17 @@ class NotificationApi {
       iOS: initSettingsIOS,
     );
 
+    final details =
+        await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
+
+    if (details != null && details.didNotificationLaunchApp) {
+      selectNotificationSubject.add(details.payload ?? 'empty_payload');
+    }
+
     await flutterLocalNotificationsPlugin.initialize(
       initSettings,
-      onSelectNotification: (String? payload) async {
-        selectNotificationSubject.add(payload ?? 'empty payload');
+      onSelectNotification: (payload) async {
+        selectNotificationSubject.add(payload ?? 'empty_payload');
       },
     );
   }
@@ -82,7 +90,7 @@ class NotificationApi {
   /// Melakukan konfigurasi/listen notifikasi, sehingga mengarah ke halaman
   /// detail restaurant saat notifikasi ditekan
   void configureSelectNotificationSubject(BuildContext context) {
-    selectNotificationSubject.stream.listen((String payload) {
+    selectNotificationSubject.stream.listen((payload) {
       final result = jsonDecode(payload);
       final restaurant = Restaurant.fromMap(result);
 

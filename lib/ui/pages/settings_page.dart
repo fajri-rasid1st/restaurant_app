@@ -13,6 +13,7 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
+  /// Untuk membuat widget switch
   Padding _buildSwitch(SchedulingProvider schedulingProvider) {
     return Padding(
       padding: const EdgeInsets.all(16),

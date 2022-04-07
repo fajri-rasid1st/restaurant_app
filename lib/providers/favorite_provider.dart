@@ -23,6 +23,7 @@ class FavoriteProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Menyetel jenis icon yang akan muncul pada halaman detail
   Future<void> setFavoriteIconButton(String restaurantId) async {
     final isExist = await favoriteDatabase.isFavoriteAlreadyExist(restaurantId);
 

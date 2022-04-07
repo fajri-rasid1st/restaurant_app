@@ -88,7 +88,7 @@ class RestaurantApi {
     }
   }
 
-  /// Mengirim data review [id], [name], [review] dan ke server dan mengembalikan:
+  /// Mengirim data review [id], [name], [review] ke server dan mengembalikan:
   ///
   /// * true , jika berhasil.
   /// * false, jika gagal.

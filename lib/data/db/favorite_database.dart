@@ -63,7 +63,7 @@ class FavoriteDatabase {
     return <Favorite>[];
   }
 
-  /// Membuat record favorite dan masukkannya ke database
+  /// Membuat record favorite dan memasukkannya ke database
   Future<Favorite> createFavorite(Favorite favorite) async {
     final db = await database;
 

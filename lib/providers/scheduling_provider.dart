@@ -23,7 +23,7 @@ class SchedulingProvider extends ChangeNotifier {
 
     if (_isScheduled) {
       return await AndroidAlarmManager.periodic(
-        const Duration(minutes: 1),
+        const Duration(hours: 24),
         1,
         BackgroundService.callback,
         startAt: DateTimeHelper.dateTimeScheduled(),
@@ -36,6 +36,7 @@ class SchedulingProvider extends ChangeNotifier {
     return await AndroidAlarmManager.cancel(1);
   }
 
+  /// untuk menyetel ulang value preferensi pada key 'switch_key' dengan nilai [value]
   Future<void> setSwitchValue(bool value) async {
     final prefs = await SharedPreferences.getInstance();
 
@@ -45,6 +46,8 @@ class SchedulingProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Mengambil value preferensi pada key 'switch_key'. Jika valuenya null,
+  /// maka akan disetel ke false
   Future<bool> getSwitchValue() async {
     final prefs = await SharedPreferences.getInstance();
 

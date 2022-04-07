@@ -5,7 +5,8 @@ import 'package:restaurant_app/data/api/notification_api.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
 import 'package:restaurant_app/main.dart';
 
-final ReceivePort port = ReceivePort();
+// Inisialisasi port untuk menerima pesan (digunakan untuk komunikasi pada background)
+final port = ReceivePort();
 
 class BackgroundService {
   static BackgroundService? _service;

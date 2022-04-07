@@ -23,22 +23,23 @@ import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/themes/text_theme.dart';
 import 'package:restaurant_app/utilities/background_service.dart';
 
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-    FlutterLocalNotificationsPlugin();
+// Inisialisasi local notifikasi plugin
+final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  // untuk mencegah orientasi landskap
+  // Untuk mencegah orientasi landskap
   SystemChrome.setPreferredOrientations(<DeviceOrientation>[
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
 
-  // ubah warna status bar
+  // Ubah warna status bar
   SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle(
     statusBarColor: Colors.transparent,
     systemNavigationBarColor: backGroundColor,
+    systemNavigationBarIconBrightness: Brightness.dark,
   ));
 
   final notificationApi = NotificationApi();
@@ -46,9 +47,7 @@ Future<void> main() async {
 
   service.initIsolate();
 
-  if (Platform.isAndroid) {
-    await AndroidAlarmManager.initialize();
-  }
+  if (Platform.isAndroid) await AndroidAlarmManager.initialize();
 
   await notificationApi.initNotifications(flutterLocalNotificationsPlugin);
 
