@@ -75,9 +75,6 @@ dependencies:
     # for asynchronous programming (used for get notification when app closed)
     rxdart: ^0.27.3
 
-    # for finding commonly used locations on the files system
-    path_provider: ^2.0.9
-
     #  for accessing the Android AlarmManager service
     android_alarm_manager_plus: ^2.0.5
 

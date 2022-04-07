@@ -36,7 +36,7 @@ class SchedulingProvider extends ChangeNotifier {
     return await AndroidAlarmManager.cancel(1);
   }
 
-  /// untuk menyetel ulang value preferensi pada key 'switch_key' dengan nilai [value]
+  /// Untuk menyetel ulang value preferensi pada key 'switch_key' dengan nilai [value]
   Future<void> setSwitchValue(bool value) async {
     final prefs = await SharedPreferences.getInstance();
 
