@@ -16,6 +16,7 @@ class NotificationApi {
 
   factory NotificationApi() => _notificationApi ?? NotificationApi._internal();
 
+  /// Menginisialisasi pengaturan notifikasi
   Future<void> initNotifications(
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
   ) async {
@@ -40,18 +41,19 @@ class NotificationApi {
     );
   }
 
+  /// Menampilkan notifikasi dengan payload berupa string encoding dari [restaurant]
   Future<void> showNotification(
     FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
     Restaurant restaurant,
   ) async {
-    const _channelId = '1';
-    const _channelName = 'channel_01';
-    const _channelDescription = 'restaurant_channel';
+    const channelId = '1';
+    const channelName = 'channel_01';
+    const channelDescription = 'restaurant_channel';
 
     const androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      _channelId,
-      _channelName,
-      channelDescription: _channelDescription,
+      channelId,
+      channelName,
+      channelDescription: channelDescription,
       importance: Importance.max,
       priority: Priority.high,
       ticker: 'ticker',
@@ -77,6 +79,8 @@ class NotificationApi {
     );
   }
 
+  /// Melakukan konfigurasi/listen notifikasi, sehingga mengarah ke halaman
+  /// detail restaurant saat notifikasi ditekan
   void configureSelectNotificationSubject(BuildContext context) {
     selectNotificationSubject.stream.listen((String payload) {
       final result = jsonDecode(payload);
