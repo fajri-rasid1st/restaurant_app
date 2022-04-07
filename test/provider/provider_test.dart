@@ -1,12 +1,13 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
+import 'package:restaurant_app/data/models/restaurant_detail.dart';
 import 'package:restaurant_app/providers/customer_review_provider.dart';
 import 'package:restaurant_app/providers/restaurant_detail_provider.dart';
 import 'package:restaurant_app/providers/restaurant_provider.dart';
 import 'package:restaurant_app/providers/restaurant_search_provider.dart';
 
 void main() {
-  group('Json Parsing Test', () {
+  group('Provider Testing', () {
     // Arrange
     late RestaurantProvider restaurantProvider;
     late RestaurantDetailProvider detailProvider;
@@ -30,7 +31,7 @@ void main() {
       expect(result, true);
     });
 
-    test('Should contain list of empty restaurants', () {
+    test('Should contain empty restaurants', () {
       // Act
       restaurantProvider.fetchAllRestaurants();
 
@@ -41,14 +42,14 @@ void main() {
 
     // Restaurant detail test
     test(
-      'Should contain empty message (RestaurantDetail is initialized).',
+      'Should contain RestaurantDetail.',
       () async {
         // Act
         await detailProvider.getRestaurantDetail('rqdv5juczeskfw1e867');
 
         // Assert
-        final result = detailProvider.message.isEmpty;
-        expect(result, true);
+        final result = detailProvider.detail;
+        expect(result, isA<RestaurantDetail>());
       },
     );
 
@@ -74,7 +75,7 @@ void main() {
       expect(result, true);
     });
 
-    test('Should contain empty list of restaurants', () async {
+    test('Should contain empty restaurants', () async {
       // Act
       await searchProvider.searchRestaurants('qwerty');
 

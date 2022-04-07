@@ -75,7 +75,7 @@ dependencies:
     # for asynchronous programming (used for get notification when app closed)
     rxdart: ^0.27.3
 
-    #  for accessing the Android AlarmManager service
+    # for accessing the Android Alarm Manager service
     android_alarm_manager_plus: ^2.0.5
 
     # for construct date time format
@@ -84,6 +84,10 @@ dependencies:
 dev_dependencies:
     flutter_test:
         sdk: flutter
+    
+    # for testing
+    mockito: ^5.1.0
+    build_runner: ^2.1.8
 
     # The "flutter_lints" package below contains a set of recommended lints to
     # encourage good coding practices. The lint set provided by the package is
