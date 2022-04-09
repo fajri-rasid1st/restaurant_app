@@ -11,7 +11,7 @@ class DatabaseProvider extends ChangeNotifier {
   }
 
   late ResultState _state;
-  List<Favorite> _favorites = <Favorite>[];
+  late List<Favorite> _favorites;
 
   ResultState get state => _state;
   List<Favorite> get favorites => _favorites;

@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/providers/scheduling_provider.dart';
+import 'package:restaurant_app/ui/screens/loading_screen.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -9,7 +11,13 @@ class SettingsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<SchedulingProvider>(
-      builder: ((context, schedule, child) => _buildSwitch(schedule)),
+      builder: (context, schedulingProvider, child) {
+        if (schedulingProvider.state == ResultState.loading) {
+          return const LoadingScreen();
+        }
+
+        return _buildSwitch(schedulingProvider);
+      },
     );
   }
 

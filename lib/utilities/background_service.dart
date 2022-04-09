@@ -10,14 +10,15 @@ final port = ReceivePort();
 
 class BackgroundService {
   static BackgroundService? _service;
-  static SendPort? _uiSendPort;
-  static const String _isolateName = 'isolate';
 
   BackgroundService._internal() {
     _service = this;
   }
 
   factory BackgroundService() => _service ?? BackgroundService._internal();
+
+  static SendPort? _uiSendPort;
+  static const String _isolateName = 'isolate';
 
   /// Mendaftarkan SendPort isolate UI untuk memungkinkan komunikasi dari
   /// isolate background

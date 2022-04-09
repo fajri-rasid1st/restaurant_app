@@ -1,16 +1,19 @@
 import 'package:android_alarm_manager_plus/android_alarm_manager_plus.dart';
 import 'package:flutter/widgets.dart';
+import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/utilities/background_service.dart';
 import 'package:restaurant_app/utilities/date_time_helper.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SchedulingProvider extends ChangeNotifier {
   SchedulingProvider() {
-    getSwitchValue();
+    _getSwitchValue();
   }
 
-  bool _isScheduled = false;
+  late ResultState _state;
+  late bool _isScheduled;
 
+  ResultState get state => _state;
   bool get isScheduled => _isScheduled;
 
   /// Melakukan scheduling notifikasi.
@@ -36,6 +39,25 @@ class SchedulingProvider extends ChangeNotifier {
     return await AndroidAlarmManager.cancel(1);
   }
 
+  /// Mengambil value preferensi pada key 'switch_key'. Jika valuenya null,
+  /// maka akan disetel ke false
+  Future<bool> _getSwitchValue() async {
+    _state = ResultState.loading;
+
+    final prefs = await SharedPreferences.getInstance();
+
+    if (prefs.getBool('switch_key') == null) {
+      await prefs.setBool('switch_key', false);
+    }
+
+    _isScheduled = prefs.getBool('switch_key')!;
+    
+    _state = ResultState.hasData;
+    notifyListeners();
+
+    return _isScheduled;
+  }
+
   /// Untuk menyetel ulang value preferensi pada key 'switch_key' dengan nilai [value]
   Future<void> setSwitchValue(bool value) async {
     final prefs = await SharedPreferences.getInstance();
@@ -44,20 +66,5 @@ class SchedulingProvider extends ChangeNotifier {
 
     _isScheduled = value;
     notifyListeners();
-  }
-
-  /// Mengambil value preferensi pada key 'switch_key'. Jika valuenya null,
-  /// maka akan disetel ke false
-  Future<bool> getSwitchValue() async {
-    final prefs = await SharedPreferences.getInstance();
-
-    if (prefs.getBool('switch_key') == null) {
-      await prefs.setBool('switch_key', false);
-    }
-
-    _isScheduled = prefs.getBool('switch_key')!;
-    notifyListeners();
-
-    return _isScheduled;
   }
 }

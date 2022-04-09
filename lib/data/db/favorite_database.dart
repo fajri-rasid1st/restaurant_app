@@ -13,7 +13,7 @@ class FavoriteDatabase {
     return _favoriteDatabase ?? FavoriteDatabase._internal();
   }
 
-  static late Database _database;
+  late Database _database;
 
   Future<Database> get database async {
     _database = await _initializeDb('favorite_database.db');
