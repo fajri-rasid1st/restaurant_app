@@ -123,8 +123,8 @@ class RestaurantApi {
             (results as Map<String, dynamic>)['customerReviews'];
 
         // Kembalikan nilai berupa daftar review yang telah dibuat dari bentuk map
-        return review.map((restaurant) {
-          return CustomerReview.fromMap(restaurant);
+        return review.map((customerReview) {
+          return CustomerReview.fromMap(customerReview);
         }).toList();
       } else {
         // Jika server tidak mengembalikan kode 201, maka throw exception
