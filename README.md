@@ -1,6 +1,22 @@
 # restaurant_app
 
-A new Flutter project.
+Restaurant App.
+
+<a href="https://raw.githubusercontent.com/fajri-rasid1st/assets/main/demo_app_gif/restaurant_demo_1.gif">
+  <img alt="demo-app-1" title="demo-app-1" width="240px" height="480px" src="https://raw.githubusercontent.com/fajri-rasid1st/assets/main/demo_app_gif/restaurant_demo_1.gif" />
+</a>
+<a href="https://raw.githubusercontent.com/fajri-rasid1st/assets/main/demo_app_gif/restaurant_demo_2.gif">
+  <img alt="demo-app-2" title="demo-app-2" width="240px" height="480px" src="https://raw.githubusercontent.com/fajri-rasid1st/assets/main/demo_app_gif/restaurant_demo_2.gif" />
+</a>
+<a href="https://raw.githubusercontent.com/fajri-rasid1st/assets/main/demo_app_gif/restaurant_demo_3.gif">
+  <img alt="demo-app-3" title="demo-app-3" width="240px" height="480px" src="https://raw.githubusercontent.com/fajri-rasid1st/assets/main/demo_app_gif/restaurant_demo_3.gif" />
+</a>
+<a href="https://raw.githubusercontent.com/fajri-rasid1st/assets/main/demo_app_gif/restaurant_demo_4.gif">
+  <img alt="demo-app-4" title="demo-app-4" width="240px" height="480px" src="https://raw.githubusercontent.com/fajri-rasid1st/assets/main/demo_app_gif/restaurant_demo_4.gif" />
+</a>
+<a href="https://raw.githubusercontent.com/fajri-rasid1st/assets/main/demo_app_gif/restaurant_demo_5.gif">
+  <img alt="demo-app-5" title="demo-app-5" width="240px" height="480px" src="https://raw.githubusercontent.com/fajri-rasid1st/assets/main/demo_app_gif/restaurant_demo_5.gif" />
+</a>
 
 ## Getting Started
 
