@@ -6,7 +6,7 @@ import 'package:restaurant_app/common/result_state.dart';
 import 'package:restaurant_app/utilities/utilities.dart';
 import 'package:restaurant_app/data/models/category.dart';
 import 'package:restaurant_app/data/models/customer_review.dart';
-import 'package:restaurant_app/data/models/menu_item.dart';
+import 'package:restaurant_app/data/models/item_menu.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
 import 'package:restaurant_app/providers/customer_review_provider.dart';
 import 'package:restaurant_app/providers/database_provider.dart';
@@ -17,7 +17,7 @@ import 'package:restaurant_app/ui/screens/loading_screen.dart';
 import 'package:restaurant_app/ui/screens/review_form_screen.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
-import 'package:restaurant_app/ui/widgets/menu_item_card.dart';
+import 'package:restaurant_app/ui/widgets/item_menu_card.dart';
 
 class DetailScreen extends StatelessWidget {
   final String restaurantId;
@@ -301,7 +301,7 @@ class DetailScreen extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 140,
-                    child: _buildMenuItems(
+                    child: _buildItemMenu(
                       crossAxisCount: 1,
                       childAspectRatio: 2 / 3,
                       foods: restaurant.menus.foods,
@@ -319,7 +319,7 @@ class DetailScreen extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 140,
-                    child: _buildMenuItems(
+                    child: _buildItemMenu(
                       crossAxisCount: 1,
                       childAspectRatio: 5 / 4,
                       drinks: restaurant.menus.drinks,
@@ -390,12 +390,12 @@ class DetailScreen extends StatelessWidget {
     );
   }
 
-  /// Untuk membuat widget menu item dengan kustomisasi jumlah grid dan rasio
-  GridView _buildMenuItems({
+  /// Untuk membuat widget item menu dengan kustomisasi jumlah grid dan rasio
+  GridView _buildItemMenu({
     required int crossAxisCount,
     required double childAspectRatio,
-    List<MenuItem>? foods,
-    List<MenuItem>? drinks,
+    List<ItemMenu>? foods,
+    List<ItemMenu>? drinks,
   }) {
     return GridView.builder(
       padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
@@ -406,7 +406,7 @@ class DetailScreen extends StatelessWidget {
         mainAxisSpacing: 12,
       ),
       itemBuilder: (context, index) {
-        return MenuItemCard(food: foods?[index], drink: drinks?[index]);
+        return ItemMenuCard(food: foods?[index], drink: drinks?[index]);
       },
       itemCount: foods?.length ?? drinks!.length,
     );

@@ -1,19 +1,19 @@
-import 'package:restaurant_app/data/models/menu_item.dart';
+import 'package:restaurant_app/data/models/item_menu.dart';
 
 class Menu {
-  final List<MenuItem> foods;
-  final List<MenuItem> drinks;
+  final List<ItemMenu> foods;
+  final List<ItemMenu> drinks;
 
   Menu({required this.foods, required this.drinks});
 
   /// Constructor untuk membuat objek Menu dari bentuk map (hasil parsing json)
   factory Menu.fromMap(Map<String, dynamic> menu) {
     return Menu(
-      foods: List<MenuItem>.from(menu['foods']?.map((food) {
-        return MenuItem.fromMap(food);
+      foods: List<ItemMenu>.from(menu['foods']?.map((food) {
+        return ItemMenu.fromMap(food);
       })),
-      drinks: List<MenuItem>.from(menu['drinks']?.map((drink) {
-        return MenuItem.fromMap(drink);
+      drinks: List<ItemMenu>.from(menu['drinks']?.map((drink) {
+        return ItemMenu.fromMap(drink);
       })),
     );
   }

@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/const.dart';
-import 'package:restaurant_app/data/models/menu_item.dart';
+import 'package:restaurant_app/data/models/item_menu.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 
-class MenuItemCard extends StatelessWidget {
-  final MenuItem? food;
-  final MenuItem? drink;
+class ItemMenuCard extends StatelessWidget {
+  final ItemMenu? food;
+  final ItemMenu? drink;
 
-  const MenuItemCard({Key? key, this.food, this.drink}) : super(key: key);
+  const ItemMenuCard({Key? key, this.food, this.drink}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
