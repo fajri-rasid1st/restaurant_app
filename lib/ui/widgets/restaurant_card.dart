@@ -58,7 +58,7 @@ class RestaurantCard extends StatelessWidget {
                         overflow: TextOverflow.ellipsis,
                         style: Theme.of(context)
                             .textTheme
-                            .headline6
+                            .titleLarge
                             ?.copyWith(fontSize: 18),
                       ),
                       const SizedBox(height: 12),
@@ -72,7 +72,7 @@ class RestaurantCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             city,
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           )
                         ],
                       ),
@@ -87,7 +87,7 @@ class RestaurantCard extends StatelessWidget {
                           const SizedBox(width: 4),
                           Text(
                             '$rating',
-                            style: Theme.of(context).textTheme.bodyText2,
+                            style: Theme.of(context).textTheme.bodyMedium,
                           )
                         ],
                       ),

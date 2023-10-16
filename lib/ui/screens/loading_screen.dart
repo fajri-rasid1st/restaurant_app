@@ -21,7 +21,7 @@ class LoadingScreen extends StatelessWidget {
               const SizedBox(height: 24),
               Text(
                 'Tunggu Sebentar...',
-                style: Theme.of(context).textTheme.bodyText1,
+                style: Theme.of(context).textTheme.bodyLarge,
               ),
             ],
           ),

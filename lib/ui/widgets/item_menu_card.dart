@@ -47,7 +47,7 @@ class ItemMenuCard extends StatelessWidget {
               drink?.name ?? food!.name,
               style: Theme.of(context)
                   .textTheme
-                  .subtitle2
+                  .titleSmall
                   ?.copyWith(color: onPrimaryColor),
             ),
           ),

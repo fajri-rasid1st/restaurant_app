@@ -163,7 +163,7 @@ class DetailScreen extends StatelessWidget {
                       restaurant.name,
                       maxLines: 2,
                       overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.headline4,
+                      style: Theme.of(context).textTheme.headlineMedium,
                     ),
                   ),
                   SizedBox(
@@ -198,7 +198,7 @@ class DetailScreen extends StatelessWidget {
                                           textAlign: TextAlign.center,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .headline6,
+                                              .titleLarge,
                                         ),
                                       ),
                                       Flexible(
@@ -209,7 +209,7 @@ class DetailScreen extends StatelessWidget {
                                           textAlign: TextAlign.center,
                                           style: Theme.of(context)
                                               .textTheme
-                                              .caption,
+                                              .bodySmall,
                                         ),
                                       ),
                                     ],
@@ -239,8 +239,9 @@ class DetailScreen extends StatelessWidget {
                                     maxLines: 1,
                                     overflow: TextOverflow.ellipsis,
                                     textAlign: TextAlign.center,
-                                    style:
-                                        Theme.of(context).textTheme.headline4,
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium,
                                   ),
                                 ),
                               ],
@@ -255,7 +256,7 @@ class DetailScreen extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
                     child: Text(
                       'Deskripsi',
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
                   ),
                   Padding(
@@ -269,7 +270,7 @@ class DetailScreen extends StatelessWidget {
                       trimExpandedText: 'Show Less',
                       style: Theme.of(context)
                           .textTheme
-                          .bodyText2
+                          .bodyMedium
                           ?.copyWith(color: secondaryTextColor),
                       lessStyle: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -286,7 +287,7 @@ class DetailScreen extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
                     child: Text(
                       'Menu',
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
                   ),
                   Padding(
@@ -295,7 +296,7 @@ class DetailScreen extends StatelessWidget {
                       'Makanan',
                       style: Theme.of(context)
                           .textTheme
-                          .subtitle1
+                          .titleMedium
                           ?.copyWith(color: secondaryTextColor),
                     ),
                   ),
@@ -313,7 +314,7 @@ class DetailScreen extends StatelessWidget {
                       'Minuman',
                       style: Theme.of(context)
                           .textTheme
-                          .subtitle1
+                          .titleMedium
                           ?.copyWith(color: secondaryTextColor),
                     ),
                   ),
@@ -331,7 +332,7 @@ class DetailScreen extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 4),
                     child: Text(
                       'Ulasan',
-                      style: Theme.of(context).textTheme.headline5,
+                      style: Theme.of(context).textTheme.headlineSmall,
                     ),
                   ),
                   _buildReviews(restaurant.customerReviews),
@@ -381,7 +382,7 @@ class DetailScreen extends StatelessWidget {
         return Chip(
           label: Text(
             categories[index].name,
-            style: Theme.of(context).textTheme.bodyText2,
+            style: Theme.of(context).textTheme.bodyMedium,
           ),
         );
       }),

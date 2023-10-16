@@ -25,7 +25,7 @@ class CategoryList extends StatelessWidget implements PreferredSizeWidget {
             builder: (context, categoryProvider, searchProvider, child) {
               return RawChip(
                 label: Text(categories[index]),
-                labelStyle: Theme.of(context).textTheme.subtitle2,
+                labelStyle: Theme.of(context).textTheme.titleSmall,
                 selected: categoryProvider.index == index ? true : false,
                 selectedColor: secondaryColor,
                 onSelected: (value) {

@@ -63,7 +63,7 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
             children: <Widget>[
               Text(
                 'Beri tanggapan Anda tentang ${widget.name}.',
-                style: Theme.of(context).textTheme.subtitle1,
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               const SizedBox(height: 16),
               _buildNameField(),
