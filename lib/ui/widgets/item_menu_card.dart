@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/common/const.dart';
+import 'package:restaurant_app/common/const/const.dart';
 import 'package:restaurant_app/data/models/item_menu.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';

@@ -2,81 +2,28 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 
-final TextTheme myTextTheme = TextTheme(
-  displayLarge: GoogleFonts.quicksand(
-    fontSize: 98,
-    fontWeight: FontWeight.w300,
-    letterSpacing: -1.5,
-    color: primaryColor,
-  ),
-  displayMedium: GoogleFonts.quicksand(
-    fontSize: 61,
-    fontWeight: FontWeight.w300,
-    letterSpacing: -0.5,
-    color: primaryColor,
-  ),
-  displaySmall: GoogleFonts.quicksand(
-    fontSize: 49,
-    fontWeight: FontWeight.w400,
-    color: primaryColor,
-  ),
-  headlineMedium: GoogleFonts.quicksand(
-    fontSize: 35,
-    fontWeight: FontWeight.w400,
-    letterSpacing: 0.25,
-    color: primaryColor,
-  ),
-  headlineSmall: GoogleFonts.quicksand(
-    fontSize: 24,
-    fontWeight: FontWeight.w700,
-    color: primaryColor,
-  ),
-  titleLarge: GoogleFonts.quicksand(
-    fontSize: 20,
-    fontWeight: FontWeight.w700,
-    letterSpacing: 0.15,
-    color: primaryColor,
-  ),
-  titleMedium: GoogleFonts.quicksand(
-    fontSize: 16,
-    fontWeight: FontWeight.w700,
-    letterSpacing: 0.15,
-    color: primaryColor,
-  ),
-  titleSmall: GoogleFonts.quicksand(
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
-    letterSpacing: 0.1,
-    color: primaryColor,
-  ),
-  bodyLarge: GoogleFonts.quicksand(
-    fontSize: 16,
-    fontWeight: FontWeight.w400,
-    letterSpacing: 0.5,
-    color: primaryColor,
-  ),
-  bodyMedium: GoogleFonts.quicksand(
-    fontSize: 14,
-    fontWeight: FontWeight.w400,
-    letterSpacing: 0.25,
-    color: primaryColor,
-  ),
-  labelLarge: GoogleFonts.quicksand(
-    fontSize: 14,
-    fontWeight: FontWeight.w500,
-    letterSpacing: 1.25,
-    color: primaryColor,
-  ),
-  bodySmall: GoogleFonts.quicksand(
-    fontSize: 12,
-    fontWeight: FontWeight.w400,
-    letterSpacing: 0.4,
-    color: primaryColor,
-  ),
-  labelSmall: GoogleFonts.quicksand(
-    fontSize: 10,
-    fontWeight: FontWeight.w400,
-    letterSpacing: 1.5,
-    color: primaryColor,
-  ),
+final TextTheme textTheme = GoogleFonts.quicksandTextTheme().apply(
+  displayColor: Palette.primaryTextColor,
+  bodyColor: Palette.primaryTextColor,
 );
+
+extension TextStyleExtension on TextStyle {
+  // Weight
+  TextStyle get light => copyWith(fontWeight: FontWeight.w300);
+  TextStyle get regular => copyWith(fontWeight: FontWeight.w400);
+  TextStyle get medium => copyWith(fontWeight: FontWeight.w500);
+  TextStyle get semiBold => copyWith(fontWeight: FontWeight.w600);
+  TextStyle get bold => copyWith(fontWeight: FontWeight.w700);
+
+  // Color
+  TextStyle get primaryColor => copyWith(color: Palette.primaryColor);
+  TextStyle get onPrimaryColor => copyWith(color: Palette.onPrimaryColor);
+  TextStyle get secondaryColor => copyWith(color: Palette.secondaryColor);
+  TextStyle get backgroundColor => copyWith(color: Palette.backgroundColor);
+  TextStyle get primaryTextColor => copyWith(color: Palette.primaryTextColor);
+  TextStyle get secondaryTextColor => copyWith(color: Palette.secondaryTextColor);
+  TextStyle get dividerColor => copyWith(color: Palette.dividerColor);
+
+  // Style
+  TextStyle get italic => copyWith(fontStyle: FontStyle.italic);
+}

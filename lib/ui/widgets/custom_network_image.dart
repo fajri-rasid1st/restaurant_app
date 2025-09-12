@@ -4,36 +4,36 @@ import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 
 class CustomNetworkImage extends StatelessWidget {
-  final String imgUrl;
+  final String imageUrl;
   final double width;
   final double height;
   final double placeHolderSize;
 
   const CustomNetworkImage({
-    Key? key,
-    required this.imgUrl,
+    super.key,
+    required this.imageUrl,
     required this.width,
     required this.height,
     required this.placeHolderSize,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
     return CachedNetworkImage(
-      imageUrl: imgUrl,
-      fit: BoxFit.cover,
+      imageUrl: imageUrl,
       width: width,
       height: height,
-      fadeInDuration: const Duration(milliseconds: 200),
-      fadeOutDuration: const Duration(milliseconds: 200),
+      fit: BoxFit.cover,
+      fadeInDuration: Duration(milliseconds: 200),
+      fadeOutDuration: Duration(milliseconds: 200),
       placeholder: (context, url) {
         return Center(
           child: SizedBox(
             width: placeHolderSize,
             height: placeHolderSize,
             child: SpinKitRing(
-              lineWidth: 4,
-              color: secondaryColor,
+              lineWidth: 3.5,
+              color: Palette.secondaryColor,
             ),
           ),
         );
@@ -45,7 +45,7 @@ class CustomNetworkImage extends StatelessWidget {
             height: placeHolderSize,
             child: Icon(
               Icons.motion_photos_off_outlined,
-              color: secondaryTextColor,
+              color: Palette.secondaryTextColor,
             ),
           ),
         );

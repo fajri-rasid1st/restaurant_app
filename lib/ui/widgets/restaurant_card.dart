@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:restaurant_app/common/const.dart';
+import 'package:restaurant_app/common/const/const.dart';
 import 'package:restaurant_app/utilities/utilities.dart';
 import 'package:restaurant_app/data/models/favorite.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';

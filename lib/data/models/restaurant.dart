@@ -15,6 +15,18 @@ class Restaurant {
     required this.rating,
   });
 
+  /// Factory constructor untuk membuat objek dari bentuk json map
+  factory Restaurant.fromMap(Map<String, dynamic> json) {
+    return Restaurant(
+      id: json['id'] ?? '',
+      name: json['name'] ?? '',
+      description: json['description'] ?? '',
+      pictureId: json['pictureId'] ?? '',
+      city: json['city'] ?? '',
+      rating: json['rating']?.toDouble() ?? 0.0,
+    );
+  }
+
   /// Method untuk mengubah bentuk object ke Map
   Map<String, dynamic> toMap() {
     return {
@@ -25,17 +37,5 @@ class Restaurant {
       'city': city,
       'rating': rating,
     };
-  }
-
-  /// Constructor untuk membuat objek dari bentuk map (hasil parsing json)
-  factory Restaurant.fromMap(Map<String, dynamic> restaurant) {
-    return Restaurant(
-      id: restaurant['id'] ?? '',
-      name: restaurant['name'] ?? '',
-      description: restaurant['description'] ?? '',
-      pictureId: restaurant['pictureId'] ?? '',
-      city: restaurant['city'] ?? '',
-      rating: restaurant['rating']?.toDouble() ?? 0.0,
-    );
   }
 }
