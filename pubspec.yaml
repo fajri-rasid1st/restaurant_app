@@ -1,5 +1,5 @@
 name: restaurant_app
-description: "Submission #1 for Dicoding Flutter Fundamental Course"
+description: "Submission for Dicoding Flutter Fundamental Course"
 publish_to: "none"
 
 version: 1.0.0+1
@@ -12,6 +12,7 @@ dependencies:
   cupertino_icons: ^1.0.8
   flutter:
     sdk: flutter
+  flutter_launcher_icons: ^0.14.4
   flutter_native_splash: ^2.4.6
   flutter_slidable: ^4.0.1
   flutter_spinkit: ^5.2.2
