@@ -60,7 +60,7 @@ class _SearchFieldState extends State<SearchField> {
         borderRadius: BorderRadius.circular(12),
         color: Colors.white,
       ),
-      child: ValueListenableBuilder<TextEditingValue>(
+      child: ValueListenableBuilder(
         valueListenable: controller,
         builder: (context, value, child) {
           final hasText = value.text.isNotEmpty;

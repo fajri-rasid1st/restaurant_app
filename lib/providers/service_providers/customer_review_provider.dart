@@ -6,7 +6,7 @@ import 'package:restaurant_app/data/services/restaurant_api_service.dart';
 class CustomerReviewProvider extends ChangeNotifier {
   final RestaurantApiService service;
 
-  CustomerReviewProvider({required this.service});
+  CustomerReviewProvider(this.service);
 
   List<CustomerReview> _customerReviews = [];
   ResultState _state = ResultState.initial;

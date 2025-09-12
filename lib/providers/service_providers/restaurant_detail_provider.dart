@@ -6,7 +6,7 @@ import 'package:restaurant_app/data/models/restaurant_detail.dart';
 class RestaurantDetailProvider extends ChangeNotifier {
   final RestaurantApiService service;
 
-  RestaurantDetailProvider({required this.service});
+  RestaurantDetailProvider(this.service);
 
   RestaurantDetail? _restaurantDetail;
   ResultState _state = ResultState.initial;

@@ -5,16 +5,16 @@ import 'package:restaurant_app/ui/themes/color_scheme.dart';
 
 class CustomNetworkImage extends StatelessWidget {
   final String imageUrl;
-  final double width;
-  final double height;
-  final double placeHolderSize;
+  final double? width;
+  final double? height;
+  final double? placeHolderSize;
 
   const CustomNetworkImage({
     super.key,
     required this.imageUrl,
-    required this.width,
-    required this.height,
-    required this.placeHolderSize,
+    this.width,
+    this.height,
+    this.placeHolderSize,
   });
 
   @override

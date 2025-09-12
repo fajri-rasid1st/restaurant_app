@@ -1,5 +1,17 @@
 import 'package:flutter/material.dart';
 
+final ColorScheme colorScheme = ColorScheme.fromSeed(
+  seedColor: Palette.primaryColor,
+  primary: Palette.primaryColor,
+  onPrimary: Palette.onPrimaryColor,
+  secondary: Palette.secondaryColor,
+  onSecondary: Palette.primaryTextColor,
+  surface: Palette.backgroundColor,
+  onSurface: Palette.primaryTextColor,
+  outline: Palette.primaryColor,
+  shadow: Palette.primaryColor,
+);
+
 class Palette {
   static const Color primaryColor = Color(0XFF3F3A57);
   static const Color onPrimaryColor = Color(0XFFFFFFFF);

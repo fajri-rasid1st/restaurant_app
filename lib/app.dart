@@ -1,32 +1,41 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_app/data/services/restaurant_api_service.dart';
+import 'package:restaurant_app/providers/service_providers/customer_review_provider.dart';
+import 'package:restaurant_app/providers/service_providers/restaurant_detail_provider.dart';
+import 'package:restaurant_app/providers/service_providers/restaurant_provider.dart';
+import 'package:restaurant_app/ui/themes/color_scheme.dart';
+import 'package:restaurant_app/ui/themes/text_theme.dart';
 
 class RestaurantApp extends StatelessWidget {
   const RestaurantApp({super.key});
 
-  // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Flutter Demo',
-      theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider<RestaurantProvider>(
+          create: (_) => RestaurantProvider(RestaurantApiService()),
+        ),
+        ChangeNotifierProvider<RestaurantDetailProvider>(
+          create: (_) => RestaurantDetailProvider(RestaurantApiService()),
+        ),
+        ChangeNotifierProvider<CustomerReviewProvider>(
+          create: (_) => CustomerReviewProvider(RestaurantApiService()),
+        ),
+      ],
+      child: MaterialApp(
+        title: 'Resto App',
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          fontFamily: 'Quicksand',
+          colorScheme: colorScheme,
+          textTheme: textTheme,
+          scaffoldBackgroundColor: Palette.backgroundColor,
+          dividerColor: Palette.dividerColor,
+        ),
+        home: FlutterLogo(),
       ),
-      home: Placeholder(),
     );
   }
 }
