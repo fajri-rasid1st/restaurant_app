@@ -27,15 +27,22 @@ class Restaurant {
     );
   }
 
-  /// Method untuk mengubah bentuk object ke Map
-  Map<String, dynamic> toMap() {
-    return {
-      'id': id,
-      'name': name,
-      'description': description,
-      'pictureId': pictureId,
-      'city': city,
-      'rating': rating,
-    };
+  /// Method untuk meng-copy object dengan beberapa field yang diubah
+  Restaurant copyWith({
+    String? id,
+    String? name,
+    String? description,
+    String? pictureId,
+    String? city,
+    double? rating,
+  }) {
+    return Restaurant(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      pictureId: pictureId ?? this.pictureId,
+      city: city ?? this.city,
+      rating: rating ?? this.rating,
+    );
   }
 }

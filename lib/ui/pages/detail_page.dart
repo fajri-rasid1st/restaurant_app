@@ -1,17 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
-import 'package:restaurant_app/common/const.dart';
-import 'package:restaurant_app/common/result_state.dart';
-import 'package:restaurant_app/utilities/utilities.dart';
-import 'package:restaurant_app/data/models/category.dart';
-import 'package:restaurant_app/data/models/customer_review.dart';
-import 'package:restaurant_app/data/models/item_menu.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
-import 'package:restaurant_app/providers/customer_review_provider.dart';
-import 'package:restaurant_app/providers/database_provider.dart';
-import 'package:restaurant_app/providers/favorite_provider.dart';
-import 'package:restaurant_app/providers/restaurant_detail_provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/pages/review_form_page.dart';

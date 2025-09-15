@@ -1,12 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app/common/result_state.dart';
-import 'package:restaurant_app/utilities/utilities.dart';
-import 'package:restaurant_app/providers/favorite_provider.dart';
-import 'package:restaurant_app/providers/page_reload_provider.dart';
-import 'package:restaurant_app/providers/restaurant_detail_provider.dart';
-import 'package:restaurant_app/providers/restaurant_provider.dart';
-import 'package:restaurant_app/providers/restaurant_search_provider.dart';
 import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';

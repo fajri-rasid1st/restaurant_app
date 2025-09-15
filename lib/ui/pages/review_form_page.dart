@@ -1,42 +1,42 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app/utilities/utilities.dart';
-import 'package:restaurant_app/providers/customer_review_provider.dart';
-import 'package:restaurant_app/providers/restaurant_detail_provider.dart';
+import 'package:restaurant_app/common/utilities/utilities.dart';
+import 'package:restaurant_app/providers/service_providers/customer_review_provider.dart';
+import 'package:restaurant_app/providers/service_providers/restaurant_detail_provider.dart';
 
 class ReviewFormScreen extends StatefulWidget {
-  final String id;
-  final String name;
+  final String restaurantId;
+  final String restaurantName;
 
   const ReviewFormScreen({
-    Key? key,
-    required this.id,
-    required this.name,
-  }) : super(key: key);
+    super.key,
+    required this.restaurantId,
+    required this.restaurantName,
+  });
 
   @override
   State<ReviewFormScreen> createState() => _ReviewFormScreenState();
 }
 
 class _ReviewFormScreenState extends State<ReviewFormScreen> {
-  late final GlobalKey<FormState> _formKey;
-  late final TextEditingController _nameController;
-  late final TextEditingController _reviewController;
+  late final GlobalKey<FormState> formKey;
+  late final TextEditingController nameController;
+  late final TextEditingController reviewController;
 
   @override
   void initState() {
-    _formKey = GlobalKey<FormState>();
-    _nameController = TextEditingController();
-    _reviewController = TextEditingController();
-
     super.initState();
+
+    formKey = GlobalKey<FormState>();
+    nameController = TextEditingController();
+    reviewController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _reviewController.dispose();
-    _nameController.dispose();
+    nameController.dispose();
+    reviewController.dispose();
 
     super.dispose();
   }
@@ -45,32 +45,32 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: Text('Ulasan'),
+        centerTitle: true,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
-          icon: const Icon(Icons.arrow_back_rounded),
+          icon: Icon(Icons.arrow_back_rounded),
           tooltip: 'Back',
         ),
-        title: const Text('Ulasan'),
-        centerTitle: true,
       ),
       body: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
         reverse: true,
+        padding: EdgeInsets.all(16),
         child: Form(
-          key: _formKey,
+          key: formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: <Widget>[
+            children: [
               Text(
-                'Beri tanggapan Anda tentang ${widget.name}.',
+                'Beri tanggapan Anda tentang ${widget.restaurantName}.',
                 style: Theme.of(context).textTheme.titleMedium,
               ),
-              const SizedBox(height: 16),
-              _buildNameField(),
-              const SizedBox(height: 16),
-              _buildReviewField(),
-              const SizedBox(height: 16),
-              _buildSubmitButton(),
+              SizedBox(height: 16),
+              buildNameTextField(),
+              SizedBox(height: 16),
+              buildReviewTextField(),
+              SizedBox(height: 16),
+              buildSubmitButton(),
             ],
           ),
         ),
@@ -78,106 +78,114 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
     );
   }
 
-  /// Membuat textfield untuk menginput nama
-  TextFormField _buildNameField() {
+  /// Widget function untuk membuat textfield nama
+  Widget buildNameTextField() {
     return TextFormField(
-      controller: _nameController,
+      controller: nameController,
       textInputAction: TextInputAction.next,
       keyboardType: TextInputType.name,
       decoration: InputDecoration(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         labelText: 'Nama',
-        hintText: 'Masukkan nama anda',
+        hintText: 'Masukkan nama Anda',
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
       style: GoogleFonts.quicksand(
         fontSize: 16,
         fontWeight: FontWeight.w500,
       ),
       validator: (value) {
-        if (value!.trim().isEmpty) return 'Form harus diisi';
+        if (value!.trim().isEmpty) return 'Nama harus diisi';
 
         return null;
       },
     );
   }
 
-  /// Membuat textfield untuk menginput review
-  TextFormField _buildReviewField() {
+  /// Widget function untuk membuat textfield review
+  Widget buildReviewTextField() {
     return TextFormField(
-      controller: _reviewController,
+      controller: reviewController,
       textInputAction: TextInputAction.done,
       keyboardType: TextInputType.multiline,
       maxLines: 4,
       decoration: InputDecoration(
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
         labelText: 'Ulasan',
-        hintText: 'Bagaimana tempat ini menurut Anda?',
+        hintText: 'Bagaimana restaurant ini menurut Anda?',
         alignLabelWithHint: true,
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(12),
+        ),
       ),
       style: GoogleFonts.quicksand(
         fontSize: 16,
         fontWeight: FontWeight.w500,
       ),
       validator: (value) {
-        if (value!.trim().isEmpty) return 'Form harus diisi';
+        if (value!.trim().isEmpty) return 'Ulasan harus diisi';
 
         return null;
       },
     );
   }
 
-  /// Membuat button untuk submit
-  SizedBox _buildSubmitButton() {
+  /// Widget function untuk membuat button submit
+  Widget buildSubmitButton() {
     return SizedBox(
       width: double.infinity,
-      child: Consumer2<CustomerReviewProvider, RestaurantDetailProvider>(
-        builder: (context, reviewProvider, detailProvider, child) {
-          return ElevatedButton.icon(
-            onPressed: () async {
-              // Hilangkan fokus dari keybooard
-              FocusScope.of(context).unfocus();
-
-              if (_formKey.currentState!.validate()) {
-                // Jika form telah diisi dengan benar, kirim data review ke server
-                final isSuccess = await reviewProvider.sendCustomerReview(
-                  widget.id,
-                  _nameController.text,
-                  _reviewController.text,
-                );
-
-                if (isSuccess) {
-                  detailProvider.detail.customerReviews =
-                      reviewProvider.customerReviews;
-
-                  Utilities.showSnackBarMessage(
-                    context: context,
-                    text: 'Berhasil menambah ulasan',
-                  );
-                } else {
-                  Utilities.showSnackBarMessage(
-                    context: context,
-                    text: 'Gagal menambah ulasan. Periksa koneksi internet.',
-                  );
-                }
-
-                // Kembali ke page sebelumnya
-                Navigator.pop(context);
-              }
-            },
-            label: const Text(
-              'Tambah Ulasan',
-              style: TextStyle(fontWeight: FontWeight.bold),
-            ),
-            icon: const Icon(Icons.add_rounded),
-            style: ElevatedButton.styleFrom(
-              padding: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-            ),
-          );
-        },
+      child: ElevatedButton.icon(
+        label: Text(
+          'Tambah Ulasan',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        icon: Icon(Icons.add_rounded),
+        style: ElevatedButton.styleFrom(
+          padding: EdgeInsets.symmetric(vertical: 12),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(12),
+          ),
+        ),
+        onPressed: submitReview,
       ),
     );
+  }
+
+  /// Function untuk mengirim data review ke server
+  Future<void> submitReview() async {
+    // Hilangkan fokus dari keybooard
+    FocusScope.of(context).unfocus();
+
+    // Jika form telah diisi dengan benar, kirim data review ke server.
+    if (formKey.currentState!.validate()) {
+      final customerReviewProvider = context.read<CustomerReviewProvider>();
+
+      await customerReviewProvider.sendCustomerReview(
+        id: widget.restaurantId,
+        name: nameController.text,
+        review: reviewController.text,
+      );
+
+      final message = customerReviewProvider.message;
+
+      if (!mounted) return;
+
+      final restaurantDetailProvider = context.read<RestaurantDetailProvider>();
+
+      restaurantDetailProvider.restaurantDetail?.copyWith(
+        customerReviews: customerReviewProvider.customerReviews,
+      );
+
+      // Tampilkan snackbar
+      Utilities.showSnackBarMessage(
+        context: context,
+        text: message,
+      );
+
+      // Kembali ke page sebelumnya
+      Navigator.pop(context);
+    }
   }
 }

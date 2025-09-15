@@ -1,16 +1,7 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app/common/const.dart';
-import 'package:restaurant_app/common/result_state.dart';
-import 'package:restaurant_app/data/api/notification_api.dart';
-import 'package:restaurant_app/providers/bottom_nav_provider.dart';
-import 'package:restaurant_app/providers/category_provider.dart';
-import 'package:restaurant_app/providers/restaurant_provider.dart';
-import 'package:restaurant_app/providers/restaurant_search_provider.dart';
 import 'package:restaurant_app/ui/pages/discover_page.dart';
-import 'package:restaurant_app/ui/pages/settings_page.dart';
-import 'package:restaurant_app/ui/screens/favorite_screen.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/category_list.dart';
 import 'package:restaurant_app/ui/widgets/search_field.dart';

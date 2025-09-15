@@ -34,6 +34,34 @@ class RestaurantDetail extends Restaurant {
       menus: Menu.fromMap(json['menus']),
     );
   }
+
+  /// Method untuk meng-copy object dengan beberapa field yang diubah
+  @override
+  RestaurantDetail copyWith({
+    String? id,
+    String? name,
+    String? description,
+    String? pictureId,
+    String? city,
+    double? rating,
+    String? address,
+    List<Category>? categories,
+    List<CustomerReview>? customerReviews,
+    Menu? menus,
+  }) {
+    return RestaurantDetail(
+      id: id ?? this.id,
+      name: name ?? this.name,
+      description: description ?? this.description,
+      pictureId: pictureId ?? this.pictureId,
+      city: city ?? this.city,
+      rating: rating ?? this.rating,
+      address: address ?? this.address,
+      categories: categories ?? this.categories,
+      customerReviews: customerReviews ?? this.customerReviews,
+      menus: menus ?? this.menus,
+    );
+  }
 }
 
 class Category {

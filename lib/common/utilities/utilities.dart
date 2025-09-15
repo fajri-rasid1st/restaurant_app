@@ -10,7 +10,7 @@ class Utilities {
     SnackBarAction? action,
   }) {
     // Create snackbar
-    SnackBar snackBar = SnackBar(
+    final snackBar = SnackBar(
       content: Text(
         text,
         style: GoogleFonts.quicksand(),

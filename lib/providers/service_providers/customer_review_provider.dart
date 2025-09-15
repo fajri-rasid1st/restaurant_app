@@ -34,6 +34,8 @@ class CustomerReviewProvider extends ChangeNotifier {
 
       _customerReviews = result;
 
+      _message = 'Berhasil mengirim review.';
+
       _state = ResultState.data;
     } catch (e) {
       debugPrint('sendCustomerReview error: ${e.toString()}');
