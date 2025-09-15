@@ -6,75 +6,44 @@ import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/category_list.dart';
 import 'package:restaurant_app/ui/widgets/search_field.dart';
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({Key? key}) : super(key: key);
-
-  @override
-  State<MainScreen> createState() => _MainScreenState();
-}
-
-class _MainScreenState extends State<MainScreen> {
-  final NotificationApi _notificationApi = NotificationApi();
-
-  final List<Widget> _pages = <Widget>[
-    const DiscoverPage(),
-    const SettingsPage(),
-  ];
-
-  Timer? _debouncer;
-
-  @override
-  void initState() {
-    _notificationApi.configureSelectNotificationSubject(context);
-
-    super.initState();
-  }
-
-  @override
-  void dispose() {
-    selectNotificationSubject.close();
-
-    _debouncer?.cancel();
-
-    super.dispose();
-  }
+class MainPage extends StatelessWidget {
+  const MainPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     final isInvisible = MediaQuery.of(context).viewInsets.bottom != 0;
 
-    return Consumer4<RestaurantProvider, RestaurantSearchProvider,
-        CategoryProvider, BottomNavProvider>(
-      builder: (
-        context,
-        restaurantProvider,
-        searchProvider,
-        categoryProvider,
-        bottomNavProvider,
-        child,
-      ) {
-        final currentIndex = bottomNavProvider.index;
+    return Consumer4<RestaurantProvider, RestaurantSearchProvider, CategoryProvider, BottomNavProvider>(
+      builder:
+          (
+            context,
+            restaurantProvider,
+            searchProvider,
+            categoryProvider,
+            bottomNavProvider,
+            child,
+          ) {
+            final currentIndex = bottomNavProvider.index;
 
-        return WillPopScope(
-          onWillPop: () => onWillPop(searchProvider),
-          child: Scaffold(
-            resizeToAvoidBottomInset: false,
-            appBar: currentIndex == 0 ? null : _buildAppBar(),
-            body: currentIndex == 0
-                ? _buildScaffoldBody(
-                    bottomNavProvider,
-                    searchProvider,
-                    restaurantProvider,
-                    categoryProvider,
-                  )
-                : _buildBody(currentIndex),
-            bottomNavigationBar: _buildBottomNav(bottomNavProvider),
-            floatingActionButton: isInvisible ? null : _buildFab(context),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.centerDocked,
-          ),
-        );
-      },
+            return WillPopScope(
+              onWillPop: () => onWillPop(searchProvider),
+              child: Scaffold(
+                resizeToAvoidBottomInset: false,
+                appBar: currentIndex == 0 ? null : _buildAppBar(),
+                body: currentIndex == 0
+                    ? _buildScaffoldBody(
+                        bottomNavProvider,
+                        searchProvider,
+                        restaurantProvider,
+                        categoryProvider,
+                      )
+                    : _buildBody(currentIndex),
+                bottomNavigationBar: _buildBottomNav(bottomNavProvider),
+                floatingActionButton: isInvisible ? null : _buildFab(context),
+                floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+              ),
+            );
+          },
     );
   }
 
@@ -118,7 +87,7 @@ class _MainScreenState extends State<MainScreen> {
                 leadingWidth: 68,
               ),
             ),
-          )
+          ),
         ];
       },
       body: _buildBody(bottomNavProvider.index),
@@ -184,8 +153,8 @@ class _MainScreenState extends State<MainScreen> {
             size: 28,
           ),
           tooltip: 'Search',
-        )
-      ]
+        ),
+      ],
     ];
   }
 
@@ -197,8 +166,8 @@ class _MainScreenState extends State<MainScreen> {
     return restaurantProvider.state == ResultState.error
         ? null
         : searchProvider.isSearching == true
-            ? null
-            : const CategoryList(categories: Const.categories);
+        ? null
+        : const CategoryList(categories: Const.categories);
   }
 
   /// Widget untuk membuat body
@@ -207,37 +176,38 @@ class _MainScreenState extends State<MainScreen> {
   /// Widget untuk membuat bottom navigation bar
   BottomNavigationBar _buildBottomNav(BottomNavProvider bottomNavProvider) {
     return BottomNavigationBar(
-        currentIndex: bottomNavProvider.index,
-        selectedFontSize: 12,
-        selectedItemColor: primaryColor,
-        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-        unselectedFontSize: 12,
-        unselectedItemColor: secondaryTextColor,
-        type: BottomNavigationBarType.fixed,
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.explore_outlined),
-            activeIcon: Icon(Icons.explore),
-            label: 'Discover',
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.settings_outlined),
-            activeIcon: Icon(Icons.settings),
-            label: 'Settings',
-          ),
-        ],
-        onTap: (index) {
-          bottomNavProvider.index = index;
+      currentIndex: bottomNavProvider.index,
+      selectedFontSize: 12,
+      selectedItemColor: primaryColor,
+      selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
+      unselectedFontSize: 12,
+      unselectedItemColor: secondaryTextColor,
+      type: BottomNavigationBarType.fixed,
+      items: const <BottomNavigationBarItem>[
+        BottomNavigationBarItem(
+          icon: Icon(Icons.explore_outlined),
+          activeIcon: Icon(Icons.explore),
+          label: 'Discover',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.settings_outlined),
+          activeIcon: Icon(Icons.settings),
+          label: 'Settings',
+        ),
+      ],
+      onTap: (index) {
+        bottomNavProvider.index = index;
 
-          switch (index) {
-            case 0:
-              bottomNavProvider.title = 'Discover';
-              break;
-            case 1:
-              bottomNavProvider.title = 'Settings';
-              break;
-          }
-        });
+        switch (index) {
+          case 0:
+            bottomNavProvider.title = 'Discover';
+            break;
+          case 1:
+            bottomNavProvider.title = 'Settings';
+            break;
+        }
+      },
+    );
   }
 
   /// Widget untuk membuat floating action button
@@ -263,10 +233,6 @@ class _MainScreenState extends State<MainScreen> {
   }
 
   // Melakukan pengecekan, apakah sedang melakukan searching atau tidak?
-  //
-  // * jika iya, maka aplikasi tidak akan keluar jika menekan tombol back
-  //   pada perangkat, melainkan akan melakukan reset searching terlebih dahulu.
-  // * jika tidak, aplikasi akan keluar jika menekan tombol back.
   Future<bool> onWillPop(RestaurantSearchProvider searchProvider) {
     if (searchProvider.isSearching) {
       searchProvider.isSearching = false;

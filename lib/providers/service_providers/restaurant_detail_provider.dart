@@ -16,6 +16,12 @@ class RestaurantDetailProvider extends ChangeNotifier {
   ResultState get state => _state;
   String get message => _message;
 
+  /// Set data detail restoran
+  set restaurantDetail(RestaurantDetail? restaurantDetail) {
+    _restaurantDetail = restaurantDetail;
+    notifyListeners();
+  }
+
   /// Mengambil data detail restoran sesuai [id]-nya
   Future<void> getRestaurantDetail(String id) async {
     _state = ResultState.loading;

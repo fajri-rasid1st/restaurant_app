@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
@@ -8,29 +7,35 @@ import 'package:restaurant_app/ui/widgets/custom_information.dart';
 import 'package:restaurant_app/ui/widgets/restaurant_card.dart';
 
 class DiscoverPage extends StatelessWidget {
-  const DiscoverPage({Key? key}) : super(key: key);
+  const DiscoverPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return Consumer5<RestaurantProvider, RestaurantSearchProvider,
-        CategoryProvider, DatabaseProvider, FavoriteProvider>(
-      builder: (
-        context,
-        restaurantProvider,
-        searchProvider,
-        categoryProvider,
-        databaseProvider,
-        favoriteProvider,
-        child,
-      ) {
-        return _buildMainPage(
-          restaurantProvider,
-          searchProvider,
-          categoryProvider,
-          databaseProvider,
-          favoriteProvider,
-        );
-      },
+    return Consumer5<
+      RestaurantProvider,
+      RestaurantSearchProvider,
+      CategoryProvider,
+      DatabaseProvider,
+      FavoriteProvider
+    >(
+      builder:
+          (
+            context,
+            restaurantProvider,
+            searchProvider,
+            categoryProvider,
+            databaseProvider,
+            favoriteProvider,
+            child,
+          ) {
+            return _buildMainPage(
+              restaurantProvider,
+              searchProvider,
+              categoryProvider,
+              databaseProvider,
+              favoriteProvider,
+            );
+          },
     );
   }
 
@@ -44,21 +49,20 @@ class DiscoverPage extends StatelessWidget {
   ) {
     switch (restaurantProvider.state) {
       case ResultState.loading:
-        return const LoadingScreen();
+        return const LoadingPage();
 
       case ResultState.error:
-        return const ErrorScreen();
+        return const ErrorPage();
       default:
         if (searchProvider.state == ResultState.loading) {
-          return const LoadingScreen();
+          return const LoadingPage();
         } else if (searchProvider.state == ResultState.error) {
-          return const ErrorScreen();
+          return const ErrorPage();
         }
 
         var restaurants = restaurantProvider.restaurants;
 
-        if (searchProvider.isSearching && searchProvider.query.isNotEmpty ||
-            categoryProvider.category.isNotEmpty) {
+        if (searchProvider.isSearching && searchProvider.query.isNotEmpty || categoryProvider.category.isNotEmpty) {
           restaurants = searchProvider.restaurants;
         }
 
@@ -101,7 +105,7 @@ class DiscoverPage extends StatelessWidget {
                         ),
                         if (hasSeparator) ...[
                           const Divider(height: 1, thickness: 1),
-                        ]
+                        ],
                       ],
                     );
                   },
@@ -139,9 +143,7 @@ class DiscoverPage extends StatelessWidget {
           ),
           SlidableAction(
             onPressed: (context) {
-              databaseProvider
-                  .isFavoriteAlreadyExist(restaurant.id)
-                  .then((isExist) {
+              databaseProvider.isFavoriteAlreadyExist(restaurant.id).then((isExist) {
                 if (isExist) {
                   Utilities.showSnackBarMessage(
                     context: context,

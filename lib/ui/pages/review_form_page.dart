@@ -5,21 +5,21 @@ import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/providers/service_providers/customer_review_provider.dart';
 import 'package:restaurant_app/providers/service_providers/restaurant_detail_provider.dart';
 
-class ReviewFormScreen extends StatefulWidget {
+class ReviewFormPage extends StatefulWidget {
   final String restaurantId;
   final String restaurantName;
 
-  const ReviewFormScreen({
+  const ReviewFormPage({
     super.key,
     required this.restaurantId,
     required this.restaurantName,
   });
 
   @override
-  State<ReviewFormScreen> createState() => _ReviewFormScreenState();
+  State<ReviewFormPage> createState() => _ReviewFormPageState();
 }
 
-class _ReviewFormScreenState extends State<ReviewFormScreen> {
+class _ReviewFormPageState extends State<ReviewFormPage> {
   late final GlobalKey<FormState> formKey;
   late final TextEditingController nameController;
   late final TextEditingController reviewController;
@@ -168,21 +168,26 @@ class _ReviewFormScreenState extends State<ReviewFormScreen> {
         review: reviewController.text,
       );
 
-      final message = customerReviewProvider.message;
-
       if (!mounted) return;
 
-      final restaurantDetailProvider = context.read<RestaurantDetailProvider>();
-
-      restaurantDetailProvider.restaurantDetail?.copyWith(
-        customerReviews: customerReviewProvider.customerReviews,
-      );
+      final message = customerReviewProvider.message;
+      final customerReviews = customerReviewProvider.customerReviews;
 
       // Tampilkan snackbar
       Utilities.showSnackBarMessage(
         context: context,
         text: message,
       );
+
+      final restaurantDetailProvider = context.read<RestaurantDetailProvider>();
+
+      if (restaurantDetailProvider.restaurantDetail != null) {
+        final newRestaurantDetail = restaurantDetailProvider.restaurantDetail!.copyWith(
+          customerReviews: customerReviews,
+        );
+
+        restaurantDetailProvider.restaurantDetail = newRestaurantDetail;
+      }
 
       // Kembali ke page sebelumnya
       Navigator.pop(context);

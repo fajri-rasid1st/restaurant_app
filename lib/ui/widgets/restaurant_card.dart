@@ -28,7 +28,7 @@ class RestaurantCard extends StatelessWidget {
                   child: Hero(
                     tag: restaurant.id,
                     child: CustomNetworkImage(
-                      imageUrl: '${Const.imgUrl}/${restaurant.pictureId}',
+                      imageUrl: '${Const.imgUrl}${restaurant.pictureId}',
                       width: double.infinity,
                       height: 100,
                       placeHolderSize: 40,
