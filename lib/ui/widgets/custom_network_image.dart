@@ -5,9 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 
-// Project imports:
-import 'package:restaurant_app/ui/themes/color_scheme.dart';
-
 class CustomNetworkImage extends StatelessWidget {
   final String imageUrl;
   final double? width;
@@ -38,7 +35,7 @@ class CustomNetworkImage extends StatelessWidget {
             height: placeHolderSize,
             child: SpinKitRing(
               lineWidth: 3.5,
-              color: Palette.secondaryColor,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         );
@@ -50,7 +47,7 @@ class CustomNetworkImage extends StatelessWidget {
             height: placeHolderSize,
             child: Icon(
               Icons.motion_photos_off_outlined,
-              color: Palette.secondaryTextColor,
+              color: Theme.of(context).colorScheme.primary,
             ),
           ),
         );

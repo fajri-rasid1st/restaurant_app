@@ -17,6 +17,7 @@ import 'package:restaurant_app/providers/app_providers/selected_category_provide
 import 'package:restaurant_app/providers/service_providers/restaurants_provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
+import 'package:restaurant_app/ui/themes/text_theme.dart';
 import 'package:restaurant_app/ui/widgets/category_list.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
 import 'package:restaurant_app/ui/widgets/restaurant_card.dart';
@@ -42,7 +43,6 @@ class MainPage extends StatelessWidget {
           child: Scaffold(
             resizeToAvoidBottomInset: false,
             body: buildScaffoldBody(
-              context: context,
               isSearching: provider.value,
             ),
           ),
@@ -53,50 +53,39 @@ class MainPage extends StatelessWidget {
 
   /// Widget untuk membuat NestedScrollView yang diisi SliverAppBar dan body
   Widget buildScaffoldBody({
-    required BuildContext context,
     required bool isSearching,
   }) {
     return Consumer<RestaurantsProvider>(
       builder: (context, provider, child) {
         return NestedScrollView(
-          floatHeaderSlivers: true,
-          headerSliverBuilder: (_, __) {
+          headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
-              SliverOverlapAbsorber(
-                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-                sliver: SliverSafeArea(
-                  top: false,
-                  sliver: SliverAppBar(
-                    floating: true,
-                    pinned: true,
-                    snap: true,
-                    title: buildAppBarTitle(
-                      context: context,
-                      isSearching: isSearching,
-                    ),
-                    leading: buildAppBarLeading(
-                      context: context,
-                      isSearching: isSearching,
-                    ),
-                    actions: buildAppBarActions(
-                      context: context,
-                      isSearching: isSearching,
-                      state: provider.state,
-                    ),
-                    bottom: buildAppBarBottom(
-                      context: context,
-                      isSearching: isSearching,
-                      state: provider.state,
-                    ),
-                    titleSpacing: 0,
-                    leadingWidth: 68,
-                  ),
+              SliverAppBar(
+                pinned: true,
+                title: buildAppBarTitle(
+                  context: context,
+                  isSearching: isSearching,
+                ),
+                leading: buildAppBarLeading(
+                  context: context,
+                  isSearching: isSearching,
+                ),
+                actions: buildAppBarActions(
+                  context: context,
+                  isSearching: isSearching,
+                  state: provider.state,
+                ),
+              ),
+              PinnedHeaderSliver(
+                child: buildAppBarBottom(
+                  context: context,
+                  isSearching: isSearching,
+                  state: provider.state,
                 ),
               ),
             ];
           },
           body: buildMainBody(
-            context: context,
             restaurants: provider.restaurants,
             state: provider.state,
             message: provider.message,
@@ -113,13 +102,16 @@ class MainPage extends StatelessWidget {
   }) {
     return isSearching
         ? SearchField(
-            hintText: 'Search Restaurants or Menu',
+            hintText: 'Search restaurants...',
             onChanged: (query) {
               context.read<SearchQueryProvider>().value = query;
               context.read<RestaurantsProvider>().getRestaurants(query);
             },
           )
-        : Text("Daftar Restoran");
+        : Text(
+            "Restaurant App",
+            style: Theme.of(context).textTheme.titleLarge!.bold,
+          );
   }
 
   /// Widget untuk membuat leading app bar
@@ -133,18 +125,13 @@ class MainPage extends StatelessWidget {
               context.read<IsSearchingProvider>().value = false;
               context.read<SearchQueryProvider>().value = '';
             },
-            icon: Icon(
-              Icons.arrow_back_rounded,
-              size: 28,
-            ),
+            icon: Icon(Icons.arrow_back_rounded),
             tooltip: 'Back',
           )
         : Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.only(left: 16),
             child: Image.asset(
               AssetPath.getIcon('ic_launcher.png'),
-              width: 48,
-              height: 48,
             ),
           );
   }
@@ -163,6 +150,7 @@ class MainPage extends StatelessWidget {
               : () {
                   context.read<IsSearchingProvider>().value = true;
                   context.read<SelectedCategoryProvider>().value = RestaurantCategory.all;
+                  context.read<RestaurantsProvider>().getRestaurants();
                 },
           icon: Icon(
             Icons.search_rounded,
@@ -175,30 +163,26 @@ class MainPage extends StatelessWidget {
   }
 
   /// Widget untuk membuat list category pada bottom app bar
-  PreferredSizeWidget? buildAppBarBottom({
+  Widget buildAppBarBottom({
     required BuildContext context,
     required bool isSearching,
     required ResultState state,
   }) {
     return isSearching || state == ResultState.error
-        ? null
-        : PreferredSize(
-            preferredSize: Size.fromHeight(60),
-            child: CategoryList(
-              categories: RestaurantCategory.values,
-              onCategorySelected: (value) {
-                final query = value == RestaurantCategory.all ? null : value.name.toLowerCase();
+        ? SizedBox.shrink()
+        : CategoryList(
+            categories: RestaurantCategory.values,
+            onCategorySelected: (value) {
+              final query = value == RestaurantCategory.all ? null : value.name.toLowerCase();
 
-                context.read<SelectedCategoryProvider>().value = value;
-                context.read<RestaurantsProvider>().getRestaurants(query);
-              },
-            ),
+              context.read<SelectedCategoryProvider>().value = value;
+              context.read<RestaurantsProvider>().getRestaurants(query);
+            },
           );
   }
 
   /// Widget untuk membuat body pada NestedScrollView
   Widget buildMainBody({
-    required BuildContext context,
     required List<Restaurant> restaurants,
     required ResultState state,
     required String message,
@@ -223,7 +207,6 @@ class MainPage extends StatelessWidget {
         }
 
         return buildRestaurantList(
-          context: context,
           restaurants: restaurants,
         );
     }
@@ -240,39 +223,39 @@ class MainPage extends StatelessWidget {
 
   /// Widget untuk membuat daftar restoran jika data tidak kosong
   Widget buildRestaurantList({
-    required BuildContext context,
     required List<Restaurant> restaurants,
   }) {
-    return CustomScrollView(
-      slivers: [
-        SliverOverlapInjector(
-          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-        ),
-        SliverList(
-          delegate: SliverChildBuilderDelegate(
-            (context, index) {
-              final count = restaurants.length;
-              final hasSeparator = index != count - 1;
+    return Builder(
+      builder: (context) {
+        return CustomScrollView(
+          slivers: [
+            SliverList(
+              delegate: SliverChildBuilderDelegate(
+                (context, index) {
+                  final count = restaurants.length;
+                  final hasSeparator = index != count - 1;
 
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  RestaurantCard(
-                    restaurant: restaurants[index],
-                    onTap: () {},
-                  ),
-                  if (hasSeparator)
-                    Divider(
-                      height: 1,
-                      thickness: 1,
-                    ),
-                ],
-              );
-            },
-            childCount: restaurants.length,
-          ),
-        ),
-      ],
+                  return Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      RestaurantCard(
+                        restaurant: restaurants[index],
+                        onTap: () {},
+                      ),
+                      if (hasSeparator)
+                        Divider(
+                          height: 1,
+                          thickness: 0.5,
+                        ),
+                    ],
+                  );
+                },
+                childCount: restaurants.length,
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 

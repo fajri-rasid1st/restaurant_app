@@ -16,7 +16,6 @@ import 'package:restaurant_app/providers/service_providers/restaurant_detail_pro
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/pages/review_form_page.dart';
-import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 import 'package:restaurant_app/ui/widgets/item_menu_card.dart';
 
@@ -63,7 +62,7 @@ class DetailPage extends StatelessWidget {
   }) {
     return Scaffold(
       body: NestedScrollView(
-        headerSliverBuilder: (_, __) {
+        headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
               pinned: true,
@@ -241,20 +240,18 @@ class DetailPage extends StatelessWidget {
                     child: ReadMoreText(
                       restaurantDetail.description,
                       trimLines: 4,
-                      colorClickableText: Palette.primaryColor,
+                      colorClickableText: Theme.of(context).colorScheme.primary,
                       trimMode: TrimMode.Line,
                       trimCollapsedText: 'Show More',
                       trimExpandedText: 'Show Less',
-                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                        color: Palette.secondaryTextColor,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium,
                       lessStyle: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Palette.primaryColor,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                       moreStyle: TextStyle(
                         fontWeight: FontWeight.bold,
-                        color: Palette.primaryColor,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   ),
@@ -273,9 +270,7 @@ class DetailPage extends StatelessWidget {
                     padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
                     child: Text(
                       'Makanan',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Palette.secondaryTextColor,
-                      ),
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
                   SizedBox(
@@ -291,9 +286,7 @@ class DetailPage extends StatelessWidget {
                     padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
                     child: Text(
                       'Minuman',
-                      style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        color: Palette.secondaryTextColor,
-                      ),
+                      style: Theme.of(context).textTheme.titleMedium,
                     ),
                   ),
                   SizedBox(
@@ -415,7 +408,6 @@ class DetailPage extends StatelessWidget {
         return ListTile(
           leading: CircleAvatar(
             radius: 24,
-            backgroundColor: Palette.backgroundColor,
             child: Image.asset(
               AssetPath.getImage("user_pict.png"),
               fit: BoxFit.fill,

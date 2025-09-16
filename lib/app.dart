@@ -3,8 +3,7 @@ import 'package:flutter/material.dart';
 
 // Project imports:
 import 'package:restaurant_app/ui/pages/main_page.dart';
-import 'package:restaurant_app/ui/themes/color_scheme.dart';
-import 'package:restaurant_app/ui/themes/text_theme.dart';
+import 'package:restaurant_app/ui/themes/app_theme.dart';
 
 class RestaurantApp extends StatelessWidget {
   const RestaurantApp({super.key});
@@ -14,13 +13,9 @@ class RestaurantApp extends StatelessWidget {
     return MaterialApp(
       title: 'Resto App',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        fontFamily: 'Quicksand',
-        colorScheme: colorScheme,
-        textTheme: textTheme,
-        scaffoldBackgroundColor: Palette.backgroundColor,
-        dividerColor: Palette.dividerColor,
-      ),
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.system,
       home: MainPage(),
     );
   }

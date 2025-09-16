@@ -43,7 +43,7 @@ Future<void> main() async {
           create: (context) => SelectedCategoryProvider(),
         ),
         ChangeNotifierProvider<RestaurantsProvider>(
-          create: (context) => RestaurantsProvider(context.read<RestaurantApiService>()),
+          create: (context) => RestaurantsProvider(context.read<RestaurantApiService>())..getRestaurants(),
         ),
       ],
       builder: (context, child) {

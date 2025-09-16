@@ -7,7 +7,6 @@ import 'package:provider/provider.dart';
 // Project imports:
 import 'package:restaurant_app/common/utilities/asset_path.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
-import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
 
 class ErrorPage extends StatelessWidget {
@@ -39,7 +38,7 @@ class ErrorPage extends StatelessWidget {
                         height: 18,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
-                          color: Palette.secondaryTextColor,
+                          color: Theme.of(context).colorScheme.primary,
                         ),
                       )
                     : Icon(Icons.replay_rounded),

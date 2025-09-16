@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:restaurant_app/common/utilities/asset_path.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
-import 'package:restaurant_app/ui/themes/color_scheme.dart';
 
 class ItemMenuCard extends StatelessWidget {
   final ItemMenu item;
@@ -53,9 +52,7 @@ class ItemMenuCard extends StatelessWidget {
             padding: EdgeInsets.all(8),
             child: Text(
               item.name,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                color: Palette.onPrimaryColor,
-              ),
+              style: Theme.of(context).textTheme.titleSmall,
             ),
           ),
         ],

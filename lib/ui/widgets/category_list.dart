@@ -7,7 +7,7 @@ import 'package:provider/provider.dart';
 // Project imports:
 import 'package:restaurant_app/common/enum/restaurant_category.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
-import 'package:restaurant_app/ui/themes/color_scheme.dart';
+import 'package:restaurant_app/ui/themes/text_theme.dart';
 
 class CategoryList extends StatelessWidget {
   final List<RestaurantCategory> categories;
@@ -21,14 +21,12 @@ class CategoryList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
+    return Container(
       width: double.infinity,
+      color: Theme.of(context).colorScheme.primaryContainer,
       child: SingleChildScrollView(
         scrollDirection: Axis.horizontal,
-        padding: EdgeInsets.symmetric(
-          vertical: 12,
-          horizontal: 16,
-        ),
+        padding: EdgeInsets.fromLTRB(16, 4, 16, 12),
         child: Row(
           children: [
             for (var index = 0; index < categories.length; index++) ...[
@@ -36,11 +34,18 @@ class CategoryList extends StatelessWidget {
                 builder: (context, provider, child) {
                   return ChoiceChip(
                     label: Text(categories[index].name),
-                    labelStyle: Theme.of(context).textTheme.titleSmall,
+                    labelStyle: Theme.of(context).textTheme.titleSmall!.bold,
                     selected: provider.value == categories[index] ? true : false,
-                    selectedColor: Palette.secondaryColor,
+                    selectedColor: Theme.of(context).colorScheme.tertiary.withValues(alpha: .4),
+                    selectedShadowColor: Colors.transparent,
+                    side: BorderSide.none,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadiusGeometry.circular(99),
+                    ),
                     onSelected: (selected) {
-                      if (selected) onCategorySelected.call(provider.value);
+                      if (selected) {
+                        onCategorySelected.call(categories[index]);
+                      }
                     },
                   );
                 },

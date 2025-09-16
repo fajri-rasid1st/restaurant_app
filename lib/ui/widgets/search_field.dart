@@ -4,9 +4,6 @@ import 'dart:async';
 // Flutter imports:
 import 'package:flutter/material.dart';
 
-// Package imports:
-import 'package:google_fonts/google_fonts.dart';
-
 class SearchField extends StatefulWidget {
   final String hintText;
   final ValueChanged<String> onChanged;
@@ -59,10 +56,10 @@ class _SearchFieldState extends State<SearchField> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.only(right: 16),
       height: 40,
+      width: double.infinity,
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(8),
         color: Colors.white,
       ),
       child: ValueListenableBuilder(
@@ -76,9 +73,10 @@ class _SearchFieldState extends State<SearchField> {
             textInputAction: TextInputAction.search,
             textCapitalization: TextCapitalization.words,
             decoration: InputDecoration(
-              contentPadding: EdgeInsets.fromLTRB(12, 8, 12, 8),
+              contentPadding: EdgeInsets.fromLTRB(16, 6, 16, 8),
               border: InputBorder.none,
               hintText: widget.hintText,
+              hintStyle: Theme.of(context).textTheme.bodyMedium,
               floatingLabelBehavior: FloatingLabelBehavior.never,
               suffixIcon: hasText
                   ? IconButton(
@@ -87,10 +85,7 @@ class _SearchFieldState extends State<SearchField> {
                     )
                   : Icon(Icons.search_rounded),
             ),
-            style: GoogleFonts.quicksand(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
+            style: Theme.of(context).textTheme.bodyMedium,
             onChanged: onTextChanged,
             onSubmitted: widget.onChanged,
           );

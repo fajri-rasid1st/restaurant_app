@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:restaurant_app/common/const/const.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/ui/themes/text_theme.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 
 class RestaurantCard extends StatelessWidget {
@@ -23,9 +24,9 @@ class RestaurantCard extends StatelessWidget {
         Padding(
           padding: EdgeInsets.all(16),
           child: Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
+                flex: 1,
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(12),
                   child: Hero(
@@ -50,7 +51,7 @@ class RestaurantCard extends StatelessWidget {
                         restaurant.name,
                         maxLines: 2,
                         overflow: TextOverflow.ellipsis,
-                        style: Theme.of(context).textTheme.titleLarge?.copyWith(fontSize: 18),
+                        style: Theme.of(context).textTheme.titleMedium!.bold,
                       ),
                       SizedBox(height: 12),
                       Row(
@@ -61,9 +62,11 @@ class RestaurantCard extends StatelessWidget {
                             color: Colors.red[400],
                           ),
                           SizedBox(width: 4),
-                          Text(
-                            restaurant.city,
-                            style: Theme.of(context).textTheme.bodyMedium,
+                          Flexible(
+                            child: Text(
+                              restaurant.city,
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
                           ),
                         ],
                       ),
@@ -76,9 +79,11 @@ class RestaurantCard extends StatelessWidget {
                             color: Colors.orange[400],
                           ),
                           SizedBox(width: 4),
-                          Text(
-                            '${restaurant.rating}',
-                            style: Theme.of(context).textTheme.bodyMedium,
+                          Flexible(
+                            child: Text(
+                              '${restaurant.rating}',
+                              style: Theme.of(context).textTheme.bodyMedium,
+                            ),
                           ),
                         ],
                       ),
