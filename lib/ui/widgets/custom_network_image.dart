@@ -1,6 +1,11 @@
-import 'package:cached_network_image/cached_network_image.dart';
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+// Project imports:
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 
 class CustomNetworkImage extends StatelessWidget {

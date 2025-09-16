@@ -1,6 +1,11 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/providers/service_providers/customer_review_provider.dart';
 import 'package:restaurant_app/providers/service_providers/restaurant_detail_provider.dart';

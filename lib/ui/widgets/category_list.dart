@@ -1,5 +1,10 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:restaurant_app/common/enum/restaurant_category.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
@@ -29,15 +34,13 @@ class CategoryList extends StatelessWidget {
             for (var index = 0; index < categories.length; index++) ...[
               Consumer<SelectedCategoryProvider>(
                 builder: (context, provider, child) {
-                  final value = provider.value;
-
                   return ChoiceChip(
                     label: Text(categories[index].name),
                     labelStyle: Theme.of(context).textTheme.titleSmall,
-                    selected: value == categories[index] ? true : false,
+                    selected: provider.value == categories[index] ? true : false,
                     selectedColor: Palette.secondaryColor,
                     onSelected: (selected) {
-                      if (selected) onCategorySelected.call(value);
+                      if (selected) onCategorySelected.call(provider.value);
                     },
                   );
                 },

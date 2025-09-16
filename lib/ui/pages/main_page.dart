@@ -1,9 +1,16 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:restaurant_app/common/enum/restaurant_category.dart';
 import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
+import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_searching_provider.dart';
 import 'package:restaurant_app/providers/app_providers/search_query_provider.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
@@ -20,14 +27,14 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer2<RestaurantsProvider, IsSearchingProvider>(
-      builder: (context, restaurantProvider, isSearchingProvider, child) {
+    return Consumer<IsSearchingProvider>(
+      builder: (context, provider, child) {
         return PopScope(
           canPop: false,
           onPopInvokedWithResult: (didPop, result) {
             if (didPop) return;
 
-            if (isSearchingProvider.value) {
+            if (provider.value) {
               context.read<IsSearchingProvider>().value = false;
               context.read<SearchQueryProvider>().value = '';
             }
@@ -35,10 +42,8 @@ class MainPage extends StatelessWidget {
           child: Scaffold(
             resizeToAvoidBottomInset: false,
             body: buildScaffoldBody(
-              isSearching: isSearchingProvider.value,
-              restaurants: restaurantProvider.restaurants,
-              state: restaurantProvider.state,
-              message: restaurantProvider.message,
+              context: context,
+              isSearching: provider.value,
             ),
           ),
         );
@@ -47,54 +52,57 @@ class MainPage extends StatelessWidget {
   }
 
   /// Widget untuk membuat NestedScrollView yang diisi SliverAppBar dan body
-  NestedScrollView buildScaffoldBody({
+  Widget buildScaffoldBody({
+    required BuildContext context,
     required bool isSearching,
-    required List<Restaurant> restaurants,
-    required ResultState state,
-    required String message,
   }) {
-    return NestedScrollView(
-      floatHeaderSlivers: true,
-      headerSliverBuilder: (context, innerBoxIsScrolled) {
-        return [
-          SliverOverlapAbsorber(
-            handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-            sliver: SliverSafeArea(
-              top: false,
-              sliver: SliverAppBar(
-                floating: true,
-                pinned: true,
-                snap: true,
-                title: buildAppBarTitle(
-                  context: context,
-                  isSearching: isSearching,
+    return Consumer<RestaurantsProvider>(
+      builder: (context, provider, child) {
+        return NestedScrollView(
+          floatHeaderSlivers: true,
+          headerSliverBuilder: (_, __) {
+            return [
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverSafeArea(
+                  top: false,
+                  sliver: SliverAppBar(
+                    floating: true,
+                    pinned: true,
+                    snap: true,
+                    title: buildAppBarTitle(
+                      context: context,
+                      isSearching: isSearching,
+                    ),
+                    leading: buildAppBarLeading(
+                      context: context,
+                      isSearching: isSearching,
+                    ),
+                    actions: buildAppBarActions(
+                      context: context,
+                      isSearching: isSearching,
+                      state: provider.state,
+                    ),
+                    bottom: buildAppBarBottom(
+                      context: context,
+                      isSearching: isSearching,
+                      state: provider.state,
+                    ),
+                    titleSpacing: 0,
+                    leadingWidth: 68,
+                  ),
                 ),
-                leading: buildAppBarLeading(
-                  context: context,
-                  isSearching: isSearching,
-                ),
-                actions: buildAppBarActions(
-                  context: context,
-                  isSearching: isSearching,
-                  state: state,
-                ),
-                bottom: buildAppBarBottom(
-                  context: context,
-                  isSearching: isSearching,
-                  state: state,
-                ),
-                titleSpacing: 0,
-                leadingWidth: 68,
               ),
-            ),
+            ];
+          },
+          body: buildMainBody(
+            context: context,
+            restaurants: provider.restaurants,
+            state: provider.state,
+            message: provider.message,
           ),
-        ];
+        );
       },
-      body: buildMainBody(
-        restaurants: restaurants,
-        state: state,
-        message: message,
-      ),
     );
   }
 
@@ -106,9 +114,12 @@ class MainPage extends StatelessWidget {
     return isSearching
         ? SearchField(
             hintText: 'Search Restaurants or Menu',
-            onChanged: (query) => context.read<RestaurantsProvider>().getRestaurants(query),
+            onChanged: (query) {
+              context.read<SearchQueryProvider>().value = query;
+              context.read<RestaurantsProvider>().getRestaurants(query);
+            },
           )
-        : Text("Daftar Resto");
+        : Text("Daftar Restoran");
   }
 
   /// Widget untuk membuat leading app bar
@@ -187,6 +198,7 @@ class MainPage extends StatelessWidget {
 
   /// Widget untuk membuat body pada NestedScrollView
   Widget buildMainBody({
+    required BuildContext context,
     required List<Restaurant> restaurants,
     required ResultState state,
     required String message,
@@ -197,22 +209,22 @@ class MainPage extends StatelessWidget {
       case ResultState.loading:
         return LoadingPage();
       case ResultState.error:
-        return ErrorPage(
-          onRefresh: refreshPage,
-          message: message,
-        );
-      case ResultState.data:
-        return Builder(
-          builder: (context) {
-            if (restaurants.isEmpty) {
-              return buildRestaurantEmpty();
-            }
-
-            return buildRestaurantList(
-              context: context,
-              restaurants: restaurants,
+        return Consumer<SearchQueryProvider>(
+          builder: (context, provider, child) {
+            return ErrorPage(
+              message: message,
+              onRefresh: () => refreshPage(context, provider.value),
             );
           },
+        );
+      case ResultState.data:
+        if (restaurants.isEmpty) {
+          return buildRestaurantEmpty();
+        }
+
+        return buildRestaurantList(
+          context: context,
+          restaurants: restaurants,
         );
     }
   }
@@ -264,5 +276,31 @@ class MainPage extends StatelessWidget {
     );
   }
 
-  Future<void> refreshPage() async {}
+  /// Fungsi untuk reload halaman saat data gagal di-fetch
+  Future<void> refreshPage(
+    BuildContext context,
+    String searchQuery,
+  ) async {
+    context.read<IsReloadProvider>().value = true;
+
+    Future.wait([
+          Future.delayed(Duration(milliseconds: 500)),
+          context.read<RestaurantsProvider>().getRestaurants(searchQuery),
+        ])
+        .then((_) {
+          if (!context.mounted) return;
+
+          context.read<IsReloadProvider>().value = false;
+        })
+        .catchError((_) {
+          if (!context.mounted) return;
+
+          context.read<IsReloadProvider>().value = false;
+
+          Utilities.showSnackBarMessage(
+            context: context,
+            text: 'Gagal memuat daftar restoran',
+          );
+        });
+  }
 }

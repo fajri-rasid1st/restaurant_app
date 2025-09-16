@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_svg/flutter_svg.dart';
 
 class CustomInformation extends StatelessWidget {
@@ -36,6 +39,8 @@ class CustomInformation extends StatelessWidget {
             Text(
               subtitle,
               textAlign: TextAlign.center,
+              maxLines: 4,
+              overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodyMedium,
             ),
             SizedBox(height: 16),

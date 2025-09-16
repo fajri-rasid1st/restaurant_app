@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/foundation.dart';
+
+// Project imports:
 import 'package:restaurant_app/common/enum/restaurant_category.dart';
 
 /// Provider untuk mengatur state kategori restoran yang dipilih

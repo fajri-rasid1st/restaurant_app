@@ -1,5 +1,10 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:flutter_spinkit/flutter_spinkit.dart';
+
+// Project imports:
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 
 class LoadingPage extends StatelessWidget {

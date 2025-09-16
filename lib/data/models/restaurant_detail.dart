@@ -1,3 +1,4 @@
+// Project imports:
 import 'package:restaurant_app/data/models/restaurant.dart';
 
 class RestaurantDetail extends Restaurant {

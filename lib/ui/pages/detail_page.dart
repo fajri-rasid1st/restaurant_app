@@ -1,10 +1,17 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:provider/provider.dart';
 import 'package:readmore/readmore.dart';
+
+// Project imports:
 import 'package:restaurant_app/common/const/const.dart';
 import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
+import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
+import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/service_providers/restaurant_detail_provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
@@ -26,21 +33,23 @@ class DetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<RestaurantDetailProvider>(
-      builder: (context, restaurantDetailProvider, child) {
-        switch (restaurantDetailProvider.state) {
+      builder: (context, provider, child) {
+        switch (provider.state) {
           case ResultState.initial:
-            return SizedBox.shrink();
+            return Scaffold(
+              body: SizedBox.shrink(),
+            );
           case ResultState.loading:
             return LoadingPage();
           case ResultState.error:
             return ErrorPage(
-              onRefresh: refreshPage,
-              message: restaurantDetailProvider.message,
+              message: provider.message,
+              onRefresh: () => refreshPage(context, restaurantId),
             );
           case ResultState.data:
             return buildDetailPage(
               context: context,
-              restaurantDetail: restaurantDetailProvider.restaurantDetail!,
+              restaurantDetail: provider.restaurantDetail!,
             );
         }
       },
@@ -54,7 +63,7 @@ class DetailPage extends StatelessWidget {
   }) {
     return Scaffold(
       body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
+        headerSliverBuilder: (_, __) {
           return [
             SliverAppBar(
               pinned: true,
@@ -420,5 +429,31 @@ class DetailPage extends StatelessWidget {
     );
   }
 
-  Future<void> refreshPage() async {}
+  /// Fungsi untuk reload halaman saat data gagal di-fetch
+  Future<void> refreshPage(
+    BuildContext context,
+    String restaurantId,
+  ) async {
+    context.read<IsReloadProvider>().value = true;
+
+    Future.wait([
+          Future.delayed(Duration(milliseconds: 500)),
+          context.read<RestaurantDetailProvider>().getRestaurantDetail(restaurantId),
+        ])
+        .then((_) {
+          if (!context.mounted) return;
+
+          context.read<IsReloadProvider>().value = false;
+        })
+        .catchError((_) {
+          if (!context.mounted) return;
+
+          context.read<IsReloadProvider>().value = false;
+
+          Utilities.showSnackBarMessage(
+            context: context,
+            text: 'Gagal memuat detail restoran',
+          );
+        });
+  }
 }

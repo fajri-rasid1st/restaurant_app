@@ -1,7 +1,8 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:restaurant_app/data/services/restaurant_api_service.dart';
-import 'package:restaurant_app/providers/service_providers/restaurants_provider.dart';
+
+// Project imports:
+import 'package:restaurant_app/ui/pages/main_page.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/themes/text_theme.dart';
 
@@ -10,33 +11,17 @@ class RestaurantApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MultiProvider(
-      providers: [
-        Provider<RestaurantApiService>(
-          create: (context) => RestaurantApiService(),
-        ),
-        ChangeNotifierProvider<RestaurantsProvider>(
-          create: (context) => RestaurantsProvider(context.read<RestaurantApiService>()),
-        ),
-        // ChangeNotifierProvider<RestaurantDetailProvider>(
-        //   create: (context) => RestaurantDetailProvider(context.read<RestaurantApiService>()),
-        // ),
-        // ChangeNotifierProvider<CustomerReviewProvider>(
-        //   create: (context) => CustomerReviewProvider(context.read<RestaurantApiService>()),
-        // ),
-      ],
-      child: MaterialApp(
-        title: 'Resto App',
-        debugShowCheckedModeBanner: false,
-        theme: ThemeData(
-          fontFamily: 'Quicksand',
-          colorScheme: colorScheme,
-          textTheme: textTheme,
-          scaffoldBackgroundColor: Palette.backgroundColor,
-          dividerColor: Palette.dividerColor,
-        ),
-        home: Placeholder(),
+    return MaterialApp(
+      title: 'Resto App',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        fontFamily: 'Quicksand',
+        colorScheme: colorScheme,
+        textTheme: textTheme,
+        scaffoldBackgroundColor: Palette.backgroundColor,
+        dividerColor: Palette.dividerColor,
       ),
+      home: MainPage(),
     );
   }
 }
