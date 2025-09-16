@@ -38,10 +38,12 @@ class MainPage extends StatelessWidget {
             if (provider.value) {
               context.read<IsSearchingProvider>().value = false;
               context.read<SearchQueryProvider>().value = '';
+              context.read<RestaurantsProvider>().getRestaurants();
+            } else {
+              Navigator.pop(context);
             }
           },
           child: Scaffold(
-            resizeToAvoidBottomInset: false,
             body: buildScaffoldBody(
               isSearching: provider.value,
             ),
@@ -60,20 +62,23 @@ class MainPage extends StatelessWidget {
         return NestedScrollView(
           headerSliverBuilder: (context, innerBoxIsScrolled) {
             return [
-              SliverAppBar(
-                pinned: true,
-                title: buildAppBarTitle(
-                  context: context,
-                  isSearching: isSearching,
-                ),
-                leading: buildAppBarLeading(
-                  context: context,
-                  isSearching: isSearching,
-                ),
-                actions: buildAppBarActions(
-                  context: context,
-                  isSearching: isSearching,
-                  state: provider.state,
+              SliverOverlapAbsorber(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+                sliver: SliverAppBar(
+                  pinned: true,
+                  title: buildAppBarTitle(
+                    context: context,
+                    isSearching: isSearching,
+                  ),
+                  leading: buildAppBarLeading(
+                    context: context,
+                    isSearching: isSearching,
+                  ),
+                  actions: buildAppBarActions(
+                    context: context,
+                    isSearching: isSearching,
+                    state: provider.state,
+                  ),
                 ),
               ),
               PinnedHeaderSliver(
@@ -124,6 +129,7 @@ class MainPage extends StatelessWidget {
             onPressed: () {
               context.read<IsSearchingProvider>().value = false;
               context.read<SearchQueryProvider>().value = '';
+              context.read<RestaurantsProvider>().getRestaurants();
             },
             icon: Icon(Icons.arrow_back_rounded),
             tooltip: 'Back',
@@ -145,7 +151,7 @@ class MainPage extends StatelessWidget {
     return [
       if (!isSearching) ...[
         IconButton(
-          onPressed: state == ResultState.error
+          onPressed: state != ResultState.data
               ? null
               : () {
                   context.read<IsSearchingProvider>().value = true;
@@ -168,7 +174,7 @@ class MainPage extends StatelessWidget {
     required bool isSearching,
     required ResultState state,
   }) {
-    return isSearching || state == ResultState.error
+    return isSearching || state != ResultState.data
         ? SizedBox.shrink()
         : CategoryList(
             categories: RestaurantCategory.values,
@@ -197,7 +203,7 @@ class MainPage extends StatelessWidget {
           builder: (context, provider, child) {
             return ErrorPage(
               message: message,
-              onRefresh: () => refreshPage(context, provider.value),
+              onRefresh: () => refreshPage(context, state, provider.value),
             );
           },
         );
@@ -229,6 +235,9 @@ class MainPage extends StatelessWidget {
       builder: (context) {
         return CustomScrollView(
           slivers: [
+            SliverOverlapInjector(
+              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+            ),
             SliverList(
               delegate: SliverChildBuilderDelegate(
                 (context, index) {
@@ -262,28 +271,25 @@ class MainPage extends StatelessWidget {
   /// Fungsi untuk reload halaman saat data gagal di-fetch
   Future<void> refreshPage(
     BuildContext context,
+    ResultState state,
     String searchQuery,
   ) async {
     context.read<IsReloadProvider>().value = true;
 
-    Future.wait([
-          Future.delayed(Duration(milliseconds: 500)),
-          context.read<RestaurantsProvider>().getRestaurants(searchQuery),
-        ])
-        .then((_) {
-          if (!context.mounted) return;
+    await Future.wait([
+      Future.delayed(Duration(milliseconds: 500)),
+      // context.read<RestaurantsProvider>().getRestaurants(searchQuery), // TODO:
+    ]);
 
-          context.read<IsReloadProvider>().value = false;
-        })
-        .catchError((_) {
-          if (!context.mounted) return;
+    if (!context.mounted) return;
 
-          context.read<IsReloadProvider>().value = false;
+    context.read<IsReloadProvider>().value = false;
 
-          Utilities.showSnackBarMessage(
-            context: context,
-            text: 'Gagal memuat daftar restoran',
-          );
-        });
+    if (state == ResultState.error) {
+      Utilities.showSnackBarMessage(
+        context: context,
+        text: 'Gagal memuat daftar restoran',
+      );
+    }
   }
 }

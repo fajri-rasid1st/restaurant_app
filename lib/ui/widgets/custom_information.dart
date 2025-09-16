@@ -31,13 +31,13 @@ class CustomInformation extends StatelessWidget {
           children: [
             SvgPicture.asset(
               assetName,
-              width: 240,
+              width: 250,
               fit: BoxFit.fill,
             ),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleLarge!.bold.copyWith(
+              style: Theme.of(context).textTheme.titleMedium!.bold.copyWith(
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),
@@ -45,7 +45,7 @@ class CustomInformation extends StatelessWidget {
             Text(
               subtitle,
               textAlign: TextAlign.center,
-              maxLines: 4,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
               style: Theme.of(context).textTheme.bodyMedium!.copyWith(
                 color: Theme.of(context).colorScheme.outline,

@@ -52,7 +52,7 @@ class ItemMenuCard extends StatelessWidget {
             padding: EdgeInsets.all(8),
             child: Text(
               item.name,
-              style: Theme.of(context).textTheme.titleSmall,
+              style: Theme.of(context).textTheme.titleSmall, // TODO:
             ),
           ),
         ],

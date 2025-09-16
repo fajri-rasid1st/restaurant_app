@@ -54,7 +54,7 @@ final ColorScheme darkColorScheme = ColorScheme.fromSeed(
 );
 
 class Palette {
-  // Core brand
+  // Core
   static const Color primaryColor = Color(0xFF2F184B);
 
   // ---------- LIGHT THEME ----------
@@ -69,7 +69,7 @@ class Palette {
   static const Color secondaryContainerLight = Color(0xFFE3DDF0);
   static const Color onSecondaryContainerLight = Color(0xFF241D3A);
 
-  // Tertiary (muted teal for subtle contrast)
+  // Tertiary (muted teal)
   static const Color tertiaryLight = Color(0xFF7D59B6);
   static const Color onTertiaryLight = Color(0xFFFFFFFF);
   static const Color tertiaryContainerLight = Color(0xFFEBDDFF);

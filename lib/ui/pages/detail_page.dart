@@ -19,6 +19,7 @@ import 'package:restaurant_app/ui/pages/review_form_page.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 import 'package:restaurant_app/ui/widgets/item_menu_card.dart';
 
+// TODO:
 class DetailPage extends StatelessWidget {
   final String restaurantId;
   final String heroTag;

@@ -44,11 +44,11 @@ final class RestaurantApiService {
         return restaurants.map((e) => Restaurant.fromMap(e)).toList();
       } else {
         // Kembalikan exception error jika gagal
-        throw Exception();
+        throw Exception('error code ${response.statusCode}');
       }
     } catch (e) {
       // Kembalikan exception error jika gagal
-      throw Exception();
+      rethrow;
     }
   }
 
@@ -77,11 +77,11 @@ final class RestaurantApiService {
         return RestaurantDetail.fromMap(restaurant);
       } else {
         // Kembalikan exception error jika gagal
-        throw Exception();
+        throw Exception('error code ${response.statusCode}');
       }
     } catch (e) {
       // Kembalikan exception error jika gagal
-      throw Exception();
+      rethrow;
     }
   }
 
@@ -126,11 +126,11 @@ final class RestaurantApiService {
         return reviews.map((e) => CustomerReview.fromMap(e)).toList();
       } else {
         // Jika server tidak mengembalikan kode 201, maka throw exception
-        throw Exception();
+        throw Exception('error code ${response.statusCode}');
       }
     } catch (e) {
       // Kembalikan exception error jika gagal
-      throw Exception();
+      rethrow;
     }
   }
 }

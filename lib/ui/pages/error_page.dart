@@ -30,12 +30,12 @@ class ErrorPage extends StatelessWidget {
           subtitle: message,
           child: Consumer<IsReloadProvider>(
             builder: (context, provider, child) {
-              return ElevatedButton.icon(
+              return FilledButton.icon(
                 onPressed: provider.value ? null : onRefresh,
                 icon: provider.value
                     ? SizedBox(
-                        width: 18,
-                        height: 18,
+                        width: 16,
+                        height: 16,
                         child: CircularProgressIndicator(
                           strokeWidth: 2,
                           color: Theme.of(context).colorScheme.primary,
@@ -46,7 +46,7 @@ class ErrorPage extends StatelessWidget {
                 style: ElevatedButton.styleFrom(
                   padding: EdgeInsets.symmetric(
                     vertical: 8,
-                    horizontal: 12,
+                    horizontal: 16,
                   ),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),

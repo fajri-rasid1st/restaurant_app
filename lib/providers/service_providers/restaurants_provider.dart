@@ -30,14 +30,14 @@ class RestaurantsProvider extends ChangeNotifier {
       _restaurants = result;
 
       _state = ResultState.data;
+      notifyListeners();
     } catch (e) {
       debugPrint('getRestaurants error: ${e.toString()}');
 
       _message = 'Gagal memuat daftar restoran. Error: ${e.toString()}';
 
       _state = ResultState.error;
+      notifyListeners();
     }
-
-    notifyListeners();
   }
 }

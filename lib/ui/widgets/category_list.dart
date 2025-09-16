@@ -34,9 +34,9 @@ class CategoryList extends StatelessWidget {
                 builder: (context, provider, child) {
                   return ChoiceChip(
                     label: Text(categories[index].name),
-                    labelStyle: Theme.of(context).textTheme.titleSmall!.bold,
+                    labelStyle: Theme.of(context).textTheme.titleSmall!.semiBold,
                     selected: provider.value == categories[index] ? true : false,
-                    selectedColor: Theme.of(context).colorScheme.tertiary.withValues(alpha: .4),
+                    selectedColor: Theme.of(context).colorScheme.tertiary.withValues(alpha: .3),
                     selectedShadowColor: Colors.transparent,
                     side: BorderSide.none,
                     shape: RoundedRectangleBorder(

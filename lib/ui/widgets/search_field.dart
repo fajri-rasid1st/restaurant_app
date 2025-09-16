@@ -87,7 +87,6 @@ class _SearchFieldState extends State<SearchField> {
             ),
             style: Theme.of(context).textTheme.bodyMedium,
             onChanged: onTextChanged,
-            onSubmitted: widget.onChanged,
           );
         },
       ),
