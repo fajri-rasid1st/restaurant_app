@@ -40,7 +40,7 @@ class CustomerReviewProvider extends ChangeNotifier {
     } catch (e) {
       debugPrint('sendCustomerReview error: ${e.toString()}');
 
-      _message = 'Gagal mengirim review. Silahkan coba lagi.';
+      _message = 'Gagal mengirim review. Error: ${e.toString()}';
 
       _state = ResultState.error;
     }

@@ -5,19 +5,16 @@ import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/themes/color_scheme.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
 
-class ErrorPage extends StatefulWidget {
+class ErrorPage extends StatelessWidget {
   final VoidCallback onRefresh;
+  final String message;
 
   const ErrorPage({
     super.key,
     required this.onRefresh,
+    required this.message,
   });
 
-  @override
-  State<ErrorPage> createState() => _ErrorPageState();
-}
-
-class _ErrorPageState extends State<ErrorPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -26,7 +23,7 @@ class _ErrorPageState extends State<ErrorPage> {
         child: CustomInformation(
           assetName: AssetPath.getVector('404_error_lost_in_space_cuate.svg'),
           title: 'Gagal Memuat Data',
-          subtitle: 'Pastikan Anda terhubung ke internet, lalu coba lagi.',
+          subtitle: message,
           child:
               Consumer5<
                 RestaurantProvider,

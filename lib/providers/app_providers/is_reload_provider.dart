@@ -1,0 +1,15 @@
+import 'package:flutter/foundation.dart';
+
+/// Provider untuk mengatur state reload halaman
+class IsReloadProvider extends ChangeNotifier {
+  bool _value = false;
+
+  bool get value => _value;
+
+  set value(bool newValue) {
+    if (_value == newValue) return;
+
+    _value = newValue;
+    notifyListeners();
+  }
+}

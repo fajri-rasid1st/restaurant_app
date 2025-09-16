@@ -3,10 +3,10 @@ import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/data/services/restaurant_api_service.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 
-class RestaurantProvider extends ChangeNotifier {
+class RestaurantsProvider extends ChangeNotifier {
   final RestaurantApiService service;
 
-  RestaurantProvider(this.service);
+  RestaurantsProvider(this.service);
 
   List<Restaurant> _restaurants = [];
   ResultState _state = ResultState.initial;
@@ -30,7 +30,7 @@ class RestaurantProvider extends ChangeNotifier {
     } catch (e) {
       debugPrint('getRestaurants error: ${e.toString()}');
 
-      _message = 'Gagal memuat daftar restoran. Silahkan coba lagi.';
+      _message = 'Gagal memuat daftar restoran. Error: ${e.toString()}';
 
       _state = ResultState.error;
     }

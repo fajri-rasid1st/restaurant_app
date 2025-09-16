@@ -1,9 +1,18 @@
-import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app/ui/pages/discover_page.dart';
-import 'package:restaurant_app/ui/themes/color_scheme.dart';
+import 'package:restaurant_app/common/enum/restaurant_category.dart';
+import 'package:restaurant_app/common/enum/result_state.dart';
+import 'package:restaurant_app/common/utilities/asset_path.dart';
+import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/providers/app_providers/is_searching_provider.dart';
+import 'package:restaurant_app/providers/app_providers/search_query_provider.dart';
+import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
+import 'package:restaurant_app/providers/service_providers/restaurants_provider.dart';
+import 'package:restaurant_app/ui/pages/error_page.dart';
+import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/widgets/category_list.dart';
+import 'package:restaurant_app/ui/widgets/custom_information.dart';
+import 'package:restaurant_app/ui/widgets/restaurant_card.dart';
 import 'package:restaurant_app/ui/widgets/search_field.dart';
 
 class MainPage extends StatelessWidget {
@@ -11,62 +20,43 @@ class MainPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final isInvisible = MediaQuery.of(context).viewInsets.bottom != 0;
+    return Consumer2<RestaurantsProvider, IsSearchingProvider>(
+      builder: (context, restaurantProvider, isSearchingProvider, child) {
+        return PopScope(
+          canPop: false,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
 
-    return Consumer4<RestaurantProvider, RestaurantSearchProvider, CategoryProvider, BottomNavProvider>(
-      builder:
-          (
-            context,
-            restaurantProvider,
-            searchProvider,
-            categoryProvider,
-            bottomNavProvider,
-            child,
-          ) {
-            final currentIndex = bottomNavProvider.index;
-
-            return WillPopScope(
-              onWillPop: () => onWillPop(searchProvider),
-              child: Scaffold(
-                resizeToAvoidBottomInset: false,
-                appBar: currentIndex == 0 ? null : _buildAppBar(),
-                body: currentIndex == 0
-                    ? _buildScaffoldBody(
-                        bottomNavProvider,
-                        searchProvider,
-                        restaurantProvider,
-                        categoryProvider,
-                      )
-                    : _buildBody(currentIndex),
-                bottomNavigationBar: _buildBottomNav(bottomNavProvider),
-                floatingActionButton: isInvisible ? null : _buildFab(context),
-                floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
-              ),
-            );
+            if (isSearchingProvider.value) {
+              context.read<IsSearchingProvider>().value = false;
+              context.read<SearchQueryProvider>().value = '';
+            }
           },
+          child: Scaffold(
+            resizeToAvoidBottomInset: false,
+            body: buildScaffoldBody(
+              isSearching: isSearchingProvider.value,
+              restaurants: restaurantProvider.restaurants,
+              state: restaurantProvider.state,
+              message: restaurantProvider.message,
+            ),
+          ),
+        );
+      },
     );
   }
 
-  /// Widget app bar khusus untuk page settings
-  AppBar _buildAppBar() {
-    return AppBar(
-      title: const Text('Settings'),
-      titleSpacing: 0,
-      leading: const Icon(Icons.settings),
-    );
-  }
-
-  /// Widget untuk membuat [NestedScrollView] yang diisi sliver app bar dan body
-  NestedScrollView _buildScaffoldBody(
-    BottomNavProvider bottomNavProvider,
-    RestaurantSearchProvider searchProvider,
-    RestaurantProvider restaurantProvider,
-    CategoryProvider categoryProvider,
-  ) {
+  /// Widget untuk membuat NestedScrollView yang diisi SliverAppBar dan body
+  NestedScrollView buildScaffoldBody({
+    required bool isSearching,
+    required List<Restaurant> restaurants,
+    required ResultState state,
+    required String message,
+  }) {
     return NestedScrollView(
       floatHeaderSlivers: true,
-      headerSliverBuilder: (context, isScrolled) {
-        return <Widget>[
+      headerSliverBuilder: (context, innerBoxIsScrolled) {
+        return [
           SliverOverlapAbsorber(
             handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
             sliver: SliverSafeArea(
@@ -75,14 +65,24 @@ class MainPage extends StatelessWidget {
                 floating: true,
                 pinned: true,
                 snap: true,
-                title: _buildTitle(searchProvider, bottomNavProvider),
-                leading: _buildLeading(searchProvider),
-                actions: _buildActions(
-                  restaurantProvider,
-                  searchProvider,
-                  categoryProvider,
+                title: buildAppBarTitle(
+                  context: context,
+                  isSearching: isSearching,
                 ),
-                bottom: _buildBottom(restaurantProvider, searchProvider),
+                leading: buildAppBarLeading(
+                  context: context,
+                  isSearching: isSearching,
+                ),
+                actions: buildAppBarActions(
+                  context: context,
+                  isSearching: isSearching,
+                  state: state,
+                ),
+                bottom: buildAppBarBottom(
+                  context: context,
+                  isSearching: isSearching,
+                  state: state,
+                ),
                 titleSpacing: 0,
                 leadingWidth: 68,
               ),
@@ -90,65 +90,70 @@ class MainPage extends StatelessWidget {
           ),
         ];
       },
-      body: _buildBody(bottomNavProvider.index),
+      body: buildMainBody(
+        restaurants: restaurants,
+        state: state,
+        message: message,
+      ),
     );
   }
 
   /// Widget untuk membuat title app bar
-  Widget _buildTitle(
-    RestaurantSearchProvider searchProvider,
-    BottomNavProvider bottomNavProvider,
-  ) {
-    return searchProvider.isSearching
+  Widget buildAppBarTitle({
+    required BuildContext context,
+    required bool isSearching,
+  }) {
+    return isSearching
         ? SearchField(
             hintText: 'Search Restaurants or Menu',
-            onChanged: (query) {
-              debounce(() => searchProvider.searchRestaurants(query));
-            },
+            onChanged: (query) => context.read<RestaurantsProvider>().getRestaurants(query),
           )
-        : Text(bottomNavProvider.title);
+        : Text("Daftar Resto");
   }
 
   /// Widget untuk membuat leading app bar
-  Widget _buildLeading(RestaurantSearchProvider searchProvider) {
-    return searchProvider.isSearching
+  Widget buildAppBarLeading({
+    required BuildContext context,
+    required bool isSearching,
+  }) {
+    return isSearching
         ? IconButton(
             onPressed: () {
-              searchProvider.isSearching = false;
-              searchProvider.query = '';
+              context.read<IsSearchingProvider>().value = false;
+              context.read<SearchQueryProvider>().value = '';
             },
-            icon: const Icon(
+            icon: Icon(
               Icons.arrow_back_rounded,
               size: 28,
             ),
             tooltip: 'Back',
           )
         : Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: EdgeInsets.symmetric(horizontal: 16),
             child: Image.asset(
-              'assets/img/restaurant_icon.png',
-              color: Colors.white,
+              AssetPath.getIcon('ic_launcher.png'),
+              width: 48,
+              height: 48,
             ),
           );
   }
 
   /// Widget untuk membuat action app bar
-  List<Widget> _buildActions(
-    RestaurantProvider restaurantProvider,
-    RestaurantSearchProvider searchProvider,
-    CategoryProvider categoryProvider,
-  ) {
-    return <Widget>[
-      if (!searchProvider.isSearching) ...[
+  List<Widget> buildAppBarActions({
+    required BuildContext context,
+    required bool isSearching,
+    required ResultState state,
+  }) {
+    return [
+      if (!isSearching) ...[
         IconButton(
-          onPressed: restaurantProvider.state == ResultState.error
+          onPressed: state == ResultState.error
               ? null
               : () {
-                  searchProvider.isSearching = true;
-                  categoryProvider.index = -1;
-                  categoryProvider.category = '';
+                  context.read<IsSearchingProvider>().value = true;
+                  context.read<SelectedCategoryProvider>().value = RestaurantCategory.all;
                 },
-          icon: const Icon(
+          icon: Icon(
             Icons.search_rounded,
             size: 28,
           ),
@@ -159,88 +164,105 @@ class MainPage extends StatelessWidget {
   }
 
   /// Widget untuk membuat list category pada bottom app bar
-  CategoryList? _buildBottom(
-    RestaurantProvider restaurantProvider,
-    RestaurantSearchProvider searchProvider,
-  ) {
-    return restaurantProvider.state == ResultState.error
+  PreferredSizeWidget? buildAppBarBottom({
+    required BuildContext context,
+    required bool isSearching,
+    required ResultState state,
+  }) {
+    return isSearching || state == ResultState.error
         ? null
-        : searchProvider.isSearching == true
-        ? null
-        : const CategoryList(categories: Const.categories);
+        : PreferredSize(
+            preferredSize: Size.fromHeight(60),
+            child: CategoryList(
+              categories: RestaurantCategory.values,
+              onCategorySelected: (value) {
+                final query = value == RestaurantCategory.all ? null : value.name.toLowerCase();
+
+                context.read<SelectedCategoryProvider>().value = value;
+                context.read<RestaurantsProvider>().getRestaurants(query);
+              },
+            ),
+          );
   }
 
-  /// Widget untuk membuat body
-  Widget _buildBody(int index) => _pages[index];
+  /// Widget untuk membuat body pada NestedScrollView
+  Widget buildMainBody({
+    required List<Restaurant> restaurants,
+    required ResultState state,
+    required String message,
+  }) {
+    switch (state) {
+      case ResultState.initial:
+        return SizedBox.shrink();
+      case ResultState.loading:
+        return LoadingPage();
+      case ResultState.error:
+        return ErrorPage(
+          onRefresh: refreshPage,
+          message: message,
+        );
+      case ResultState.data:
+        return Builder(
+          builder: (context) {
+            if (restaurants.isEmpty) {
+              return buildRestaurantEmpty();
+            }
 
-  /// Widget untuk membuat bottom navigation bar
-  BottomNavigationBar _buildBottomNav(BottomNavProvider bottomNavProvider) {
-    return BottomNavigationBar(
-      currentIndex: bottomNavProvider.index,
-      selectedFontSize: 12,
-      selectedItemColor: primaryColor,
-      selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold),
-      unselectedFontSize: 12,
-      unselectedItemColor: secondaryTextColor,
-      type: BottomNavigationBarType.fixed,
-      items: const <BottomNavigationBarItem>[
-        BottomNavigationBarItem(
-          icon: Icon(Icons.explore_outlined),
-          activeIcon: Icon(Icons.explore),
-          label: 'Discover',
+            return buildRestaurantList(
+              context: context,
+              restaurants: restaurants,
+            );
+          },
+        );
+    }
+  }
+
+  /// Widget untuk membuat page kosong jika data tidak ditemukan/tidak ada
+  Widget buildRestaurantEmpty() {
+    return CustomInformation(
+      assetName: AssetPath.getVector('404_Error_cuate.svg'),
+      title: 'Ops, Restoran Tidak Ditemukan.',
+      subtitle: 'Coba masukkan kata kunci lain.',
+    );
+  }
+
+  /// Widget untuk membuat daftar restoran jika data tidak kosong
+  Widget buildRestaurantList({
+    required BuildContext context,
+    required List<Restaurant> restaurants,
+  }) {
+    return CustomScrollView(
+      slivers: [
+        SliverOverlapInjector(
+          handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
         ),
-        BottomNavigationBarItem(
-          icon: Icon(Icons.settings_outlined),
-          activeIcon: Icon(Icons.settings),
-          label: 'Settings',
+        SliverList(
+          delegate: SliverChildBuilderDelegate(
+            (context, index) {
+              final count = restaurants.length;
+              final hasSeparator = index != count - 1;
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  RestaurantCard(
+                    restaurant: restaurants[index],
+                    onTap: () {},
+                  ),
+                  if (hasSeparator)
+                    Divider(
+                      height: 1,
+                      thickness: 1,
+                    ),
+                ],
+              );
+            },
+            childCount: restaurants.length,
+          ),
         ),
       ],
-      onTap: (index) {
-        bottomNavProvider.index = index;
-
-        switch (index) {
-          case 0:
-            bottomNavProvider.title = 'Discover';
-            break;
-          case 1:
-            bottomNavProvider.title = 'Settings';
-            break;
-        }
-      },
     );
   }
 
-  /// Widget untuk membuat floating action button
-  FloatingActionButton _buildFab(BuildContext context) {
-    return FloatingActionButton(
-      onPressed: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(builder: (context) => const FavoriteScreen()),
-        );
-      },
-      child: const Icon(Icons.favorite_rounded),
-      tooltip: 'Favorite',
-    );
-  }
-
-  /// Method untuk memberikan jeda saat melakukan searching selama 0.5 detik
-  /// untuk mencegah pemanggilan method GET secara terus-menerus.
-  void debounce(VoidCallback callback) {
-    _debouncer?.cancel();
-
-    _debouncer = Timer(const Duration(milliseconds: 500), callback);
-  }
-
-  // Melakukan pengecekan, apakah sedang melakukan searching atau tidak?
-  Future<bool> onWillPop(RestaurantSearchProvider searchProvider) {
-    if (searchProvider.isSearching) {
-      searchProvider.isSearching = false;
-      searchProvider.query = '';
-
-      return Future.value(false);
-    }
-
-    return Future.value(true);
-  }
+  Future<void> refreshPage() async {}
 }

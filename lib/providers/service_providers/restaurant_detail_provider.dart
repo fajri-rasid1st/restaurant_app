@@ -36,7 +36,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
     } catch (e) {
       debugPrint('getRestaurantDetail error: ${e.toString()}');
 
-      _message = 'Gagal memuat detail restoran. Silahkan coba lagi.';
+      _message = 'Gagal memuat detail restoran. Error: ${e.toString()}';
 
       _state = ResultState.error;
     }

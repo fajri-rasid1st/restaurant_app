@@ -13,7 +13,7 @@ class LoadingPage extends StatelessWidget {
           padding: EdgeInsets.all(16),
           child: Column(
             mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
+            children: [
               SpinKitRing(
                 lineWidth: 4,
                 color: Palette.secondaryColor,

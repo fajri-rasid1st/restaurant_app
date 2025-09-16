@@ -26,8 +26,8 @@ class DetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Consumer<RestaurantDetailProvider>(
-      builder: (context, detailProvider, child) {
-        switch (detailProvider.state) {
+      builder: (context, restaurantDetailProvider, child) {
+        switch (restaurantDetailProvider.state) {
           case ResultState.initial:
             return SizedBox.shrink();
           case ResultState.loading:
@@ -35,11 +35,12 @@ class DetailPage extends StatelessWidget {
           case ResultState.error:
             return ErrorPage(
               onRefresh: refreshPage,
+              message: restaurantDetailProvider.message,
             );
           case ResultState.data:
-            return buildDetailScreen(
+            return buildDetailPage(
               context: context,
-              restaurantDetail: detailProvider.restaurantDetail!,
+              restaurantDetail: restaurantDetailProvider.restaurantDetail!,
             );
         }
       },
@@ -47,7 +48,7 @@ class DetailPage extends StatelessWidget {
   }
 
   /// Widget function untuk membuat halaman detail utama
-  Widget buildDetailScreen({
+  Widget buildDetailPage({
     required BuildContext context,
     required RestaurantDetail restaurantDetail,
   }) {
@@ -133,7 +134,9 @@ class DetailPage extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 40,
-                    child: buildCategoryChips(restaurantDetail.categories),
+                    child: buildCategoryChipsWidget(
+                      categories: restaurantDetail.categories,
+                    ),
                   ),
                   Padding(
                     padding: EdgeInsets.all(16),
@@ -268,7 +271,7 @@ class DetailPage extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 140,
-                    child: buildMenuItem(
+                    child: buildMenuItemsWidget(
                       crossAxisCount: 1,
                       childAspectRatio: 2 / 3,
                       items: restaurantDetail.menus.foods,
@@ -286,7 +289,7 @@ class DetailPage extends StatelessWidget {
                   ),
                   SizedBox(
                     height: 140,
-                    child: buildMenuItem(
+                    child: buildMenuItemsWidget(
                       crossAxisCount: 1,
                       childAspectRatio: 5 / 4,
                       items: restaurantDetail.menus.drinks,
@@ -305,7 +308,9 @@ class DetailPage extends StatelessWidget {
                       style: Theme.of(context).textTheme.headlineSmall,
                     ),
                   ),
-                  buildReviews(restaurantDetail.customerReviews),
+                  buildReviewsWidget(
+                    reviews: restaurantDetail.customerReviews,
+                  ),
                   Center(
                     child: OutlinedButton.icon(
                       onPressed: () {
@@ -344,7 +349,9 @@ class DetailPage extends StatelessWidget {
   }
 
   /// Widget function untuk membuat chips kategori
-  Widget buildCategoryChips(List<Category> categories) {
+  Widget buildCategoryChipsWidget({
+    required List<Category> categories,
+  }) {
     return ListView.separated(
       padding: EdgeInsets.symmetric(horizontal: 16),
       scrollDirection: Axis.horizontal,
@@ -360,7 +367,7 @@ class DetailPage extends StatelessWidget {
   }
 
   /// Widget function untuk membuat menu item dengan kustomisasi jumlah grid dan rasio
-  Widget buildMenuItem({
+  Widget buildMenuItemsWidget({
     required int crossAxisCount,
     required double childAspectRatio,
     required List<ItemMenu> items,
@@ -388,7 +395,9 @@ class DetailPage extends StatelessWidget {
   }
 
   /// Widget function untuk membuat list review restaurant
-  Widget buildReviews(List<CustomerReview> reviews) {
+  Widget buildReviewsWidget({
+    required List<CustomerReview> reviews,
+  }) {
     return ListView.builder(
       padding: EdgeInsets.all(0),
       physics: NeverScrollableScrollPhysics(),
