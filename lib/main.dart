@@ -15,7 +15,7 @@ import 'package:restaurant_app/providers/app_providers/selected_category_provide
 import 'package:restaurant_app/providers/service_providers/restaurants_provider.dart';
 
 Future<void> main() async {
-  // Pastikan widget Flutter sudah diinisialisasi
+  // Memastikan widget Flutter sudah diinisialisasi
   WidgetsFlutterBinding.ensureInitialized();
 
   // Untuk mencegah orientasi landscape
@@ -46,9 +46,7 @@ Future<void> main() async {
           create: (context) => RestaurantsProvider(context.read<RestaurantApiService>())..getRestaurants(),
         ),
       ],
-      builder: (context, child) {
-        return RestaurantApp();
-      },
+      builder: (context, child) => RestaurantApp(),
     ),
   );
 }

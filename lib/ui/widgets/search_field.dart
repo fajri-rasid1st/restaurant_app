@@ -60,7 +60,7 @@ class _SearchFieldState extends State<SearchField> {
       width: double.infinity,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(8),
-        color: Colors.white,
+        color: Theme.of(context).colorScheme.surface,
       ),
       child: ValueListenableBuilder(
         valueListenable: controller,

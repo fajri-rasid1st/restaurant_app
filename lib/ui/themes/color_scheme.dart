@@ -57,7 +57,7 @@ class Palette {
   // Core
   static const Color primaryColor = Color(0xFF2F184B);
 
-  // ---------- LIGHT THEME ----------
+  // ---------- Light Theme ----------
   // Primaries
   static const Color onPrimaryLight = Color(0xFFFFFFFF);
   static const Color primaryContainerLight = Color(0xFFE9E0F4);
@@ -88,7 +88,7 @@ class Palette {
   static const Color errorContainerLight = Color(0xFFFFDAD6);
   static const Color onErrorContainerLight = Color(0xFF410002);
 
-  // ---------- DARK THEME ----------
+  // ---------- Dark Theme ----------
   // Primaries
   static const Color primaryDark = Color(0xFFCFBCFF);
   static const Color onPrimaryDark = Color(0xFF392158);

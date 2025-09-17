@@ -8,10 +8,8 @@ import 'package:restaurant_app/ui/themes/text_theme.dart';
 final ThemeData lightTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.light,
-  fontFamily: 'Quicksand',
   colorScheme: lightColorScheme,
-  textTheme: textTheme,
-  scaffoldBackgroundColor: Palette.surfaceLight,
+  textTheme: buildTextTheme(lightColorScheme),
   appBarTheme: AppBarTheme(
     backgroundColor: Palette.primaryContainerLight,
     surfaceTintColor: Palette.primaryContainerLight,
@@ -21,10 +19,8 @@ final ThemeData lightTheme = ThemeData(
 final ThemeData darkTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.dark,
-  fontFamily: 'Quicksand',
   colorScheme: darkColorScheme,
-  textTheme: textTheme,
-  scaffoldBackgroundColor: Palette.surfaceDark,
+  textTheme: buildTextTheme(darkColorScheme),
   appBarTheme: AppBarTheme(
     backgroundColor: Palette.primaryContainerDark,
     surfaceTintColor: Palette.primaryContainerDark,

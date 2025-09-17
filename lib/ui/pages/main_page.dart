@@ -31,7 +31,7 @@ class MainPage extends StatelessWidget {
     return Consumer<IsSearchingProvider>(
       builder: (context, provider, child) {
         return PopScope(
-          canPop: false,
+          canPop: !provider.value,
           onPopInvokedWithResult: (didPop, result) {
             if (didPop) return;
 
@@ -39,8 +39,6 @@ class MainPage extends StatelessWidget {
               context.read<IsSearchingProvider>().value = false;
               context.read<SearchQueryProvider>().value = '';
               context.read<RestaurantsProvider>().getRestaurants();
-            } else {
-              Navigator.pop(context);
             }
           },
           child: Scaffold(
@@ -151,7 +149,7 @@ class MainPage extends StatelessWidget {
     return [
       if (!isSearching) ...[
         IconButton(
-          onPressed: state != ResultState.data
+          onPressed: state == ResultState.error
               ? null
               : () {
                   context.read<IsSearchingProvider>().value = true;
@@ -174,7 +172,7 @@ class MainPage extends StatelessWidget {
     required bool isSearching,
     required ResultState state,
   }) {
-    return isSearching || state != ResultState.data
+    return isSearching || state == ResultState.error
         ? SizedBox.shrink()
         : CategoryList(
             categories: RestaurantCategory.values,
@@ -193,29 +191,38 @@ class MainPage extends StatelessWidget {
     required ResultState state,
     required String message,
   }) {
-    switch (state) {
-      case ResultState.initial:
-        return SizedBox.shrink();
-      case ResultState.loading:
-        return LoadingPage();
-      case ResultState.error:
-        return Consumer<SearchQueryProvider>(
-          builder: (context, provider, child) {
-            return ErrorPage(
-              message: message,
-              onRefresh: () => refreshPage(context, state, provider.value),
-            );
-          },
-        );
-      case ResultState.data:
-        if (restaurants.isEmpty) {
-          return buildRestaurantEmpty();
+    return Consumer<IsReloadProvider>(
+      builder: (context, provider, child) {
+        final searchQuery = context.watch<SearchQueryProvider>().value;
+
+        if (provider.value) {
+          return ErrorPage(
+            message: message,
+            onRefresh: () => refreshPage(context, state, searchQuery),
+          );
         }
 
-        return buildRestaurantList(
-          restaurants: restaurants,
-        );
-    }
+        switch (state) {
+          case ResultState.initial:
+            return SizedBox.shrink();
+          case ResultState.loading:
+            return LoadingPage();
+          case ResultState.error:
+            return ErrorPage(
+              message: message,
+              onRefresh: () => refreshPage(context, state, searchQuery),
+            );
+          case ResultState.data:
+            if (restaurants.isEmpty) {
+              return buildRestaurantEmpty();
+            }
+
+            return buildRestaurantList(
+              restaurants: restaurants,
+            );
+        }
+      },
+    );
   }
 
   /// Widget untuk membuat page kosong jika data tidak ditemukan/tidak ada
@@ -276,20 +283,24 @@ class MainPage extends StatelessWidget {
   ) async {
     context.read<IsReloadProvider>().value = true;
 
-    await Future.wait([
-      Future.delayed(Duration(milliseconds: 500)),
-      // context.read<RestaurantsProvider>().getRestaurants(searchQuery), // TODO:
-    ]);
+    Future.wait([
+          Future.delayed(Duration(milliseconds: 500)),
+          context.read<RestaurantsProvider>().getRestaurants(searchQuery),
+        ])
+        .then((_) {
+          if (!context.mounted) return;
 
-    if (!context.mounted) return;
+          context.read<IsReloadProvider>().value = false;
+        })
+        .catchError((_) {
+          if (!context.mounted) return;
 
-    context.read<IsReloadProvider>().value = false;
+          context.read<IsReloadProvider>().value = false;
 
-    if (state == ResultState.error) {
-      Utilities.showSnackBarMessage(
-        context: context,
-        text: 'Gagal memuat daftar restoran',
-      );
-    }
+          Utilities.showSnackBarMessage(
+            context: context,
+            text: 'Gagal memuat daftar restoran',
+          );
+        });
   }
 }
