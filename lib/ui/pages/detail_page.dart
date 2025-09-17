@@ -9,7 +9,6 @@ import 'package:readmore/readmore.dart';
 import 'package:restaurant_app/common/const/const.dart';
 import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
-import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/service_providers/restaurant_detail_provider.dart';
@@ -62,7 +61,7 @@ class DetailPage extends StatelessWidget {
     required RestaurantDetail restaurantDetail,
   }) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: Theme.of(context).colorScheme.onSurface,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
@@ -97,8 +96,9 @@ class DetailPage extends StatelessWidget {
                           gradient: LinearGradient(
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
+                            stops: [0, .5],
                             colors: [
-                              Theme.of(context).colorScheme.onSurface.withValues(alpha: .9),
+                              Theme.of(context).colorScheme.onSurface,
                               Colors.transparent,
                             ],
                           ),
@@ -123,208 +123,186 @@ class DetailPage extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Padding(
-                    padding: EdgeInsets.fromLTRB(16, 0, 16, 4),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       restaurantDetail.name,
-                      maxLines: 2,
-                      overflow: TextOverflow.ellipsis,
-                      style: Theme.of(context).textTheme.headlineMedium,
+                      style: Theme.of(context).textTheme.headlineMedium!.semiBold,
                     ),
                   ),
-                  SizedBox(
-                    height: 40,
-                    child: buildCategoryChipsWidget(
-                      categories: restaurantDetail.categories,
-                    ),
+                  SizedBox(height: 8),
+                  buildCategoryChipsWidget(
+                    context: context,
+                    categories: restaurantDetail.categories,
                   ),
+                  SizedBox(height: 16),
                   Padding(
-                    padding: EdgeInsets.all(16),
-                    child: SizedBox(
-                      height: 112,
-                      child: Row(
-                        children: [
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Flexible(
-                                  child: Icon(
-                                    Icons.place_rounded,
-                                    size: 48,
-                                    color: Colors.red[400],
-                                  ),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.place_rounded,
+                                size: 48,
+                                color: Colors.red[400],
+                              ),
+                              Text(
+                                restaurantDetail.city,
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.titleMedium!.bold,
+                              ),
+                              Text(
+                                restaurantDetail.address,
+                                textAlign: TextAlign.center,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: Theme.of(context).textTheme.bodySmall!.semiBold.copyWith(
+                                  color: Theme.of(context).colorScheme.outline,
                                 ),
-                                Flexible(
-                                  child: Column(
-                                    children: [
-                                      Flexible(
-                                        child: Text(
-                                          restaurantDetail.city,
-                                          maxLines: 1,
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context).textTheme.titleLarge,
-                                        ),
-                                      ),
-                                      Flexible(
-                                        child: Text(
-                                          restaurantDetail.address,
-                                          maxLines: 2,
-                                          overflow: TextOverflow.ellipsis,
-                                          textAlign: TextAlign.center,
-                                          style: Theme.of(context).textTheme.bodySmall,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                          Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 8),
-                            child: VerticalDivider(
-                              width: 1,
-                              thickness: 1,
-                            ),
+                        ),
+                        Expanded(
+                          child: Column(
+                            mainAxisSize: MainAxisSize.min,
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.star_rate_rounded,
+                                size: 58,
+                                color: Colors.orange[400],
+                              ),
+                              Text(
+                                '${restaurantDetail.rating}/5.0',
+                                textAlign: TextAlign.center,
+                                style: Theme.of(context).textTheme.headlineSmall,
+                              ),
+                            ],
                           ),
-                          Expanded(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Flexible(
-                                  child: Icon(
-                                    Icons.star_rate_rounded,
-                                    size: 58,
-                                    color: Colors.orange[400],
-                                  ),
-                                ),
-                                Flexible(
-                                  child: Text(
-                                    '${restaurantDetail.rating}/5.0',
-                                    maxLines: 1,
-                                    overflow: TextOverflow.ellipsis,
-                                    textAlign: TextAlign.center,
-                                    style: Theme.of(context).textTheme.headlineMedium,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                        ),
+                      ],
                     ),
                   ),
+                  SizedBox(height: 24),
                   Divider(
                     height: 1,
-                    thickness: 1,
+                    thickness: 0.5,
                   ),
+                  SizedBox(height: 16),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       'Deskripsi',
-                      style: Theme.of(context).textTheme.headlineSmall,
+                      style: Theme.of(context).textTheme.headlineSmall!.semiBold,
                     ),
                   ),
+                  SizedBox(height: 4),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(16, 0, 16, 24),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
                     child: ReadMoreText(
                       restaurantDetail.description,
                       trimLines: 4,
-                      colorClickableText: Theme.of(context).colorScheme.primary,
                       trimMode: TrimMode.Line,
-                      trimCollapsedText: 'Show More',
-                      trimExpandedText: 'Show Less',
+                      trimCollapsedText: 'Lihat selengkapnya',
+                      trimExpandedText: 'Lihat lebih sedikit',
+                      delimiter: "... ",
+                      colorClickableText: Theme.of(context).colorScheme.primary,
                       style: Theme.of(context).textTheme.bodyMedium,
-                      lessStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
+
+                      lessStyle: Theme.of(context).textTheme.titleSmall!.bold.copyWith(
                         color: Theme.of(context).colorScheme.primary,
                       ),
-                      moreStyle: TextStyle(
-                        fontWeight: FontWeight.bold,
+                      moreStyle: Theme.of(context).textTheme.titleSmall!.bold.copyWith(
                         color: Theme.of(context).colorScheme.primary,
                       ),
                     ),
                   ),
+                  SizedBox(height: 24),
                   Divider(
                     height: 1,
-                    thickness: 1,
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
-                    child: Text(
-                      'Menu',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(16, 0, 16, 0),
-                    child: Text(
-                      'Makanan',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 140,
-                    child: buildMenuItemsWidget(
-                      crossAxisCount: 1,
-                      childAspectRatio: 2 / 3,
-                      items: restaurantDetail.menus.foods,
-                      isFood: true,
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.fromLTRB(16, 8, 16, 0),
-                    child: Text(
-                      'Minuman',
-                      style: Theme.of(context).textTheme.titleMedium,
-                    ),
-                  ),
-                  SizedBox(
-                    height: 140,
-                    child: buildMenuItemsWidget(
-                      crossAxisCount: 1,
-                      childAspectRatio: 5 / 4,
-                      items: restaurantDetail.menus.drinks,
-                      isFood: false,
-                    ),
+                    thickness: 0.5,
                   ),
                   SizedBox(height: 16),
-                  Divider(
-                    height: 1,
-                    thickness: 1,
-                  ),
                   Padding(
-                    padding: EdgeInsets.fromLTRB(16, 16, 16, 4),
+                    padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
-                      'Ulasan',
-                      style: Theme.of(context).textTheme.headlineSmall,
+                      'Menu',
+                      style: Theme.of(context).textTheme.headlineSmall!.semiBold,
                     ),
                   ),
+                  SizedBox(height: 4),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'Makanan',
+                      style: Theme.of(context).textTheme.bodyMedium!.semiBold.copyWith(
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 8),
+                  buildMenuItemsWidget(
+                    items: restaurantDetail.menus.foods,
+                    isFood: true,
+                    aspectRatio: 16 / 10,
+                  ),
+                  SizedBox(height: 16),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'Minuman',
+                      style: Theme.of(context).textTheme.bodyMedium!.semiBold.copyWith(
+                        color: Theme.of(context).colorScheme.outline,
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 4),
+                  buildMenuItemsWidget(
+                    items: restaurantDetail.menus.drinks,
+                    isFood: false,
+                    aspectRatio: 5 / 7,
+                  ),
+                  SizedBox(height: 24),
+                  Divider(
+                    height: 1,
+                    thickness: 0.5,
+                  ),
+                  SizedBox(height: 16),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 16),
+                    child: Text(
+                      'Ulasan',
+                      style: Theme.of(context).textTheme.headlineSmall!.semiBold,
+                    ),
+                  ),
+                  SizedBox(height: 4),
                   buildReviewsWidget(
                     reviews: restaurantDetail.customerReviews,
                   ),
+                  SizedBox(height: 8),
                   Center(
                     child: OutlinedButton.icon(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: ((context) {
-                              return ReviewFormPage(
-                                restaurantId: restaurantDetail.id,
-                                restaurantName: restaurantDetail.name,
-                              );
-                            }),
+                      onPressed: () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ReviewFormPage(
+                            restaurantId: restaurantDetail.id,
+                            restaurantName: restaurantDetail.name,
                           ),
-                        );
-                      },
+                        ),
+                      ),
                       label: Text('Tambah Ulasan'),
                       icon: Icon(Icons.add_rounded),
                       style: TextButton.styleFrom(
                         padding: EdgeInsets.symmetric(
                           vertical: 8,
-                          horizontal: 12,
+                          horizontal: 16,
                         ),
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(12),
@@ -343,47 +321,55 @@ class DetailPage extends StatelessWidget {
 
   /// Widget function untuk membuat chips kategori
   Widget buildCategoryChipsWidget({
+    required BuildContext context,
     required List<Category> categories,
   }) {
-    return ListView.separated(
-      padding: EdgeInsets.symmetric(horizontal: 16),
+    return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
-      itemBuilder: (context, index) => Chip(
-        label: Text(
-          categories[index].name,
-          style: Theme.of(context).textTheme.bodyMedium,
-        ),
+      padding: EdgeInsets.symmetric(horizontal: 16),
+      child: Row(
+        children: [
+          for (var index = 0; index < categories.length; index++) ...[
+            Chip(
+              label: Text(categories[index].name),
+              labelStyle: Theme.of(context).textTheme.titleSmall!.semiBold,
+              backgroundColor: Theme.of(context).colorScheme.tertiary.withValues(alpha: .3),
+              side: BorderSide.none,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadiusGeometry.circular(99),
+              ),
+            ),
+
+            if (index < categories.length - 1) SizedBox(width: 8),
+          ],
+        ],
       ),
-      separatorBuilder: (context, index) => SizedBox(width: 8),
-      itemCount: categories.length,
     );
   }
 
   /// Widget function untuk membuat menu item dengan kustomisasi jumlah grid dan rasio
   Widget buildMenuItemsWidget({
-    required int crossAxisCount,
-    required double childAspectRatio,
     required List<ItemMenu> items,
     required bool isFood,
+    required double aspectRatio,
   }) {
-    return GridView.builder(
-      padding: EdgeInsets.symmetric(
-        vertical: 8,
-        horizontal: 16,
+    return SizedBox(
+      height: 150,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        padding: EdgeInsets.symmetric(horizontal: 12),
+        itemCount: items.length,
+        itemBuilder: (context, index) {
+          return ItemMenuCard(
+            item: items[index],
+            isFood: isFood,
+            aspectRatio: aspectRatio,
+          );
+        },
+        separatorBuilder: (context, index) {
+          return SizedBox(width: 8);
+        },
       ),
-      scrollDirection: Axis.horizontal,
-      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: crossAxisCount,
-        childAspectRatio: childAspectRatio,
-        mainAxisSpacing: 12,
-      ),
-      itemBuilder: (context, index) {
-        return ItemMenuCard(
-          item: items[index],
-          isFood: isFood,
-        );
-      },
-      itemCount: items.length,
     );
   }
 
@@ -391,24 +377,22 @@ class DetailPage extends StatelessWidget {
   Widget buildReviewsWidget({
     required List<CustomerReview> reviews,
   }) {
-    return ListView.builder(
-      padding: EdgeInsets.all(0),
-      physics: NeverScrollableScrollPhysics(),
-      shrinkWrap: true,
-      itemBuilder: (context, index) {
-        return ListTile(
-          leading: CircleAvatar(
-            radius: 24,
-            child: Image.asset(
-              AssetPath.getIcon("ic_profile.png"),
-              fit: BoxFit.fill,
+    return Column(
+      children: [
+        for (var index = 0; index < reviews.length; index++) ...[
+          ListTile(
+            leading: CircleAvatar(
+              radius: 24,
+              child: Image.asset(
+                AssetPath.getIcon('ic_profile.png'),
+                fit: BoxFit.fill,
+              ),
             ),
+            title: Text('"${reviews[index].review}"'),
+            subtitle: Text(reviews[index].name),
           ),
-          title: Text('"${reviews[index].review}"'),
-          subtitle: Text(reviews[index].name),
-        );
-      },
-      itemCount: reviews.length,
+        ],
+      ],
     );
   }
 
@@ -432,11 +416,6 @@ class DetailPage extends StatelessWidget {
           if (!context.mounted) return;
 
           context.read<IsReloadProvider>().value = false;
-
-          Utilities.showSnackBarMessage(
-            context: context,
-            text: 'Gagal memuat detail restoran',
-          );
         });
   }
 }

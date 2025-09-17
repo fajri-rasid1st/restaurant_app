@@ -16,12 +16,16 @@ class RestaurantApp extends StatelessWidget {
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: ThemeMode.system,
-      home: SafeArea(
-        top: false,
-        left: false,
-        right: false,
-        child: MainPage(),
-      ),
+      builder: (context, child) {
+        return SafeArea(
+          top: false,
+          bottom: true,
+          left: false,
+          right: false,
+          child: child!,
+        );
+      },
+      home: MainPage(),
     );
   }
 }

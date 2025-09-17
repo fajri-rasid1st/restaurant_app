@@ -8,7 +8,6 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/enum/restaurant_category.dart';
 import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
-import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/data/services/restaurant_api_service.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
@@ -194,17 +193,8 @@ class MainPage extends StatelessWidget {
     required ResultState state,
     required String message,
   }) {
-    return Consumer<IsReloadProvider>(
+    return Consumer<SearchQueryProvider>(
       builder: (context, provider, child) {
-        final searchQuery = context.watch<SearchQueryProvider>().value;
-
-        if (provider.value) {
-          return ErrorPage(
-            message: message,
-            onRefresh: () => refreshPage(context, state, searchQuery),
-          );
-        }
-
         switch (state) {
           case ResultState.initial:
             return SizedBox.shrink();
@@ -213,7 +203,7 @@ class MainPage extends StatelessWidget {
           case ResultState.error:
             return ErrorPage(
               message: message,
-              onRefresh: () => refreshPage(context, state, searchQuery),
+              onRefresh: () => refreshPage(context, provider.value),
             );
           case ResultState.data:
             if (restaurants.isEmpty) {
@@ -294,7 +284,6 @@ class MainPage extends StatelessWidget {
   /// Fungsi untuk reload halaman saat data gagal di-fetch
   Future<void> refreshPage(
     BuildContext context,
-    ResultState state,
     String searchQuery,
   ) async {
     context.read<IsReloadProvider>().value = true;
@@ -312,11 +301,6 @@ class MainPage extends StatelessWidget {
           if (!context.mounted) return;
 
           context.read<IsReloadProvider>().value = false;
-
-          Utilities.showSnackBarMessage(
-            context: context,
-            text: 'Gagal memuat daftar restoran',
-          );
         });
   }
 }
