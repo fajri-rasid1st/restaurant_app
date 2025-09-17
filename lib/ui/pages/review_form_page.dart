@@ -139,7 +139,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
   Widget buildSubmitButton() {
     return SizedBox(
       width: double.infinity,
-      child: ElevatedButton.icon(
+      child: FilledButton.icon(
         label: Text(
           'Tambah Ulasan',
           style: TextStyle(
@@ -147,7 +147,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
           ),
         ),
         icon: Icon(Icons.add_rounded),
-        style: ElevatedButton.styleFrom(
+        style: FilledButton.styleFrom(
           padding: EdgeInsets.symmetric(vertical: 12),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),

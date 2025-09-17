@@ -3,9 +3,7 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_svg/flutter_svg.dart';
-
-// Project imports:
-import 'package:restaurant_app/ui/themes/text_theme.dart';
+import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 
 class CustomInformation extends StatelessWidget {
   final String assetName;
@@ -32,14 +30,12 @@ class CustomInformation extends StatelessWidget {
             SvgPicture.asset(
               assetName,
               width: 250,
-              fit: BoxFit.fill,
+              fit: BoxFit.cover,
             ),
             Text(
               title,
               textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium!.bold.copyWith(
-                color: Theme.of(context).colorScheme.primary,
-              ),
+              style: Theme.of(context).textTheme.titleMedium!.bold.colorPrimary(context),
             ),
             SizedBox(height: 8),
             Text(
@@ -47,9 +43,7 @@ class CustomInformation extends StatelessWidget {
               textAlign: TextAlign.center,
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
-              style: Theme.of(context).textTheme.bodyMedium!.copyWith(
-                color: Theme.of(context).colorScheme.outline,
-              ),
+              style: Theme.of(context).textTheme.bodyMedium!.colorOutline(context),
             ),
             SizedBox(height: 16),
             if (child != null) child!,

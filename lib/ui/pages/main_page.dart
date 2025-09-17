@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 // Project imports:
 import 'package:restaurant_app/common/enum/restaurant_category.dart';
 import 'package:restaurant_app/common/enum/result_state.dart';
+import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/data/services/restaurant_api_service.dart';
@@ -19,7 +20,6 @@ import 'package:restaurant_app/providers/service_providers/restaurants_provider.
 import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
-import 'package:restaurant_app/ui/themes/text_theme.dart';
 import 'package:restaurant_app/ui/widgets/category_list.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
 import 'package:restaurant_app/ui/widgets/restaurant_card.dart';

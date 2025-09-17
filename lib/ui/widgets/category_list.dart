@@ -6,8 +6,8 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:restaurant_app/common/enum/restaurant_category.dart';
+import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
-import 'package:restaurant_app/ui/themes/text_theme.dart';
 
 class CategoryList extends StatelessWidget {
   final List<RestaurantCategory> categories;

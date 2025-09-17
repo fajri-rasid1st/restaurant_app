@@ -8,6 +8,7 @@ import 'package:readmore/readmore.dart';
 // Project imports:
 import 'package:restaurant_app/common/const/const.dart';
 import 'package:restaurant_app/common/enum/result_state.dart';
+import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
@@ -15,7 +16,6 @@ import 'package:restaurant_app/providers/service_providers/restaurant_detail_pro
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/pages/review_form_page.dart';
-import 'package:restaurant_app/ui/themes/text_theme.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 import 'package:restaurant_app/ui/widgets/item_menu_card.dart';
 
@@ -65,49 +65,73 @@ class DetailPage extends StatelessWidget {
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
-            SliverAppBar(
-              pinned: true,
-              expandedHeight: 240,
-              title: Text(
-                restaurantDetail.name,
-                style: Theme.of(context).textTheme.titleLarge!.bold,
-              ),
-              centerTitle: true,
-              leading: IconButton(
-                onPressed: () => Navigator.pop(context),
-                icon: Icon(Icons.arrow_back_rounded),
-                tooltip: 'Back',
-              ),
-              flexibleSpace: FlexibleSpaceBar(
-                background: Stack(
-                  children: [
-                    Hero(
-                      tag: heroTag,
-                      child: CustomNetworkImage(
-                        imageUrl: '${Const.imgUrl}${restaurantDetail.pictureId}',
-                        width: double.infinity,
-                        height: 280,
-                        placeHolderSize: 100,
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.bottomCenter,
-                            end: Alignment.topCenter,
-                            stops: [0, .5],
-                            colors: [
-                              Theme.of(context).colorScheme.onSurface,
-                              Colors.transparent,
-                            ],
+            SliverLayoutBuilder(
+              builder: (context, constraints) {
+                const expanded = 240.0; // expandedHeight
+                final collapsed = constraints.scrollOffset > (expanded - kToolbarHeight);
+
+                final scheme = Theme.of(context).colorScheme;
+                final onImage = scheme.surface; // sebelum scroll (di atas gambar)
+                final onAppBar = scheme.onSurface; // setelah scroll (di appbar)
+
+                return SliverAppBar(
+                  pinned: true,
+                  expandedHeight: expanded,
+                  foregroundColor: collapsed ? onAppBar : onImage,
+                  title: Text(restaurantDetail.name),
+                  titleTextStyle: Theme.of(context).textTheme.titleLarge!.bold.copyWith(
+                    color: collapsed ? onAppBar : onImage,
+                  ),
+                  centerTitle: true,
+                  leading: IconButton(
+                    onPressed: () => Navigator.pop(context),
+                    icon: Icon(Icons.arrow_back_rounded),
+                    tooltip: 'Back',
+                  ),
+                  flexibleSpace: FlexibleSpaceBar(
+                    background: Stack(
+                      fit: StackFit.expand,
+                      children: [
+                        Hero(
+                          tag: heroTag,
+                          child: CustomNetworkImage(
+                            imageUrl: '${Const.imgUrl}${restaurantDetail.pictureId}',
+                            width: double.infinity,
+                            height: 280,
+                            placeHolderSize: 100,
                           ),
                         ),
-                      ),
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.topCenter,
+                              end: Alignment.bottomCenter,
+                              stops: [.0, .4],
+                              colors: [
+                                Theme.of(context).colorScheme.onSurface,
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                        ),
+                        DecoratedBox(
+                          decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                              begin: Alignment.bottomCenter,
+                              end: Alignment.topCenter,
+                              stops: [.0, .45],
+                              colors: [
+                                Theme.of(context).colorScheme.onSurface,
+                                Colors.transparent,
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              ),
+                  ),
+                );
+              },
             ),
           ];
         },
@@ -161,9 +185,7 @@ class DetailPage extends StatelessWidget {
                                 textAlign: TextAlign.center,
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: Theme.of(context).textTheme.bodySmall!.semiBold.copyWith(
-                                  color: Theme.of(context).colorScheme.outline,
-                                ),
+                                style: Theme.of(context).textTheme.bodySmall!.semiBold.colorOutline(context),
                               ),
                             ],
                           ),
@@ -214,13 +236,8 @@ class DetailPage extends StatelessWidget {
                       delimiter: "... ",
                       colorClickableText: Theme.of(context).colorScheme.primary,
                       style: Theme.of(context).textTheme.bodyMedium,
-
-                      lessStyle: Theme.of(context).textTheme.titleSmall!.bold.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
-                      moreStyle: Theme.of(context).textTheme.titleSmall!.bold.copyWith(
-                        color: Theme.of(context).colorScheme.primary,
-                      ),
+                      lessStyle: Theme.of(context).textTheme.titleSmall!.bold.colorPrimary(context),
+                      moreStyle: Theme.of(context).textTheme.titleSmall!.bold.colorPrimary(context),
                     ),
                   ),
                   SizedBox(height: 24),
@@ -241,9 +258,7 @@ class DetailPage extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       'Makanan',
-                      style: Theme.of(context).textTheme.bodyMedium!.semiBold.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium!.semiBold.colorOutline(context),
                     ),
                   ),
                   SizedBox(height: 8),
@@ -257,9 +272,7 @@ class DetailPage extends StatelessWidget {
                     padding: EdgeInsets.symmetric(horizontal: 16),
                     child: Text(
                       'Minuman',
-                      style: Theme.of(context).textTheme.bodyMedium!.semiBold.copyWith(
-                        color: Theme.of(context).colorScheme.outline,
-                      ),
+                      style: Theme.of(context).textTheme.bodyMedium!.semiBold.colorOutline(context),
                     ),
                   ),
                   SizedBox(height: 4),
@@ -283,6 +296,7 @@ class DetailPage extends StatelessWidget {
                   ),
                   SizedBox(height: 4),
                   buildReviewsWidget(
+                    context: context,
                     reviews: restaurantDetail.customerReviews,
                   ),
                   SizedBox(height: 8),
@@ -299,7 +313,7 @@ class DetailPage extends StatelessWidget {
                       ),
                       label: Text('Tambah Ulasan'),
                       icon: Icon(Icons.add_rounded),
-                      style: TextButton.styleFrom(
+                      style: OutlinedButton.styleFrom(
                         padding: EdgeInsets.symmetric(
                           vertical: 8,
                           horizontal: 16,
@@ -375,6 +389,7 @@ class DetailPage extends StatelessWidget {
 
   /// Widget function untuk membuat list review restaurant
   Widget buildReviewsWidget({
+    required BuildContext context,
     required List<CustomerReview> reviews,
   }) {
     return Column(
@@ -385,11 +400,13 @@ class DetailPage extends StatelessWidget {
               radius: 24,
               child: Image.asset(
                 AssetPath.getIcon('ic_profile.png'),
-                fit: BoxFit.fill,
+                fit: BoxFit.cover,
               ),
             ),
             title: Text('"${reviews[index].review}"'),
+            titleTextStyle: Theme.of(context).textTheme.bodyMedium!.semiBold.colorOnSurface(context),
             subtitle: Text(reviews[index].name),
+            subtitleTextStyle: Theme.of(context).textTheme.bodySmall!.colorOutline(context),
           ),
         ],
       ],

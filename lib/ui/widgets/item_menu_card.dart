@@ -1,10 +1,10 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 
 // Project imports:
 import 'package:restaurant_app/common/utilities/asset_path.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
-import 'package:restaurant_app/ui/themes/text_theme.dart';
 
 class ItemMenuCard extends StatelessWidget {
   final ItemMenu item;
@@ -40,7 +40,10 @@ class ItemMenuCard extends StatelessWidget {
             right: 0,
             bottom: 0,
             child: Container(
-              padding: EdgeInsetsGeometry.all(12),
+              padding: EdgeInsetsGeometry.symmetric(
+                vertical: 8,
+                horizontal: 10,
+              ),
               color: Theme.of(context).colorScheme.primaryContainer.withValues(alpha: .7),
               child: Text(
                 item.name,

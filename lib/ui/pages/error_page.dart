@@ -43,7 +43,7 @@ class ErrorPage extends StatelessWidget {
                       )
                     : Icon(Icons.replay_rounded),
                 label: provider.value ? Text('Memuat Data...') : Text('Coba Lagi'),
-                style: ElevatedButton.styleFrom(
+                style: FilledButton.styleFrom(
                   padding: EdgeInsets.symmetric(
                     vertical: 8,
                     horizontal: 16,
