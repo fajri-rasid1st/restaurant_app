@@ -18,35 +18,17 @@ class ItemMenuCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      clipBehavior: Clip.antiAlias,
       margin: EdgeInsets.all(0),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(12),
       ),
-      clipBehavior: Clip.antiAlias,
       child: Stack(
         alignment: AlignmentDirectional.bottomCenter,
         children: [
           Image.asset(
             isFood ? AssetPath.getImage("placeholder_2.png") : AssetPath.getImage("placeholder_1.png"),
-            fit: BoxFit.cover,
-          ),
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  begin: Alignment.bottomCenter,
-                  end: Alignment.topCenter,
-                  colors: [
-                    Colors.black,
-                    Colors.transparent,
-                  ],
-                  stops: [
-                    0.0,
-                    0.75,
-                  ],
-                ),
-              ),
-            ),
+            fit: BoxFit.contain,
           ),
           Padding(
             padding: EdgeInsets.all(8),

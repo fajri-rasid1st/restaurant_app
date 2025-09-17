@@ -16,10 +16,10 @@ import 'package:restaurant_app/providers/service_providers/restaurant_detail_pro
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/pages/review_form_page.dart';
+import 'package:restaurant_app/ui/themes/text_theme.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 import 'package:restaurant_app/ui/widgets/item_menu_card.dart';
 
-// TODO:
 class DetailPage extends StatelessWidget {
   final String restaurantId;
   final String heroTag;
@@ -62,13 +62,17 @@ class DetailPage extends StatelessWidget {
     required RestaurantDetail restaurantDetail,
   }) {
     return Scaffold(
+      backgroundColor: Colors.black,
       body: NestedScrollView(
         headerSliverBuilder: (context, innerBoxIsScrolled) {
           return [
             SliverAppBar(
               pinned: true,
               expandedHeight: 240,
-              title: Text(restaurantDetail.name),
+              title: Text(
+                restaurantDetail.name,
+                style: Theme.of(context).textTheme.titleLarge!.bold,
+              ),
               centerTitle: true,
               leading: IconButton(
                 onPressed: () => Navigator.pop(context),
@@ -83,8 +87,8 @@ class DetailPage extends StatelessWidget {
                       child: CustomNetworkImage(
                         imageUrl: '${Const.imgUrl}${restaurantDetail.pictureId}',
                         width: double.infinity,
-                        height: 264,
-                        placeHolderSize: 120,
+                        height: 280,
+                        placeHolderSize: 100,
                       ),
                     ),
                     Positioned.fill(
@@ -94,21 +98,7 @@ class DetailPage extends StatelessWidget {
                             begin: Alignment.bottomCenter,
                             end: Alignment.topCenter,
                             colors: [
-                              Colors.black,
-                              Colors.transparent,
-                            ],
-                          ),
-                        ),
-                      ),
-                    ),
-                    Positioned.fill(
-                      child: Container(
-                        decoration: BoxDecoration(
-                          gradient: LinearGradient(
-                            begin: Alignment.topCenter,
-                            end: Alignment.bottomCenter,
-                            colors: [
-                              Colors.black12,
+                              Theme.of(context).colorScheme.onSurface.withValues(alpha: .9),
                               Colors.transparent,
                             ],
                           ),
@@ -122,11 +112,11 @@ class DetailPage extends StatelessWidget {
           ];
         },
         body: ClipRRect(
-          borderRadius: BorderRadius.vertical(
-            top: Radius.circular(20),
+          borderRadius: BorderRadiusGeometry.vertical(
+            top: Radius.circular(24),
           ),
           child: Container(
-            color: Theme.of(context).scaffoldBackgroundColor,
+            color: Theme.of(context).colorScheme.surface,
             child: SingleChildScrollView(
               padding: EdgeInsets.symmetric(vertical: 24),
               child: Column(
@@ -410,7 +400,7 @@ class DetailPage extends StatelessWidget {
           leading: CircleAvatar(
             radius: 24,
             child: Image.asset(
-              AssetPath.getImage("user_pict.png"),
+              AssetPath.getIcon("ic_profile.png"),
               fit: BoxFit.fill,
             ),
           ),

@@ -1,6 +1,5 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
 // Project imports:
 import 'package:restaurant_app/ui/pages/main_page.dart';
@@ -17,22 +16,12 @@ class RestaurantApp extends StatelessWidget {
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: ThemeMode.system,
-      builder: (context, child) {
-        final scheme = Theme.of(context).colorScheme;
-        final isDark = scheme.brightness == Brightness.dark;
-
-        final overlay = SystemUiOverlayStyle(
-          systemNavigationBarColor: scheme.surface,
-          systemNavigationBarIconBrightness: isDark ? Brightness.light : Brightness.dark,
-          systemNavigationBarContrastEnforced: false,
-        );
-
-        return AnnotatedRegion<SystemUiOverlayStyle>(
-          value: overlay,
-          child: child!,
-        );
-      },
-      home: MainPage(),
+      home: SafeArea(
+        top: false,
+        left: false,
+        right: false,
+        child: MainPage(),
+      ),
     );
   }
 }

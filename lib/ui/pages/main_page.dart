@@ -10,11 +10,14 @@ import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
 import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/data/services/restaurant_api_service.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_searching_provider.dart';
 import 'package:restaurant_app/providers/app_providers/search_query_provider.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
+import 'package:restaurant_app/providers/service_providers/restaurant_detail_provider.dart';
 import 'package:restaurant_app/providers/service_providers/restaurants_provider.dart';
+import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/themes/text_theme.dart';
@@ -256,7 +259,20 @@ class MainPage extends StatelessWidget {
                     children: [
                       RestaurantCard(
                         restaurant: restaurants[index],
-                        onTap: () {},
+                        onTap: () => Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => ChangeNotifierProvider(
+                              create: (context) => RestaurantDetailProvider(
+                                context.read<RestaurantApiService>(),
+                              )..getRestaurantDetail(restaurants[index].id),
+                              child: DetailPage(
+                                restaurantId: restaurants[index].id,
+                                heroTag: restaurants[index].id,
+                              ),
+                            ),
+                          ),
+                        ),
                       ),
                       if (hasSeparator)
                         Divider(
