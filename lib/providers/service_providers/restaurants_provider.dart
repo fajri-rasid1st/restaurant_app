@@ -31,8 +31,6 @@ class RestaurantsProvider extends ChangeNotifier {
 
       _state = ResultState.data;
     } catch (e) {
-      debugPrint('getRestaurants error: ${e.toString()}');
-
       _message = 'Gagal memuat daftar restoran. Error: ${e.toString()}';
 
       _state = ResultState.error;

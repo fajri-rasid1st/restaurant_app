@@ -11,19 +11,12 @@ class RestaurantDetailProvider extends ChangeNotifier {
 
   RestaurantDetailProvider(this.service);
 
-  RestaurantDetail? _restaurantDetail;
+  RestaurantDetail? restaurantDetail;
   ResultState _state = ResultState.initial;
   String _message = '';
 
-  RestaurantDetail? get restaurantDetail => _restaurantDetail;
   ResultState get state => _state;
   String get message => _message;
-
-  /// Set data detail restoran
-  set restaurantDetail(RestaurantDetail? restaurantDetail) {
-    _restaurantDetail = restaurantDetail;
-    notifyListeners();
-  }
 
   /// Mengambil data detail restoran sesuai [id]-nya
   Future<void> getRestaurantDetail(String id) async {
@@ -33,13 +26,43 @@ class RestaurantDetailProvider extends ChangeNotifier {
     try {
       final result = await service.getRestaurantDetail(id);
 
-      _restaurantDetail = result;
+      restaurantDetail = result;
 
       _state = ResultState.data;
     } catch (e) {
-      debugPrint('getRestaurantDetail error: ${e.toString()}');
-
       _message = 'Gagal memuat detail restoran. Error: ${e.toString()}';
+
+      _state = ResultState.error;
+    }
+
+    notifyListeners();
+  }
+
+  /// Mengirim data review restaurant dan mengembalikan daftar review
+  Future<void> sendCustomerReview({
+    required String id,
+    required String name,
+    required String review,
+  }) async {
+    _state = ResultState.loading;
+    notifyListeners();
+
+    try {
+      final result = await service.sendCustomerReview(
+        id: id,
+        name: name,
+        review: review,
+      );
+
+      if (restaurantDetail != null) {
+        restaurantDetail = restaurantDetail!.copyWith(customerReviews: result);
+      }
+
+      _message = 'Berhasil mengirim review.';
+
+      _state = ResultState.data;
+    } catch (e) {
+      _message = 'Gagal mengirim review. Error: ${e.toString()}';
 
       _state = ResultState.error;
     }
