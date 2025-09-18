@@ -11,7 +11,9 @@ import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
+import 'package:restaurant_app/data/services/restaurant_api_service.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
+import 'package:restaurant_app/providers/service_providers/customer_review_provider.dart';
 import 'package:restaurant_app/providers/service_providers/restaurant_detail_provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
@@ -305,9 +307,23 @@ class DetailPage extends StatelessWidget {
                       onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ReviewFormPage(
-                            restaurantId: restaurantDetail.id,
-                            restaurantName: restaurantDetail.name,
+                          builder: (_) => MultiProvider(
+                            providers: [
+                              ChangeNotifierProvider(
+                                create: (context) => RestaurantDetailProvider(
+                                  context.read<RestaurantApiService>(),
+                                ),
+                              ),
+                              ChangeNotifierProvider(
+                                create: (context) => CustomerReviewProvider(
+                                  context.read<RestaurantApiService>(),
+                                ),
+                              ),
+                            ],
+                            child: ReviewFormPage(
+                              restaurantId: restaurantDetail.id,
+                              restaurantName: restaurantDetail.name,
+                            ),
                           ),
                         ),
                       ),

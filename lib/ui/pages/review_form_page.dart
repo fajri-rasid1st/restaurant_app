@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Package imports:
-import 'package:google_fonts/google_fonts.dart';
 import 'package:provider/provider.dart';
+import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 
 // Project imports:
 import 'package:restaurant_app/common/utilities/utilities.dart';
@@ -51,6 +51,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Ulasan'),
+        titleTextStyle: Theme.of(context).textTheme.titleLarge!.bold,
         centerTitle: true,
         leading: IconButton(
           onPressed: () => Navigator.pop(context),
@@ -59,16 +60,16 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
         ),
       ),
       body: SingleChildScrollView(
-        reverse: true,
         padding: EdgeInsets.all(16),
+        reverse: true,
         child: Form(
           key: formKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                'Beri tanggapan Anda tentang ${widget.restaurantName}.',
-                style: Theme.of(context).textTheme.titleMedium, // TODO:
+                'Beri tanggapan Anda tentang "${widget.restaurantName}".',
+                style: Theme.of(context).textTheme.titleMedium,
               ),
               SizedBox(height: 16),
               buildNameTextField(),
@@ -96,10 +97,6 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
-      style: GoogleFonts.quicksand(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-      ),
       validator: (value) {
         if (value!.trim().isEmpty) return 'Nama harus diisi';
 
@@ -123,10 +120,6 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
           borderRadius: BorderRadius.circular(12),
         ),
       ),
-      style: GoogleFonts.quicksand(
-        fontSize: 16,
-        fontWeight: FontWeight.w500,
-      ),
       validator: (value) {
         if (value!.trim().isEmpty) return 'Ulasan harus diisi';
 
@@ -140,20 +133,18 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
     return SizedBox(
       width: double.infinity,
       child: FilledButton.icon(
-        label: Text(
-          'Tambah Ulasan',
-          style: TextStyle(
-            fontWeight: FontWeight.bold,
-          ),
-        ),
+        onPressed: submitReview,
+        label: Text('Tambah Ulasan'),
         icon: Icon(Icons.add_rounded),
         style: FilledButton.styleFrom(
-          padding: EdgeInsets.symmetric(vertical: 12),
+          padding: EdgeInsets.symmetric(
+            vertical: 8,
+            horizontal: 16,
+          ),
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
           ),
         ),
-        onPressed: submitReview,
       ),
     );
   }

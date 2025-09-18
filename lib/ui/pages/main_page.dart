@@ -66,6 +66,7 @@ class MainPage extends StatelessWidget {
                 handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: SliverAppBar(
                   pinned: true,
+                  titleTextStyle: Theme.of(context).textTheme.titleLarge!.bold,
                   title: buildAppBarTitle(
                     context: context,
                     isSearching: isSearching,
@@ -113,10 +114,7 @@ class MainPage extends StatelessWidget {
               context.read<RestaurantsProvider>().getRestaurants(query);
             },
           )
-        : Text(
-            "Restaurant App",
-            style: Theme.of(context).textTheme.titleLarge!.bold,
-          );
+        : Text("Restaurant App");
   }
 
   /// Widget untuk membuat leading app bar

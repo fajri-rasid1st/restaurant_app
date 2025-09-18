@@ -32,6 +32,7 @@ class ErrorPage extends StatelessWidget {
             builder: (context, provider, child) {
               return FilledButton.icon(
                 onPressed: provider.value ? null : onRefresh,
+                label: provider.value ? Text('Memuat Data...') : Text('Coba Lagi'),
                 icon: provider.value
                     ? SizedBox(
                         width: 16,
@@ -42,7 +43,6 @@ class ErrorPage extends StatelessWidget {
                         ),
                       )
                     : Icon(Icons.replay_rounded),
-                label: provider.value ? Text('Memuat Data...') : Text('Coba Lagi'),
                 style: FilledButton.styleFrom(
                   padding: EdgeInsets.symmetric(
                     vertical: 8,

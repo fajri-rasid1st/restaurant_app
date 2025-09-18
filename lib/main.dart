@@ -12,7 +12,6 @@ import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_searching_provider.dart';
 import 'package:restaurant_app/providers/app_providers/search_query_provider.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
-import 'package:restaurant_app/providers/service_providers/restaurants_provider.dart';
 
 Future<void> main() async {
   // Memastikan widget Flutter sudah diinisialisasi
@@ -41,11 +40,6 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider<SelectedCategoryProvider>(
           create: (context) => SelectedCategoryProvider(),
-        ),
-        ChangeNotifierProvider<RestaurantsProvider>(
-          create: (context) => RestaurantsProvider(
-            context.read<RestaurantApiService>(),
-          )..getRestaurants(),
         ),
       ],
       child: RestaurantApp(),

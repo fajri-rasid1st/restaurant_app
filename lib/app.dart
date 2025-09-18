@@ -1,5 +1,8 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+import 'package:restaurant_app/data/services/restaurant_api_service.dart';
+import 'package:restaurant_app/providers/service_providers/restaurants_provider.dart';
 
 // Project imports:
 import 'package:restaurant_app/ui/pages/main_page.dart';
@@ -25,7 +28,12 @@ class RestaurantApp extends StatelessWidget {
           child: child!,
         );
       },
-      home: MainPage(),
+      home: ChangeNotifierProvider<RestaurantsProvider>(
+        create: (context) => RestaurantsProvider(
+          context.read<RestaurantApiService>(),
+        )..getRestaurants(),
+        child: MainPage(),
+      ),
     );
   }
 }
