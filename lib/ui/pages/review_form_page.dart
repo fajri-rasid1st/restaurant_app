@@ -155,7 +155,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
 
     // Jika form telah diisi dengan benar, kirim data review ke server.
     if (formKey.currentState!.validate()) {
-      context.read<RestaurantDetailProvider>().sendCustomerReview(
+      await context.read<RestaurantDetailProvider>().sendCustomerReview(
         id: widget.restaurantId,
         name: nameController.text,
         review: reviewController.text,

@@ -250,8 +250,8 @@ class MainPage extends StatelessWidget {
                         onTap: () => Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => ChangeNotifierProvider(
-                              create: (context) => RestaurantDetailProvider(
+                            builder: (_) => ChangeNotifierProvider(
+                              create: (_) => RestaurantDetailProvider(
                                 context.read<RestaurantApiService>(),
                               )..getRestaurantDetail(restaurants[index].id),
                               child: DetailPage(
