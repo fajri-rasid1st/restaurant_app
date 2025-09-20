@@ -30,7 +30,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
 
       _state = ResultState.data;
     } catch (e) {
-      _message = 'Gagal memuat detail restoran. Error: ${e.toString()}';
+      _message = 'Gagal memuat detail restoran. Silahkan coba lagi.';
 
       _state = ResultState.error;
     }
@@ -62,7 +62,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
 
       _state = ResultState.data;
     } catch (e) {
-      _message = 'Gagal mengirim review. Error: ${e.toString()}';
+      _message = 'Gagal mengirim review. Silahkan coba lagi.';
 
       _state = ResultState.error;
     }

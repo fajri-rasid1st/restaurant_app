@@ -21,10 +21,10 @@ class RestaurantApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       builder: (context, child) {
         return SafeArea(
-          top: false,
-          bottom: true,
           left: false,
+          top: false,
           right: false,
+          bottom: true,
           child: child!,
         );
       },
