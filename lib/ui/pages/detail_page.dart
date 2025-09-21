@@ -36,9 +36,7 @@ class DetailPage extends StatelessWidget {
       builder: (context, provider, child) {
         switch (provider.state) {
           case ResultState.initial:
-            return ScaffoldSafeArea(
-              body: SizedBox.shrink(),
-            );
+            return SizedBox.shrink();
           case ResultState.loading:
             return LoadingPage();
           case ResultState.error:
