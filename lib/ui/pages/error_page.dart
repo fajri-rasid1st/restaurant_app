@@ -8,6 +8,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
+import 'package:restaurant_app/ui/widgets/scaffold_safe_area.dart';
 
 class ErrorPage extends StatelessWidget {
   final String message;
@@ -21,7 +22,7 @@ class ErrorPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldSafeArea(
       body: Center(
         child: CustomInformation(
           assetName: AssetPath.getVector('404_error_lost_in_space_cuate.svg'),

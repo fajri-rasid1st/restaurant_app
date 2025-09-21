@@ -8,6 +8,7 @@ import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 // Project imports:
 import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/providers/service_providers/restaurant_detail_provider.dart';
+import 'package:restaurant_app/ui/widgets/scaffold_safe_area.dart';
 
 class ReviewFormPage extends StatefulWidget {
   final String restaurantId;
@@ -47,7 +48,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return ScaffoldSafeArea(
       appBar: AppBar(
         title: Text('Ulasan'),
         titleTextStyle: Theme.of(context).textTheme.titleLarge!.bold,
@@ -58,28 +59,25 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
           tooltip: 'Back',
         ),
       ),
-      body: SafeArea(
-        top: false,
-        child: SingleChildScrollView(
-          padding: EdgeInsets.all(16),
-          reverse: true,
-          child: Form(
-            key: formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Beri tanggapan Anda tentang "${widget.restaurantName}".',
-                  style: Theme.of(context).textTheme.titleMedium,
-                ),
-                SizedBox(height: 16),
-                buildNameTextField(),
-                SizedBox(height: 16),
-                buildReviewTextField(),
-                SizedBox(height: 16),
-                buildSubmitButton(),
-              ],
-            ),
+      body: SingleChildScrollView(
+        padding: EdgeInsets.all(16),
+        reverse: true,
+        child: Form(
+          key: formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Beri tanggapan Anda tentang "${widget.restaurantName}".',
+                style: Theme.of(context).textTheme.titleMedium,
+              ),
+              SizedBox(height: 16),
+              buildNameTextField(),
+              SizedBox(height: 16),
+              buildReviewTextField(),
+              SizedBox(height: 16),
+              buildSubmitButton(),
+            ],
           ),
         ),
       ),

@@ -24,6 +24,7 @@ import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/widgets/category_list.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
 import 'package:restaurant_app/ui/widgets/restaurant_card.dart';
+import 'package:restaurant_app/ui/widgets/scaffold_safe_area.dart';
 import 'package:restaurant_app/ui/widgets/search_field.dart';
 
 class MainPage extends StatelessWidget {
@@ -44,12 +45,9 @@ class MainPage extends StatelessWidget {
               context.read<RestaurantsProvider>().getRestaurants();
             }
           },
-          child: Scaffold(
-            body: SafeArea(
-              top: false,
-              child: buildScaffoldBody(
-                isSearching: provider.value,
-              ),
+          child: ScaffoldSafeArea(
+            body: buildScaffoldBody(
+              isSearching: provider.value,
             ),
           ),
         );
