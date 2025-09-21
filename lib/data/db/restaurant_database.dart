@@ -1,6 +1,9 @@
+// Package imports:
 import 'package:path/path.dart' as path;
-import 'package:restaurant_app/data/models/restaurant_favorite.dart';
 import 'package:sqflite/sqflite.dart';
+
+// Project imports:
+import 'package:restaurant_app/data/models/restaurant_favorite.dart';
 
 final class RestaurantDatabase {
   static final RestaurantDatabase _instance = RestaurantDatabase._internal();

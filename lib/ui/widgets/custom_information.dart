@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:flutter_svg/flutter_svg.dart';
+
+// Project imports:
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 
 class CustomInformation extends StatelessWidget {

@@ -3,13 +3,18 @@ import 'package:flutter/foundation.dart';
 
 // Project imports:
 import 'package:restaurant_app/common/enum/result_state.dart';
-import 'package:restaurant_app/data/models/restaurant_detail.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
+import 'package:restaurant_app/data/db/restaurant_database.dart';
+import 'package:restaurant_app/data/models/restaurant_detail.dart';
 
 class RestaurantDetailProvider extends ChangeNotifier {
-  final RestaurantApi service;
+  final RestaurantApi apiService;
+  final RestaurantDatabase databaseService;
 
-  RestaurantDetailProvider(this.service);
+  RestaurantDetailProvider({
+    required this.apiService,
+    required this.databaseService,
+  });
 
   RestaurantDetail? restaurantDetail;
   ResultState _state = ResultState.initial;
@@ -24,9 +29,11 @@ class RestaurantDetailProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await service.getRestaurantDetail(id);
+      final result = await apiService.getRestaurantDetail(id);
 
-      restaurantDetail = result;
+      final isFavorited = await databaseService.isExist(id);
+
+      restaurantDetail = result.copyWith(isFavorited: isFavorited);
 
       _state = ResultState.data;
     } catch (e) {
@@ -48,7 +55,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await service.sendCustomerReview(
+      final result = await apiService.sendCustomerReview(
         id: id,
         name: name,
         review: review,

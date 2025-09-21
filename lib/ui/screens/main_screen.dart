@@ -1,5 +1,10 @@
+// Flutter imports:
 import 'package:flutter/material.dart';
+
+// Package imports:
 import 'package:provider/provider.dart';
+
+// Project imports:
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/providers/app_providers/nav_bar_index_provider.dart';
 import 'package:restaurant_app/ui/pages/discover_page.dart';
@@ -22,7 +27,7 @@ class MainScreen extends StatelessWidget {
         final selectedIndex = provider.value;
 
         return ScaffoldSafeArea(
-          body: pages[provider.value],
+          body: pages[selectedIndex],
           bottomNavigationBar: NavigationBar(
             height: 72,
             selectedIndex: selectedIndex,
@@ -48,7 +53,6 @@ class MainScreen extends StatelessWidget {
             elevation: 4,
             focusElevation: 6,
             hoverElevation: 6,
-            disabledElevation: 0,
             highlightElevation: 6,
             heroTag: 'favorites_fab',
             tooltip: 'Favorites',

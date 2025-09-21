@@ -3,15 +3,20 @@ import 'package:flutter/foundation.dart';
 
 // Project imports:
 import 'package:restaurant_app/common/enum/result_state.dart';
-import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
+import 'package:restaurant_app/data/db/restaurant_database.dart';
+import 'package:restaurant_app/data/models/restaurant.dart';
 
 class RestaurantsProvider extends ChangeNotifier {
-  final RestaurantApi service;
+  final RestaurantApi apiService;
+  final RestaurantDatabase databaseService;
 
-  RestaurantsProvider(this.service);
+  RestaurantsProvider({
+    required this.apiService,
+    required this.databaseService,
+  });
 
-  List<Restaurant> _restaurants = [];
+  final List<Restaurant> _restaurants = [];
   ResultState _state = ResultState.initial;
   String _message = '';
 
@@ -25,9 +30,15 @@ class RestaurantsProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final result = await service.getRestaurants(query);
+      final result = await apiService.getRestaurants(query);
 
-      _restaurants = result;
+      for (var i = 0; i < result.length; i++) {
+        final isFavorited = await databaseService.isExist(result[i].id);
+
+        final restaurant = result[i].copyWith(isFavorited: isFavorited);
+
+        _restaurants.add(restaurant);
+      }
 
       _state = ResultState.data;
     } catch (e) {

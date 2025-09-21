@@ -5,6 +5,7 @@ class Restaurant {
   final String pictureId;
   final String city;
   final double rating;
+  final bool isFavorited;
 
   Restaurant({
     required this.id,
@@ -13,6 +14,7 @@ class Restaurant {
     required this.pictureId,
     required this.city,
     required this.rating,
+    this.isFavorited = false,
   });
 
   /// Factory constructor untuk membuat objek dari bentuk json map
@@ -35,6 +37,7 @@ class Restaurant {
     String? pictureId,
     String? city,
     double? rating,
+    bool? isFavorited,
   }) {
     return Restaurant(
       id: id ?? this.id,
@@ -43,6 +46,7 @@ class Restaurant {
       pictureId: pictureId ?? this.pictureId,
       city: city ?? this.city,
       rating: rating ?? this.rating,
+      isFavorited: isFavorited ?? this.isFavorited,
     );
   }
 }

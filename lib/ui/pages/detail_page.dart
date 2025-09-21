@@ -11,8 +11,8 @@ import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
-import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/api_providers/restaurant_detail_provider.dart';
+import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/pages/review_form_page.dart';
@@ -315,7 +315,7 @@ class DetailPage extends StatelessWidget {
                       onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ChangeNotifierProvider<RestaurantDetailProvider>.value(
+                          builder: (_) => ChangeNotifierProvider.value(
                             value: context.read<RestaurantDetailProvider>(),
                             child: ReviewFormPage(
                               restaurantId: restaurantDetail.id,

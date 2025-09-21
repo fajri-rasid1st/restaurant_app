@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 
 // Package imports:
 import 'package:provider/provider.dart';
-import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 
 // Project imports:
+import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/providers/api_providers/restaurant_detail_provider.dart';
 import 'package:restaurant_app/ui/widgets/scaffold_safe_area.dart';

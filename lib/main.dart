@@ -28,26 +28,26 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        Provider<RestaurantApi>(
-          create: (context) => RestaurantApi(),
+        Provider(
+          create: (_) => RestaurantDatabase(),
         ),
-        Provider<RestaurantDatabase>(
-          create: (context) => RestaurantDatabase(),
+        Provider(
+          create: (_) => RestaurantApi(),
         ),
-        ChangeNotifierProvider<NavBarIndexProvider>(
-          create: (context) => NavBarIndexProvider(),
+        ChangeNotifierProvider(
+          create: (_) => NavBarIndexProvider(),
         ),
-        ChangeNotifierProvider<IsReloadProvider>(
-          create: (context) => IsReloadProvider(),
+        ChangeNotifierProvider(
+          create: (_) => IsReloadProvider(),
         ),
-        ChangeNotifierProvider<IsSearchingProvider>(
-          create: (context) => IsSearchingProvider(),
+        ChangeNotifierProvider(
+          create: (_) => IsSearchingProvider(),
         ),
-        ChangeNotifierProvider<SearchQueryProvider>(
-          create: (context) => SearchQueryProvider(),
+        ChangeNotifierProvider(
+          create: (_) => SearchQueryProvider(),
         ),
-        ChangeNotifierProvider<SelectedCategoryProvider>(
-          create: (context) => SelectedCategoryProvider(),
+        ChangeNotifierProvider(
+          create: (_) => SelectedCategoryProvider(),
         ),
       ],
       child: RestaurantApp(),

@@ -1,8 +1,8 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 // Package imports:
+import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:provider/provider.dart';
 
 // Project imports:
@@ -10,14 +10,15 @@ import 'package:restaurant_app/common/enum/restaurant_category.dart';
 import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
-import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
+import 'package:restaurant_app/data/db/restaurant_database.dart';
+import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/providers/api_providers/restaurant_detail_provider.dart';
+import 'package:restaurant_app/providers/api_providers/restaurants_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_searching_provider.dart';
 import 'package:restaurant_app/providers/app_providers/search_query_provider.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
-import 'package:restaurant_app/providers/api_providers/restaurant_detail_provider.dart';
-import 'package:restaurant_app/providers/api_providers/restaurants_provider.dart';
 import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
@@ -304,17 +305,11 @@ class _RestaurantListWidget extends StatelessWidget {
         motion: ScrollMotion(),
         extentRatio: 0.25,
         children: [
-          Consumer(
-            builder: (context, value, child) {
-              return SizedBox();
-            },
-          ),
-
           SlidableAction(
             onPressed: (context) {},
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-            icon: Icons.favorite_outline_rounded,
+            icon: restaurant.isFavorited ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
           ),
         ],
       ),
@@ -325,7 +320,8 @@ class _RestaurantListWidget extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) => ChangeNotifierProvider(
               create: (_) => RestaurantDetailProvider(
-                context.read<RestaurantApi>(),
+                apiService: context.read<RestaurantApi>(),
+                databaseService: context.read<RestaurantDatabase>(),
               )..getRestaurantDetail(restaurant.id),
               child: DetailPage(
                 restaurantId: restaurant.id,

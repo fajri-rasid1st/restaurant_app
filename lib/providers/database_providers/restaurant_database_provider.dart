@@ -1,4 +1,7 @@
+// Flutter imports:
 import 'package:flutter/foundation.dart';
+
+// Project imports:
 import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/data/db/restaurant_database.dart';
 import 'package:restaurant_app/data/models/restaurant_favorite.dart';
