@@ -1,11 +1,11 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:restaurant_app/data/services/restaurant_api_service.dart';
-import 'package:restaurant_app/providers/service_providers/restaurants_provider.dart';
+import 'package:restaurant_app/data/api/restaurant_api.dart';
+import 'package:restaurant_app/providers/api_providers/restaurants_provider.dart';
+import 'package:restaurant_app/ui/screens/main_screen.dart';
 
 // Project imports:
-import 'package:restaurant_app/ui/pages/main_page.dart';
 import 'package:restaurant_app/ui/themes/app_theme.dart';
 
 class RestaurantApp extends StatelessWidget {
@@ -21,9 +21,9 @@ class RestaurantApp extends StatelessWidget {
       themeMode: ThemeMode.system,
       home: ChangeNotifierProvider<RestaurantsProvider>(
         create: (context) => RestaurantsProvider(
-          context.read<RestaurantApiService>(),
+          context.read<RestaurantApi>(),
         )..getRestaurants(),
-        child: MainPage(),
+        child: MainScreen(),
       ),
     );
   }

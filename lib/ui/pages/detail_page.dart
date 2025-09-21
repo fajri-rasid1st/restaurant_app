@@ -12,7 +12,7 @@ import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
-import 'package:restaurant_app/providers/service_providers/restaurant_detail_provider.dart';
+import 'package:restaurant_app/providers/api_providers/restaurant_detail_provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/pages/review_form_page.dart';
@@ -83,9 +83,9 @@ class DetailPage extends StatelessWidget {
                   ),
                   centerTitle: true,
                   leading: IconButton(
-                    onPressed: () => Navigator.pop(context),
                     icon: Icon(Icons.arrow_back_rounded),
                     tooltip: 'Back',
+                    onPressed: () => Navigator.pop(context),
                   ),
                   flexibleSpace: FlexibleSpaceBar(
                     background: Stack(
@@ -301,6 +301,17 @@ class DetailPage extends StatelessWidget {
                   SizedBox(height: 8),
                   Center(
                     child: OutlinedButton.icon(
+                      label: Text('Tambah Ulasan'),
+                      icon: Icon(Icons.add_rounded),
+                      style: OutlinedButton.styleFrom(
+                        padding: EdgeInsets.symmetric(
+                          vertical: 8,
+                          horizontal: 16,
+                        ),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                       onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -311,17 +322,6 @@ class DetailPage extends StatelessWidget {
                               restaurantName: restaurantDetail.name,
                             ),
                           ),
-                        ),
-                      ),
-                      label: Text('Tambah Ulasan'),
-                      icon: Icon(Icons.add_rounded),
-                      style: OutlinedButton.styleFrom(
-                        padding: EdgeInsets.symmetric(
-                          vertical: 8,
-                          horizontal: 16,
-                        ),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
                         ),
                       ),
                     ),

@@ -4,10 +4,10 @@ import 'package:flutter/foundation.dart';
 // Project imports:
 import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
-import 'package:restaurant_app/data/services/restaurant_api_service.dart';
+import 'package:restaurant_app/data/api/restaurant_api.dart';
 
 class RestaurantDetailProvider extends ChangeNotifier {
-  final RestaurantApiService service;
+  final RestaurantApi service;
 
   RestaurantDetailProvider(this.service);
 
@@ -38,7 +38,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  /// Mengirim data review restaurant dan mengembalikan daftar review
+  /// Mengirim data review restaurant
   Future<void> sendCustomerReview({
     required String id,
     required String name,

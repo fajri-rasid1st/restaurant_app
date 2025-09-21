@@ -7,7 +7,7 @@ import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 
 // Project imports:
 import 'package:restaurant_app/common/utilities/utilities.dart';
-import 'package:restaurant_app/providers/service_providers/restaurant_detail_provider.dart';
+import 'package:restaurant_app/providers/api_providers/restaurant_detail_provider.dart';
 import 'package:restaurant_app/ui/widgets/scaffold_safe_area.dart';
 
 class ReviewFormPage extends StatefulWidget {
@@ -54,9 +54,9 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
         titleTextStyle: Theme.of(context).textTheme.titleLarge!.bold,
         centerTitle: true,
         leading: IconButton(
-          onPressed: () => Navigator.pop(context),
           icon: Icon(Icons.arrow_back_rounded),
           tooltip: 'Back',
+          onPressed: () => Navigator.pop(context),
         ),
       ),
       body: SingleChildScrollView(

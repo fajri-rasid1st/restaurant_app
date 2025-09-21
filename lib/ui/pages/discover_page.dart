@@ -11,54 +11,58 @@ import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
-import 'package:restaurant_app/data/services/restaurant_api_service.dart';
+import 'package:restaurant_app/data/api/restaurant_api.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_searching_provider.dart';
 import 'package:restaurant_app/providers/app_providers/search_query_provider.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
-import 'package:restaurant_app/providers/service_providers/restaurant_detail_provider.dart';
-import 'package:restaurant_app/providers/service_providers/restaurants_provider.dart';
+import 'package:restaurant_app/providers/api_providers/restaurant_detail_provider.dart';
+import 'package:restaurant_app/providers/api_providers/restaurants_provider.dart';
 import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/widgets/category_list.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
 import 'package:restaurant_app/ui/widgets/restaurant_card.dart';
-import 'package:restaurant_app/ui/widgets/scaffold_safe_area.dart';
 import 'package:restaurant_app/ui/widgets/search_field.dart';
 
-class MainPage extends StatelessWidget {
-  const MainPage({super.key});
+class DiscoverPage extends StatelessWidget {
+  const DiscoverPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return Consumer<IsSearchingProvider>(
       builder: (context, provider, child) {
+        final isSearching = provider.value;
+
         return PopScope(
-          canPop: !provider.value,
+          canPop: !isSearching,
           onPopInvokedWithResult: (didPop, result) {
             if (didPop) return;
 
-            if (provider.value) {
+            if (isSearching) {
               context.read<IsSearchingProvider>().value = false;
               context.read<SearchQueryProvider>().value = '';
               context.read<RestaurantsProvider>().getRestaurants();
             }
           },
-          child: ScaffoldSafeArea(
-            body: buildScaffoldBody(
-              isSearching: provider.value,
-            ),
+          child: _DiscoverMainWidget(
+            isSearching: isSearching,
           ),
         );
       },
     );
   }
+}
 
-  /// Widget untuk membuat NestedScrollView yang diisi SliverAppBar dan body
-  Widget buildScaffoldBody({
-    required bool isSearching,
-  }) {
+/// Widget class untuk membuat bagian utama halaman Discover
+class _DiscoverMainWidget extends StatelessWidget {
+  final bool isSearching;
+
+  const _DiscoverMainWidget({required this.isSearching});
+
+  @override
+  Widget build(BuildContext context) {
     return Consumer<RestaurantsProvider>(
       builder: (context, provider, child) {
         return NestedScrollView(
@@ -93,7 +97,7 @@ class MainPage extends StatelessWidget {
               ),
             ];
           },
-          body: buildMainBody(
+          body: buildBody(
             restaurants: provider.restaurants,
             state: provider.state,
             message: provider.message,
@@ -188,13 +192,15 @@ class MainPage extends StatelessWidget {
   }
 
   /// Widget untuk membuat body pada NestedScrollView
-  Widget buildMainBody({
+  Widget buildBody({
     required List<Restaurant> restaurants,
     required ResultState state,
     required String message,
   }) {
     return Consumer<SearchQueryProvider>(
       builder: (context, provider, child) {
+        final query = provider.value;
+
         switch (state) {
           case ResultState.initial:
             return SizedBox.shrink();
@@ -203,7 +209,7 @@ class MainPage extends StatelessWidget {
           case ResultState.error:
             return ErrorPage(
               message: message,
-              onRefresh: () => refreshPage(context, provider.value),
+              onRefresh: () => refreshPage(context, query),
             );
           case ResultState.data:
             return _RestaurantListWidget(
@@ -217,13 +223,13 @@ class MainPage extends StatelessWidget {
   /// Fungsi untuk reload halaman saat data gagal di-fetch
   Future<void> refreshPage(
     BuildContext context,
-    String searchQuery,
+    String query,
   ) async {
     context.read<IsReloadProvider>().value = true;
 
     Future.wait([
           Future.delayed(Duration(milliseconds: 500)),
-          context.read<RestaurantsProvider>().getRestaurants(searchQuery),
+          context.read<RestaurantsProvider>().getRestaurants(query),
         ])
         .then((_) {
           if (!context.mounted) return;
@@ -238,7 +244,7 @@ class MainPage extends StatelessWidget {
   }
 }
 
-// Widget class untuk menampilkan list restoran
+// Widget class untuk menampilkan daftar restaurant
 class _RestaurantListWidget extends StatelessWidget {
   final List<Restaurant> restaurants;
 
@@ -287,6 +293,7 @@ class _RestaurantListWidget extends StatelessWidget {
           );
   }
 
+  /// Widget untuk membuat item card restaurant
   Widget buildRestaurantItem({
     required BuildContext context,
     required Restaurant restaurant,
@@ -297,6 +304,12 @@ class _RestaurantListWidget extends StatelessWidget {
         motion: ScrollMotion(),
         extentRatio: 0.25,
         children: [
+          Consumer(
+            builder: (context, value, child) {
+              return SizedBox();
+            },
+          ),
+
           SlidableAction(
             onPressed: (context) {},
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
@@ -312,7 +325,7 @@ class _RestaurantListWidget extends StatelessWidget {
           MaterialPageRoute(
             builder: (_) => ChangeNotifierProvider(
               create: (_) => RestaurantDetailProvider(
-                context.read<RestaurantApiService>(),
+                context.read<RestaurantApi>(),
               )..getRestaurantDetail(restaurant.id),
               child: DetailPage(
                 restaurantId: restaurant.id,

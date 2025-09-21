@@ -7,9 +7,11 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:restaurant_app/app.dart';
-import 'package:restaurant_app/data/services/restaurant_api_service.dart';
+import 'package:restaurant_app/data/api/restaurant_api.dart';
+import 'package:restaurant_app/data/db/restaurant_database.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_searching_provider.dart';
+import 'package:restaurant_app/providers/app_providers/nav_bar_index_provider.dart';
 import 'package:restaurant_app/providers/app_providers/search_query_provider.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
 
@@ -26,8 +28,14 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
-        Provider<RestaurantApiService>(
-          create: (context) => RestaurantApiService(),
+        Provider<RestaurantApi>(
+          create: (context) => RestaurantApi(),
+        ),
+        Provider<RestaurantDatabase>(
+          create: (context) => RestaurantDatabase(),
+        ),
+        ChangeNotifierProvider<NavBarIndexProvider>(
+          create: (context) => NavBarIndexProvider(),
         ),
         ChangeNotifierProvider<IsReloadProvider>(
           create: (context) => IsReloadProvider(),

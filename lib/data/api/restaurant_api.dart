@@ -9,12 +9,12 @@ import 'package:restaurant_app/common/const/const.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
 
-final class RestaurantApiService {
-  static final RestaurantApiService _instance = RestaurantApiService._internal();
+final class RestaurantApi {
+  static final RestaurantApi _instance = RestaurantApi._internal();
 
-  RestaurantApiService._internal();
+  RestaurantApi._internal();
 
-  factory RestaurantApiService() => _instance;
+  factory RestaurantApi() => _instance;
 
   /// Mengambil data daftar restaurant dari API. Jika [query] dimasukkan,
   /// maka akan mengambil daftar restaurant sesuai [query]. mengembalikan nilai berupa:

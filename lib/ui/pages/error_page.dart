@@ -29,10 +29,12 @@ class ErrorPage extends StatelessWidget {
           subtitle: message,
           child: Consumer<IsReloadProvider>(
             builder: (context, provider, child) {
+              final isReload = provider.value;
+
               return FilledButton.icon(
-                onPressed: provider.value ? null : onRefresh,
-                label: provider.value ? Text('Memuat Data...') : Text('Coba Lagi'),
-                icon: provider.value
+                onPressed: isReload ? null : onRefresh,
+                label: isReload ? Text('Memuat Data...') : Text('Coba Lagi'),
+                icon: isReload
                     ? SizedBox(
                         width: 16,
                         height: 16,
