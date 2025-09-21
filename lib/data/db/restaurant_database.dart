@@ -6,14 +6,12 @@ import 'package:sqflite/sqflite.dart';
 import 'package:restaurant_app/data/models/restaurant_favorite.dart';
 
 final class RestaurantDatabase {
+  // Singleton pattern
   static final RestaurantDatabase _instance = RestaurantDatabase._internal();
 
   RestaurantDatabase._internal();
 
   factory RestaurantDatabase() => _instance;
-
-  static const String _dbName = 'restaurant_database.db';
-  static const int _dbVersion = 1;
 
   Database? _database;
 
@@ -22,6 +20,9 @@ final class RestaurantDatabase {
 
     return _initDb();
   }
+
+  static const String _dbName = 'restaurant_database.db';
+  static const int _dbVersion = 1;
 
   /// Inisialisasi, membuat, dan membuka database.
   Future<Database> _initDb() async {

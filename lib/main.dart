@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/app.dart';
 import 'package:restaurant_app/data/api/restaurant_api.dart';
 import 'package:restaurant_app/data/db/restaurant_database.dart';
+import 'package:restaurant_app/data/prefs/restaurant_settings_prefs.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_searching_provider.dart';
 import 'package:restaurant_app/providers/app_providers/nav_bar_index_provider.dart';
@@ -28,6 +29,9 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
+        Provider(
+          create: (_) => RestaurantSettingsPrefs(),
+        ),
         Provider(
           create: (_) => RestaurantDatabase(),
         ),
