@@ -73,6 +73,7 @@ class _DiscoverMainWidget extends StatelessWidget {
                 handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
                 sliver: SliverAppBar(
                   pinned: true,
+                  titleSpacing: 16,
                   titleTextStyle: Theme.of(context).textTheme.titleLarge!.bold,
                   title: buildAppBarTitle(
                     context: context,

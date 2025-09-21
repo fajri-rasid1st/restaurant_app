@@ -363,7 +363,7 @@ class DetailPage extends StatelessWidget {
     );
   }
 
-  /// Widget function untuk membuat menu item dengan kustomisasi jumlah grid dan rasio
+  /// Widget function untuk membuat menu item
   Widget buildMenuItemsWidget({
     required List<ItemMenu> items,
     required bool isFood,
