@@ -1,5 +1,6 @@
 // Flutter imports:
 import 'package:flutter/material.dart';
+import 'package:flutter_slidable/flutter_slidable.dart';
 
 // Package imports:
 import 'package:provider/provider.dart';
@@ -44,8 +45,11 @@ class MainPage extends StatelessWidget {
             }
           },
           child: Scaffold(
-            body: buildScaffoldBody(
-              isSearching: provider.value,
+            body: SafeArea(
+              top: false,
+              child: buildScaffoldBody(
+                isSearching: provider.value,
+              ),
             ),
           ),
         );
@@ -204,77 +208,10 @@ class MainPage extends StatelessWidget {
               onRefresh: () => refreshPage(context, provider.value),
             );
           case ResultState.data:
-            if (restaurants.isEmpty) {
-              return buildRestaurantEmpty();
-            }
-
-            return buildRestaurantList(
+            return _RestaurantListWidget(
               restaurants: restaurants,
             );
         }
-      },
-    );
-  }
-
-  /// Widget untuk membuat page kosong jika data tidak ditemukan/tidak ada
-  Widget buildRestaurantEmpty() {
-    return CustomInformation(
-      assetName: AssetPath.getVector('404_Error_cuate.svg'),
-      title: 'Ops, Restoran Tidak Ditemukan.',
-      subtitle: 'Coba masukkan kata kunci lain.',
-    );
-  }
-
-  /// Widget untuk membuat daftar restoran jika data tidak kosong
-  Widget buildRestaurantList({
-    required List<Restaurant> restaurants,
-  }) {
-    return Builder(
-      builder: (context) {
-        return CustomScrollView(
-          slivers: [
-            SliverOverlapInjector(
-              handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
-            ),
-            SliverList(
-              delegate: SliverChildBuilderDelegate(
-                (context, index) {
-                  final count = restaurants.length;
-                  final hasSeparator = index != count - 1;
-
-                  return Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      RestaurantCard(
-                        restaurant: restaurants[index],
-                        onTap: () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => ChangeNotifierProvider(
-                              create: (_) => RestaurantDetailProvider(
-                                context.read<RestaurantApiService>(),
-                              )..getRestaurantDetail(restaurants[index].id),
-                              child: DetailPage(
-                                restaurantId: restaurants[index].id,
-                                heroTag: restaurants[index].id,
-                              ),
-                            ),
-                          ),
-                        ),
-                      ),
-                      if (hasSeparator)
-                        Divider(
-                          height: 1,
-                          thickness: 0.5,
-                        ),
-                    ],
-                  );
-                },
-                childCount: restaurants.length,
-              ),
-            ),
-          ],
-        );
       },
     );
   }
@@ -300,5 +237,93 @@ class MainPage extends StatelessWidget {
 
           context.read<IsReloadProvider>().value = false;
         });
+  }
+}
+
+// Widget class untuk menampilkan list restoran
+class _RestaurantListWidget extends StatelessWidget {
+  final List<Restaurant> restaurants;
+
+  const _RestaurantListWidget({required this.restaurants});
+
+  @override
+  Widget build(BuildContext context) {
+    return restaurants.isEmpty
+        ? CustomInformation(
+            assetName: AssetPath.getVector('404_Error_cuate.svg'),
+            title: 'Ops, Restoran Tidak Ditemukan.',
+            subtitle: 'Coba masukkan kata kunci lain.',
+          )
+        : CustomScrollView(
+            slivers: [
+              SliverOverlapInjector(
+                handle: NestedScrollView.sliverOverlapAbsorberHandleFor(context),
+              ),
+              SlidableAutoCloseBehavior(
+                child: SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    (context, index) {
+                      final count = restaurants.length;
+                      final hasSeparator = index != count - 1;
+
+                      return Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          buildRestaurantItem(
+                            context: context,
+                            restaurant: restaurants[index],
+                          ),
+                          if (hasSeparator)
+                            Divider(
+                              height: 1,
+                              thickness: 0.5,
+                            ),
+                        ],
+                      );
+                    },
+                    childCount: restaurants.length,
+                  ),
+                ),
+              ),
+            ],
+          );
+  }
+
+  Widget buildRestaurantItem({
+    required BuildContext context,
+    required Restaurant restaurant,
+  }) {
+    return Slidable(
+      groupTag: 0,
+      startActionPane: ActionPane(
+        motion: ScrollMotion(),
+        extentRatio: 0.25,
+        children: [
+          SlidableAction(
+            onPressed: (context) {},
+            backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+            foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+            icon: Icons.favorite_outline_rounded,
+          ),
+        ],
+      ),
+      child: RestaurantCard(
+        restaurant: restaurant,
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => ChangeNotifierProvider(
+              create: (_) => RestaurantDetailProvider(
+                context.read<RestaurantApiService>(),
+              )..getRestaurantDetail(restaurant.id),
+              child: DetailPage(
+                restaurantId: restaurant.id,
+                heroTag: restaurant.id,
+              ),
+            ),
+          ),
+        ),
+      ),
+    );
   }
 }

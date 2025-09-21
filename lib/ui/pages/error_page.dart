@@ -22,7 +22,6 @@ class ErrorPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      resizeToAvoidBottomInset: false,
       body: Center(
         child: CustomInformation(
           assetName: AssetPath.getVector('404_error_lost_in_space_cuate.svg'),

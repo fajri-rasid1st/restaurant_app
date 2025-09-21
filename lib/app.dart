@@ -19,15 +19,6 @@ class RestaurantApp extends StatelessWidget {
       theme: lightTheme,
       darkTheme: darkTheme,
       themeMode: ThemeMode.system,
-      builder: (context, child) {
-        return SafeArea(
-          left: false,
-          top: false,
-          right: false,
-          bottom: true,
-          child: child!,
-        );
-      },
       home: ChangeNotifierProvider<RestaurantsProvider>(
         create: (context) => RestaurantsProvider(
           context.read<RestaurantApiService>(),

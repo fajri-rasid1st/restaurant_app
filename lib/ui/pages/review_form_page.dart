@@ -58,25 +58,28 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
           tooltip: 'Back',
         ),
       ),
-      body: SingleChildScrollView(
-        padding: EdgeInsets.all(16),
-        reverse: true,
-        child: Form(
-          key: formKey,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Beri tanggapan Anda tentang "${widget.restaurantName}".',
-                style: Theme.of(context).textTheme.titleMedium,
-              ),
-              SizedBox(height: 16),
-              buildNameTextField(),
-              SizedBox(height: 16),
-              buildReviewTextField(),
-              SizedBox(height: 16),
-              buildSubmitButton(),
-            ],
+      body: SafeArea(
+        top: false,
+        child: SingleChildScrollView(
+          padding: EdgeInsets.all(16),
+          reverse: true,
+          child: Form(
+            key: formKey,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Beri tanggapan Anda tentang "${widget.restaurantName}".',
+                  style: Theme.of(context).textTheme.titleMedium,
+                ),
+                SizedBox(height: 16),
+                buildNameTextField(),
+                SizedBox(height: 16),
+                buildReviewTextField(),
+                SizedBox(height: 16),
+                buildSubmitButton(),
+              ],
+            ),
           ),
         ),
       ),
