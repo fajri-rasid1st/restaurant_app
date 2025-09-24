@@ -201,8 +201,6 @@ class _DiscoverMainWidget extends StatelessWidget {
   }) {
     return Consumer<SearchQueryProvider>(
       builder: (context, provider, child) {
-        final query = provider.value;
-
         switch (state) {
           case ResultState.initial:
             return SizedBox.shrink();
@@ -211,7 +209,7 @@ class _DiscoverMainWidget extends StatelessWidget {
           case ResultState.error:
             return ErrorPage(
               message: message,
-              onRefresh: () => refreshPage(context, query),
+              onRefresh: () => refreshPage(context, provider.value),
             );
           case ResultState.data:
             return _RestaurantListWidget(

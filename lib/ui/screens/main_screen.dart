@@ -6,7 +6,9 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
+import 'package:restaurant_app/data/db/restaurant_database.dart';
 import 'package:restaurant_app/providers/app_providers/nav_bar_index_provider.dart';
+import 'package:restaurant_app/providers/database_providers/restaurant_database_provider.dart';
 import 'package:restaurant_app/ui/pages/discover_page.dart';
 import 'package:restaurant_app/ui/pages/favorite_page.dart';
 import 'package:restaurant_app/ui/pages/settings_page.dart';
@@ -65,7 +67,14 @@ class MainScreen extends StatelessWidget {
               tooltip: 'Daftar Favorite',
               onPressed: () => Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => FavoritePage()),
+                MaterialPageRoute(
+                  builder: (_) => ChangeNotifierProvider(
+                    create: (_) => RestaurantDatabaseProvider(
+                      context.read<RestaurantDatabase>(),
+                    )..getAllFavorites(),
+                    child: FavoritePage(),
+                  ),
+                ),
               ),
               child: Icon(
                 Icons.favorite_rounded,

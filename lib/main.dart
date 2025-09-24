@@ -15,6 +15,8 @@ import 'package:restaurant_app/providers/app_providers/is_searching_provider.dar
 import 'package:restaurant_app/providers/app_providers/nav_bar_index_provider.dart';
 import 'package:restaurant_app/providers/app_providers/search_query_provider.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
+import 'package:restaurant_app/providers/prefs_providers/is_daily_reminder_actived_provider.dart';
+import 'package:restaurant_app/providers/prefs_providers/is_dark_mode_actived_provider.dart';
 
 Future<void> main() async {
   // Memastikan widget Flutter sudah diinisialisasi
@@ -29,6 +31,7 @@ Future<void> main() async {
   runApp(
     MultiProvider(
       providers: [
+        //* Service providers
         Provider(
           create: (_) => RestaurantSettingsPrefs(),
         ),
@@ -38,6 +41,7 @@ Future<void> main() async {
         Provider(
           create: (_) => RestaurantApi(),
         ),
+        //* App state providers
         ChangeNotifierProvider(
           create: (_) => NavBarIndexProvider(),
         ),
@@ -52,6 +56,19 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => SelectedCategoryProvider(),
+        ),
+        //* Preferences providers
+        ChangeNotifierProvider(
+          create: (context) => IsDarkModeActivedProvider(
+            context.read<RestaurantSettingsPrefs>(),
+          )..loadValue(),
+          lazy: false,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => IsDailyReminderActivedProvider(
+            context.read<RestaurantSettingsPrefs>(),
+          )..loadValue(),
+          lazy: false,
         ),
       ],
       child: RestaurantApp(),

@@ -15,11 +15,7 @@ final class RestaurantDatabase {
 
   Database? _database;
 
-  Future<Database> get database async {
-    if (_database != null) return _database!;
-
-    return _initDb();
-  }
+  Future<Database> get database async => _database ??= await _initDb();
 
   static const String _dbName = 'restaurant_database.db';
   static const int _dbVersion = 1;

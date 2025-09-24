@@ -11,11 +11,7 @@ final class RestaurantSettingsPrefs {
 
   SharedPreferencesAsync? _prefs;
 
-  SharedPreferencesAsync get prefs {
-    if (_prefs != null) return _prefs!;
-
-    return SharedPreferencesAsync();
-  }
+  SharedPreferencesAsync get prefs => _prefs ??= SharedPreferencesAsync();
 
   static const String _kIsDailyReminderActived = 'is_daily_reminder';
   static const String _kIsDarkModeActived = 'is_dark_mode';
