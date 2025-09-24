@@ -17,7 +17,7 @@ class FavoritePage extends StatelessWidget {
         centerTitle: true,
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded),
-          tooltip: 'Back',
+          tooltip: 'Kembali',
           onPressed: () => Navigator.pop(context),
         ),
       ),

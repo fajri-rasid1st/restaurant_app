@@ -138,7 +138,7 @@ class _DiscoverMainWidget extends StatelessWidget {
               context.read<RestaurantsProvider>().getRestaurants();
             },
             icon: Icon(Icons.arrow_back_rounded),
-            tooltip: 'Back',
+            tooltip: 'Kembali',
           )
         : Padding(
             padding: EdgeInsets.only(left: 16),

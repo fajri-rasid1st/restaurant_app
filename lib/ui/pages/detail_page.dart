@@ -84,9 +84,18 @@ class DetailPage extends StatelessWidget {
                   centerTitle: true,
                   leading: IconButton(
                     icon: Icon(Icons.arrow_back_rounded),
-                    tooltip: 'Back',
+                    tooltip: 'Kembali',
                     onPressed: () => Navigator.pop(context),
                   ),
+                  actions: [
+                    IconButton(
+                      icon: Icon(
+                        restaurantDetail.isFavorited ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+                      ),
+                      tooltip: restaurantDetail.isFavorited ? 'Hapus dari Favorite' : 'Tambah ke Favorite',
+                      onPressed: () {},
+                    ),
+                  ],
                   flexibleSpace: FlexibleSpaceBar(
                     background: Stack(
                       fit: StackFit.expand,

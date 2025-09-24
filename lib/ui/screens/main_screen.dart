@@ -26,43 +26,51 @@ class MainScreen extends StatelessWidget {
       builder: (context, provider, child) {
         final selectedIndex = provider.value;
 
-        return ScaffoldSafeArea(
-          body: pages[selectedIndex],
-          bottomNavigationBar: NavigationBar(
-            height: 72,
-            selectedIndex: selectedIndex,
-            onDestinationSelected: (index) => provider.value = index,
-            destinations: [
-              NavigationDestination(
-                icon: Icon(Icons.explore_outlined),
-                selectedIcon: Icon(Icons.explore),
-                label: 'Jelajahi',
-              ),
-              NavigationDestination(
-                icon: Icon(Icons.settings_outlined),
-                selectedIcon: Icon(Icons.settings),
-                label: 'Pengaturan',
-              ),
-            ],
-            labelTextStyle: WidgetStateProperty.fromMap({
-              WidgetState.selected: Theme.of(context).textTheme.labelMedium!.bold.colorOnSurface(context),
-              WidgetState.any: Theme.of(context).textTheme.labelMedium!.bold.colorOnSurfaceVariant(context),
-            }),
-          ),
-          floatingActionButton: FloatingActionButton(
-            elevation: 4,
-            focusElevation: 6,
-            hoverElevation: 6,
-            highlightElevation: 6,
-            heroTag: 'favorites_fab',
-            tooltip: 'Favorites',
-            onPressed: () => Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => FavoritePage()),
+        return PopScope(
+          canPop: selectedIndex == 0,
+          onPopInvokedWithResult: (didPop, result) {
+            if (didPop) return;
+
+            provider.value = 0;
+          },
+          child: ScaffoldSafeArea(
+            body: pages[selectedIndex],
+            bottomNavigationBar: NavigationBar(
+              height: 72,
+              selectedIndex: selectedIndex,
+              onDestinationSelected: (index) => provider.value = index,
+              destinations: [
+                NavigationDestination(
+                  icon: Icon(Icons.explore_outlined),
+                  selectedIcon: Icon(Icons.explore),
+                  label: 'Jelajahi',
+                ),
+                NavigationDestination(
+                  icon: Icon(Icons.settings_outlined),
+                  selectedIcon: Icon(Icons.settings),
+                  label: 'Pengaturan',
+                ),
+              ],
+              labelTextStyle: WidgetStateProperty.fromMap({
+                WidgetState.selected: Theme.of(context).textTheme.labelMedium!.bold.colorOnSurface(context),
+                WidgetState.any: Theme.of(context).textTheme.labelMedium!.bold.colorOnSurfaceVariant(context),
+              }),
             ),
-            child: Icon(
-              Icons.favorite_rounded,
-              size: 26,
+            floatingActionButton: FloatingActionButton(
+              elevation: 4,
+              focusElevation: 6,
+              hoverElevation: 6,
+              highlightElevation: 6,
+              heroTag: 'favorites_fab',
+              tooltip: 'Daftar Favorite',
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => FavoritePage()),
+              ),
+              child: Icon(
+                Icons.favorite_rounded,
+                size: 26,
+              ),
             ),
           ),
         );

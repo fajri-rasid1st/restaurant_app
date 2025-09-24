@@ -67,7 +67,7 @@ class SettingsPage extends StatelessWidget {
     );
   }
 
-  /// Widget untuk membuat widget switch
+  /// Widget untuk membuat switch
   Widget buildSwitch({
     required BuildContext context,
     required String title,
