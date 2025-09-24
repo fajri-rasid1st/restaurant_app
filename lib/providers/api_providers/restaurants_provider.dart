@@ -17,7 +17,7 @@ class RestaurantsProvider extends ChangeNotifier {
   });
 
   List<Restaurant> _restaurants = [];
-  ResultState _state = ResultState.initial;
+  ResultState _state = ResultState.loading;
   String _message = '';
 
   List<Restaurant> get restaurants => _restaurants;

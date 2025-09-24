@@ -17,7 +17,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
   });
 
   RestaurantDetail? restaurantDetail;
-  ResultState _state = ResultState.initial;
+  ResultState _state = ResultState.loading;
   String _message = '';
 
   ResultState get state => _state;
@@ -51,9 +51,6 @@ class RestaurantDetailProvider extends ChangeNotifier {
     required String name,
     required String review,
   }) async {
-    _state = ResultState.loading;
-    notifyListeners();
-
     try {
       final result = await apiService.sendCustomerReview(
         id: id,
@@ -66,12 +63,8 @@ class RestaurantDetailProvider extends ChangeNotifier {
       }
 
       _message = 'Berhasil mengirim review.';
-
-      _state = ResultState.data;
     } catch (e) {
       _message = 'Gagal mengirim review. Silahkan coba lagi.';
-
-      _state = ResultState.error;
     }
 
     notifyListeners();

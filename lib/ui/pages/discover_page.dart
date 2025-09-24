@@ -11,6 +11,8 @@ import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
 import 'package:restaurant_app/common/utilities/utilities.dart';
+import 'package:restaurant_app/data/api/restaurant_api.dart';
+import 'package:restaurant_app/data/db/restaurant_database.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
 import 'package:restaurant_app/data/models/restaurant_favorite.dart';
 import 'package:restaurant_app/providers/api_providers/restaurant_detail_provider.dart';
@@ -204,8 +206,6 @@ class _DiscoverMainWidget extends StatelessWidget {
     return Consumer<SearchQueryProvider>(
       builder: (context, provider, child) {
         switch (state) {
-          case ResultState.initial:
-            return SizedBox.shrink();
           case ResultState.loading:
             return LoadingPage();
           case ResultState.error:
@@ -322,8 +322,11 @@ class _RestaurantListWidget extends StatelessWidget {
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => ChangeNotifierProvider.value(
-              value: context.read<RestaurantDetailProvider>()..getRestaurantDetail(restaurant.id),
+            builder: (_) => ChangeNotifierProvider(
+              create: (_) => RestaurantDetailProvider(
+                apiService: context.read<RestaurantApi>(),
+                databaseService: context.read<RestaurantDatabase>(),
+              )..getRestaurantDetail(restaurant.id),
               child: DetailPage(
                 restaurantId: restaurant.id,
                 heroTag: restaurant.id,

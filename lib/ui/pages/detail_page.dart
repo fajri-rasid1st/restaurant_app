@@ -35,8 +35,6 @@ class DetailPage extends StatelessWidget {
     return Consumer<RestaurantDetailProvider>(
       builder: (context, provider, child) {
         switch (provider.state) {
-          case ResultState.initial:
-            return SizedBox.shrink();
           case ResultState.loading:
             return LoadingPage();
           case ResultState.error:
@@ -324,9 +322,12 @@ class DetailPage extends StatelessWidget {
                       onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ReviewFormPage(
-                            restaurantId: restaurantDetail.id,
-                            restaurantName: restaurantDetail.name,
+                          builder: (_) => ChangeNotifierProvider.value(
+                            value: context.read<RestaurantDetailProvider>(),
+                            child: ReviewFormPage(
+                              restaurantId: restaurantDetail.id,
+                              restaurantName: restaurantDetail.name,
+                            ),
                           ),
                         ),
                       ),
