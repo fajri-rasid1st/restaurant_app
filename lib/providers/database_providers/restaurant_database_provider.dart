@@ -11,15 +11,19 @@ class RestaurantDatabaseProvider extends ChangeNotifier {
 
   RestaurantDatabaseProvider(this.database);
 
-  List<RestaurantFavorite> _restaurants = [];
+  List<RestaurantFavorite> _favorites = [];
   ResultState _state = ResultState.initial;
+  String _message = '';
 
-  List<RestaurantFavorite> get restaurants => _restaurants;
+  List<RestaurantFavorite> get favorites => _favorites;
   ResultState get state => _state;
+  String get message => _message;
 
   /// Mengambil seluruh daftar restoran favorite
   Future<void> getAllFavorites() async {
-    _restaurants = await database.all();
+    final result = await database.all();
+
+    _favorites = result;
 
     _state = ResultState.data;
     notifyListeners();
@@ -29,12 +33,16 @@ class RestaurantDatabaseProvider extends ChangeNotifier {
   Future<void> addToFavorites(RestaurantFavorite favorite) async {
     await database.insert(favorite);
 
+    _message = 'Restoran ditambahkan ke favorit';
+
     getAllFavorites();
   }
 
   /// Menghapus restoran dari daftar favorit
   Future<void> removeFromFavorites(String restaurantId) async {
     await database.delete(restaurantId);
+
+    _message = 'Restoran dihapus dari favorit';
 
     getAllFavorites();
   }

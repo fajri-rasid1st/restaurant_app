@@ -167,7 +167,7 @@ class _ReviewFormPageState extends State<ReviewFormPage> {
       // Tampilkan snackbar
       Utilities.showSnackBarMessage(
         context: context,
-        text: context.read<RestaurantDetailProvider>().message,
+        message: context.read<RestaurantDetailProvider>().message,
       );
 
       // Kembali ke page sebelumnya

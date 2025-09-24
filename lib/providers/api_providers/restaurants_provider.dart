@@ -24,6 +24,12 @@ class RestaurantsProvider extends ChangeNotifier {
   ResultState get state => _state;
   String get message => _message;
 
+  /// Set daftar restoran
+  set restaurants(List<Restaurant> restaurants) {
+    _restaurants = restaurants;
+    notifyListeners();
+  }
+
   /// Mengambil daftar semua restoran
   Future<void> getRestaurants([String? query]) async {
     _state = ResultState.loading;

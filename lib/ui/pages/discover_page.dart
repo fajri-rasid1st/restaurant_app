@@ -10,17 +10,19 @@ import 'package:restaurant_app/common/enum/restaurant_category.dart';
 import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
-import 'package:restaurant_app/data/api/restaurant_api.dart';
-import 'package:restaurant_app/data/db/restaurant_database.dart';
+import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/data/models/restaurant_favorite.dart';
 import 'package:restaurant_app/providers/api_providers/restaurant_detail_provider.dart';
 import 'package:restaurant_app/providers/api_providers/restaurants_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_searching_provider.dart';
 import 'package:restaurant_app/providers/app_providers/search_query_provider.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
+import 'package:restaurant_app/providers/database_providers/restaurant_database_provider.dart';
 import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
+import 'package:restaurant_app/ui/pages/favorite_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/widgets/category_list.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
@@ -305,9 +307,9 @@ class _RestaurantListWidget extends StatelessWidget {
         extentRatio: 0.25,
         children: [
           CustomSlidableAction(
-            onPressed: (context) {},
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
+            onPressed: (_) => onFavoriteIconPressed(context, restaurant),
             child: Icon(
               restaurant.isFavorited ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
               size: 26,
@@ -320,11 +322,8 @@ class _RestaurantListWidget extends StatelessWidget {
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (_) => ChangeNotifierProvider(
-              create: (_) => RestaurantDetailProvider(
-                apiService: context.read<RestaurantApi>(),
-                databaseService: context.read<RestaurantDatabase>(),
-              )..getRestaurantDetail(restaurant.id),
+            builder: (_) => ChangeNotifierProvider.value(
+              value: context.read<RestaurantDetailProvider>()..getRestaurantDetail(restaurant.id),
               child: DetailPage(
                 restaurantId: restaurant.id,
                 heroTag: restaurant.id,
@@ -333,6 +332,55 @@ class _RestaurantListWidget extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  /// Fungsi untuk menambahkan atau menghapus restoran dari daftar favorit
+  Future<void> onFavoriteIconPressed(
+    BuildContext context,
+    Restaurant restaurant,
+  ) async {
+    // Tambah restoran jika belum ada di favorit, atau hapus jika sudah ada
+    if (restaurant.isFavorited) {
+      await context.read<RestaurantDatabaseProvider>().removeFromFavorites(
+        restaurant.id,
+      );
+    } else {
+      await context.read<RestaurantDatabaseProvider>().addToFavorites(
+        RestaurantFavorite.fromRestaurant(restaurant),
+      );
+    }
+
+    if (!context.mounted) return;
+
+    // Update status isFavorited pada restoran yang dipilih
+    final restaurants = context.read<RestaurantsProvider>().restaurants;
+    final updatedRestaurant = restaurants.firstWhere((item) => item.id == restaurant.id);
+    final updatedIndex = restaurants.indexOf(updatedRestaurant);
+
+    restaurants[updatedIndex] = updatedRestaurant.copyWith(isFavorited: !updatedRestaurant.isFavorited);
+
+    context.read<RestaurantsProvider>().restaurants = restaurants;
+
+    // Tampilkan snackbar
+    Utilities.showSnackBarMessage(
+      context: context,
+      message: context.read<RestaurantDatabaseProvider>().message,
+      action: restaurant.isFavorited
+          ? null
+          : SnackBarAction(
+              label: 'Lihat',
+              textColor: Theme.of(context).colorScheme.primaryContainer,
+              onPressed: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => ChangeNotifierProvider.value(
+                    value: context.read<RestaurantDatabaseProvider>()..getAllFavorites(),
+                    child: FavoritePage(),
+                  ),
+                ),
+              ),
+            ),
     );
   }
 }

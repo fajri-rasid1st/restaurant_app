@@ -1,3 +1,6 @@
+// Project imports:
+import 'package:restaurant_app/data/models/restaurant_favorite.dart';
+
 class Restaurant {
   final String id;
   final String name;
@@ -26,6 +29,18 @@ class Restaurant {
       pictureId: json['pictureId'] ?? '',
       city: json['city'] ?? '',
       rating: json['rating']?.toDouble() ?? 0.0,
+    );
+  }
+
+  /// Constructor untuk membuat objek dari model restaurant favorit
+  factory Restaurant.fromFavorite(RestaurantFavorite favorite) {
+    return Restaurant(
+      id: favorite.restaurantId,
+      name: favorite.name,
+      description: favorite.description,
+      pictureId: favorite.pictureId,
+      city: favorite.city,
+      rating: favorite.rating.toDouble(),
     );
   }
 

@@ -1,3 +1,6 @@
+// Project imports:
+import 'package:restaurant_app/data/models/restaurant.dart';
+
 /// Nama tabel pada database
 const String favoriteTable = 'favorite_table';
 
@@ -48,6 +51,19 @@ class RestaurantFavorite {
     );
   }
 
+  /// Constructor untuk membuat objek dari model restaurant
+  factory RestaurantFavorite.fromRestaurant(Restaurant restaurant) {
+    return RestaurantFavorite(
+      restaurantId: restaurant.id,
+      name: restaurant.name,
+      description: restaurant.description,
+      pictureId: restaurant.pictureId,
+      city: restaurant.city,
+      rating: restaurant.rating,
+      createdAt: DateTime.now(),
+    );
+  }
+
   /// Method untuk mengubah bentuk object ke Map
   Map<String, dynamic> toMap() {
     return {
@@ -60,28 +76,5 @@ class RestaurantFavorite {
       FavoriteFields.rating: rating,
       FavoriteFields.createdAt: createdAt.toIso8601String(),
     };
-  }
-
-  /// Method untuk menyalin object dengan mengganti beberapa atribut sesuai parameter yang dimasukkan
-  RestaurantFavorite copyWith({
-    int? id,
-    String? restaurantId,
-    String? name,
-    String? description,
-    String? pictureId,
-    String? city,
-    num? rating,
-    DateTime? createdAt,
-  }) {
-    return RestaurantFavorite(
-      id: id ?? this.id,
-      restaurantId: restaurantId ?? this.restaurantId,
-      name: name ?? this.name,
-      description: description ?? this.description,
-      pictureId: pictureId ?? this.pictureId,
-      city: city ?? this.city,
-      rating: rating ?? this.rating,
-      createdAt: createdAt ?? this.createdAt,
-    );
   }
 }

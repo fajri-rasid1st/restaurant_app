@@ -324,12 +324,9 @@ class DetailPage extends StatelessWidget {
                       onPressed: () => Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => ChangeNotifierProvider.value(
-                            value: context.read<RestaurantDetailProvider>(),
-                            child: ReviewFormPage(
-                              restaurantId: restaurantDetail.id,
-                              restaurantName: restaurantDetail.name,
-                            ),
+                          builder: (_) => ReviewFormPage(
+                            restaurantId: restaurantDetail.id,
+                            restaurantName: restaurantDetail.name,
                           ),
                         ),
                       ),
