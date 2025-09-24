@@ -223,10 +223,10 @@ class _DiscoverMainWidget extends StatelessWidget {
   }
 
   /// Fungsi untuk reload halaman saat data gagal di-fetch
-  Future<void> refreshPage(
+  void refreshPage(
     BuildContext context,
     String query,
-  ) async {
+  ) {
     context.read<IsReloadProvider>().value = true;
 
     Future.wait([
@@ -268,7 +268,7 @@ class _RestaurantListWidget extends StatelessWidget {
               SlidableAutoCloseBehavior(
                 child: SliverList(
                   delegate: SliverChildBuilderDelegate(
-                    (context, index) {
+                    (_, index) {
                       final count = restaurants.length;
                       final hasSeparator = index != count - 1;
 
@@ -356,12 +356,14 @@ class _RestaurantListWidget extends StatelessWidget {
 
     if (!context.mounted) return;
 
-    // Update status isFavorited pada restoran yang dipilih
+    // Update status isFavorited restoran yang dipilih di daftar restoran
     final restaurants = context.read<RestaurantsProvider>().restaurants;
     final updatedRestaurant = restaurants.firstWhere((item) => item.id == restaurant.id);
     final updatedIndex = restaurants.indexOf(updatedRestaurant);
 
-    restaurants[updatedIndex] = updatedRestaurant.copyWith(isFavorited: !updatedRestaurant.isFavorited);
+    restaurants[updatedIndex] = updatedRestaurant.copyWith(
+      isFavorited: !updatedRestaurant.isFavorited,
+    );
 
     context.read<RestaurantsProvider>().restaurants = restaurants;
 

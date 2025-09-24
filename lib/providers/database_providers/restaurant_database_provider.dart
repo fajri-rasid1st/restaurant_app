@@ -43,9 +43,4 @@ class RestaurantDatabaseProvider extends ChangeNotifier {
 
     getAllFavorites();
   }
-
-  /// Mengecek apakah restoran sudah ada di daftar favorite
-  Future<bool> isFavoriteAlreadyExist(String restaurantId) async {
-    return await database.isExist(restaurantId);
-  }
 }

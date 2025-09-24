@@ -52,7 +52,7 @@ class FavoritePage extends StatelessWidget {
                     SlidableAutoCloseBehavior(
                       child: SliverList(
                         delegate: SliverChildBuilderDelegate(
-                          (context, index) {
+                          (_, index) {
                             final count = favorites.length;
                             final hasSeparator = index != count - 1;
 
@@ -82,13 +82,13 @@ class FavoritePage extends StatelessWidget {
     );
   }
 
-  /// Widget untuk membuat item card restaurant favorit
+  /// Widget untuk membuat item card restoran favorit
   Widget buildFavoriteItem({
     required BuildContext context,
     required RestaurantFavorite favorite,
   }) {
     return Slidable(
-      groupTag: 0,
+      groupTag: 1,
       endActionPane: ActionPane(
         motion: ScrollMotion(),
         extentRatio: 0.25,
@@ -130,19 +130,13 @@ class FavoritePage extends StatelessWidget {
     BuildContext context,
     RestaurantFavorite favorite,
   ) async {
-    // Tambah restoran jika belum ada di favorit, atau hapus jika sudah ada
+    // Hapus restoran dari daftar favorit
     await context.read<RestaurantDatabaseProvider>().removeFromFavorites(favorite.restaurantId);
 
     if (!context.mounted) return;
 
-    // Update status isFavorited pada restoran yang dipilih
-    final restaurants = context.read<RestaurantsProvider>().restaurants;
-    final updatedRestaurant = restaurants.firstWhere((item) => item.id == favorite.restaurantId);
-    final updatedIndex = restaurants.indexOf(updatedRestaurant);
-
-    restaurants[updatedIndex] = updatedRestaurant.copyWith(isFavorited: !updatedRestaurant.isFavorited);
-
-    context.read<RestaurantsProvider>().restaurants = restaurants;
+    // Update status isFavorited pada restoran yang dipilih di daftar restoran
+    updateRestaurantList(context, favorite.restaurantId);
 
     // Tampilkan snackbar
     Utilities.showSnackBarMessage(
@@ -151,8 +145,32 @@ class FavoritePage extends StatelessWidget {
       action: SnackBarAction(
         label: 'Undo',
         textColor: Theme.of(context).colorScheme.primaryContainer,
-        onPressed: () {},
+        onPressed: () async {
+          // Tambah kembali restoran ke daftar favorit
+          await context.read<RestaurantDatabaseProvider>().addToFavorites(favorite);
+
+          if (!context.mounted) return;
+
+          // Update status isFavorited pada restoran yang dipilih di daftar restoran
+          updateRestaurantList(context, favorite.restaurantId);
+        },
       ),
     );
+  }
+
+  /// Fungsi untuk mengupdate status isFavorited pada restoran yang dipilih
+  void updateRestaurantList(
+    BuildContext context,
+    String restaurantId,
+  ) {
+    final restaurants = context.read<RestaurantsProvider>().restaurants;
+    final updatedRestaurant = restaurants.firstWhere((item) => item.id == restaurantId);
+    final updatedIndex = restaurants.indexOf(updatedRestaurant);
+
+    restaurants[updatedIndex] = updatedRestaurant.copyWith(
+      isFavorited: !updatedRestaurant.isFavorited,
+    );
+
+    context.read<RestaurantsProvider>().restaurants = restaurants;
   }
 }

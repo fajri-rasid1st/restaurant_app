@@ -16,12 +16,19 @@ class RestaurantDetailProvider extends ChangeNotifier {
     required this.databaseService,
   });
 
-  RestaurantDetail? restaurantDetail;
+  RestaurantDetail? _restaurantDetail;
   ResultState _state = ResultState.loading;
   String _message = '';
 
+  RestaurantDetail? get restaurantDetail => _restaurantDetail;
   ResultState get state => _state;
   String get message => _message;
+
+  /// Set detail restoran
+  set restaurantDetail(RestaurantDetail? restaurantDetail) {
+    _restaurantDetail = restaurantDetail;
+    notifyListeners();
+  }
 
   /// Mengambil data detail restoran sesuai [id]-nya
   Future<void> getRestaurantDetail(String id) async {
@@ -33,7 +40,7 @@ class RestaurantDetailProvider extends ChangeNotifier {
 
       final isFavorited = await databaseService.isExist(id);
 
-      restaurantDetail = result.copyWith(isFavorited: isFavorited);
+      _restaurantDetail = result.copyWith(isFavorited: isFavorited);
 
       _state = ResultState.data;
     } catch (e) {
@@ -59,10 +66,10 @@ class RestaurantDetailProvider extends ChangeNotifier {
       );
 
       if (restaurantDetail != null) {
-        restaurantDetail = restaurantDetail!.copyWith(customerReviews: result);
+        _restaurantDetail = restaurantDetail!.copyWith(customerReviews: result);
       }
 
-      _message = 'Berhasil mengirim review.';
+      _message = 'Berhasil mengirim review';
     } catch (e) {
       _message = 'Gagal mengirim review. Silahkan coba lagi.';
     }

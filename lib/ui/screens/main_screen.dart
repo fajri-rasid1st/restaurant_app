@@ -64,7 +64,7 @@ class MainScreen extends StatelessWidget {
                     hoverElevation: 6,
                     highlightElevation: 6,
                     heroTag: 'favorites_fab',
-                    tooltip: 'Daftar Favorite',
+                    tooltip: 'Favorit',
                     onPressed: () => Navigator.push(
                       context,
                       MaterialPageRoute(

@@ -10,9 +10,13 @@ import 'package:restaurant_app/common/const/const.dart';
 import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
+import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/data/models/restaurant_detail.dart';
+import 'package:restaurant_app/data/models/restaurant_favorite.dart';
 import 'package:restaurant_app/providers/api_providers/restaurant_detail_provider.dart';
+import 'package:restaurant_app/providers/api_providers/restaurants_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
+import 'package:restaurant_app/providers/database_providers/restaurant_database_provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/pages/review_form_page.dart';
@@ -90,8 +94,8 @@ class DetailPage extends StatelessWidget {
                       icon: Icon(
                         restaurantDetail.isFavorited ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
                       ),
-                      tooltip: restaurantDetail.isFavorited ? 'Hapus dari Favorite' : 'Tambah ke Favorite',
-                      onPressed: () {},
+                      tooltip: 'Favorit',
+                      onPressed: () => onFavoriteIconPressed(context, restaurantDetail),
                     ),
                   ],
                   flexibleSpace: FlexibleSpaceBar(
@@ -423,10 +427,10 @@ class DetailPage extends StatelessWidget {
   }
 
   /// Fungsi untuk reload halaman saat data gagal di-fetch
-  Future<void> refreshPage(
+  void refreshPage(
     BuildContext context,
     String restaurantId,
-  ) async {
+  ) {
     context.read<IsReloadProvider>().value = true;
 
     Future.wait([
@@ -443,5 +447,46 @@ class DetailPage extends StatelessWidget {
 
           context.read<IsReloadProvider>().value = false;
         });
+  }
+
+  /// Fungsi untuk menambahkan atau menghapus restoran dari daftar favorit
+  Future<void> onFavoriteIconPressed(
+    BuildContext context,
+    RestaurantDetail restaurantDetail,
+  ) async {
+    // Tambah restoran jika belum ada di favorit, atau hapus jika sudah ada
+    if (restaurantDetail.isFavorited) {
+      await context.read<RestaurantDatabaseProvider>().removeFromFavorites(
+        restaurantDetail.id,
+      );
+    } else {
+      await context.read<RestaurantDatabaseProvider>().addToFavorites(
+        RestaurantFavorite.fromRestaurant(restaurantDetail),
+      );
+    }
+
+    if (!context.mounted) return;
+
+    // Update status isFavorited restoran yang dipilih di daftar restoran
+    final restaurants = context.read<RestaurantsProvider>().restaurants;
+    final updatedRestaurant = restaurants.firstWhere((item) => item.id == restaurantDetail.id);
+    final updatedIndex = restaurants.indexOf(updatedRestaurant);
+
+    restaurants[updatedIndex] = updatedRestaurant.copyWith(
+      isFavorited: !updatedRestaurant.isFavorited,
+    );
+
+    context.read<RestaurantsProvider>().restaurants = restaurants;
+
+    // Update status isFavorited restoran yang dipilih di halaman detail
+    context.read<RestaurantDetailProvider>().restaurantDetail = restaurantDetail.copyWith(
+      isFavorited: !restaurantDetail.isFavorited,
+    );
+
+    // Tampilkan snackbar
+    Utilities.showSnackBarMessage(
+      context: context,
+      message: context.read<RestaurantDatabaseProvider>().message,
+    );
   }
 }
