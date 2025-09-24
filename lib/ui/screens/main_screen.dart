@@ -60,9 +60,11 @@ class MainScreen extends StatelessWidget {
               context,
               MaterialPageRoute(builder: (context) => FavoritePage()),
             ),
-            child: Icon(Icons.favorite_rounded),
+            child: Icon(
+              Icons.favorite_rounded,
+              size: 26,
+            ),
           ),
-          // floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         );
       },
     );

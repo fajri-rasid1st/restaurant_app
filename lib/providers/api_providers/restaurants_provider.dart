@@ -16,7 +16,7 @@ class RestaurantsProvider extends ChangeNotifier {
     required this.databaseService,
   });
 
-  final List<Restaurant> _restaurants = [];
+  List<Restaurant> _restaurants = [];
   ResultState _state = ResultState.initial;
   String _message = '';
 
@@ -35,10 +35,10 @@ class RestaurantsProvider extends ChangeNotifier {
       for (var i = 0; i < result.length; i++) {
         final isFavorited = await databaseService.isExist(result[i].id);
 
-        final restaurant = result[i].copyWith(isFavorited: isFavorited);
-
-        _restaurants.add(restaurant);
+        result[i] = result[i].copyWith(isFavorited: isFavorited);
       }
+
+      _restaurants = result;
 
       _state = ResultState.data;
     } catch (e) {

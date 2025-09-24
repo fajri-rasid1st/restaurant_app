@@ -12,6 +12,7 @@ class FavoriteFields {
   static const String createdAt = 'createdAt';
 }
 
+/// Model untuk restoran favorite yang disimpan di database
 class RestaurantFavorite {
   final int? id;
   final String restaurantId;
@@ -22,7 +23,7 @@ class RestaurantFavorite {
   final num rating;
   final DateTime createdAt;
 
-  RestaurantFavorite({
+  const RestaurantFavorite({
     this.id,
     required this.restaurantId,
     required this.name,

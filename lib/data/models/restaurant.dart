@@ -7,7 +7,7 @@ class Restaurant {
   final double rating;
   final bool isFavorited;
 
-  Restaurant({
+  const Restaurant({
     required this.id,
     required this.name,
     required this.description,

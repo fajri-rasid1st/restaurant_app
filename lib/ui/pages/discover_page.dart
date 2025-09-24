@@ -302,15 +302,18 @@ class _RestaurantListWidget extends StatelessWidget {
   }) {
     return Slidable(
       groupTag: 0,
-      startActionPane: ActionPane(
+      endActionPane: ActionPane(
         motion: ScrollMotion(),
         extentRatio: 0.25,
         children: [
-          SlidableAction(
+          CustomSlidableAction(
             onPressed: (context) {},
             backgroundColor: Theme.of(context).colorScheme.primaryContainer,
             foregroundColor: Theme.of(context).colorScheme.onPrimaryContainer,
-            icon: restaurant.isFavorited ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+            child: Icon(
+              restaurant.isFavorited ? Icons.favorite_rounded : Icons.favorite_outline_rounded,
+              size: 26,
+            ),
           ),
         ],
       ),

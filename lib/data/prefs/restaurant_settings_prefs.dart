@@ -25,7 +25,7 @@ final class RestaurantSettingsPrefs {
   }
 
   Future<bool> getIsDailyReminderActived() async {
-    return await prefs.getBool(_kIsDailyReminderActived) ?? false;
+    return await prefs.getBool(_kIsDailyReminderActived) ?? true; // default: true
   }
 
   Future<void> setIsDarkModeActived(bool value) async {
@@ -33,6 +33,6 @@ final class RestaurantSettingsPrefs {
   }
 
   Future<bool> getIsDarkModeActived() async {
-    return await prefs.getBool(_kIsDarkModeActived) ?? false;
+    return await prefs.getBool(_kIsDarkModeActived) ?? false; // default: false
   }
 }

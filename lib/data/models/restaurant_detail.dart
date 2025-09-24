@@ -7,7 +7,7 @@ class RestaurantDetail extends Restaurant {
   final List<CustomerReview> customerReviews;
   final Menu menus;
 
-  RestaurantDetail({
+  const RestaurantDetail({
     required super.id,
     required super.name,
     required super.description,
