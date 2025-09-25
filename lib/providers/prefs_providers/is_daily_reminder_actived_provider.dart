@@ -2,7 +2,7 @@
 import 'package:flutter/foundation.dart';
 
 // Project imports:
-import 'package:restaurant_app/data/prefs/restaurant_settings_prefs.dart';
+import 'package:restaurant_app/services/prefs/restaurant_settings_prefs.dart';
 
 class IsDailyReminderActivedProvider extends ChangeNotifier {
   final RestaurantSettingsPrefs prefs;

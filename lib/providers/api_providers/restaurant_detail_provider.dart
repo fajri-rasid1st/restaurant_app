@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 
 // Project imports:
 import 'package:restaurant_app/common/enum/result_state.dart';
-import 'package:restaurant_app/data/api/restaurant_api.dart';
-import 'package:restaurant_app/data/db/restaurant_database.dart';
-import 'package:restaurant_app/data/models/restaurant_detail.dart';
+import 'package:restaurant_app/models/restaurant_detail.dart';
+import 'package:restaurant_app/services/api/restaurant_api.dart';
+import 'package:restaurant_app/services/db/restaurant_database.dart';
 
 class RestaurantDetailProvider extends ChangeNotifier {
   final RestaurantApi apiService;

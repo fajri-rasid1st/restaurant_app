@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:restaurant_app/common/const/const.dart';
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
-import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/models/restaurant.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 
 class RestaurantCard extends StatelessWidget {

@@ -3,7 +3,7 @@ import 'package:path/path.dart' as path;
 import 'package:sqflite/sqflite.dart';
 
 // Project imports:
-import 'package:restaurant_app/data/models/restaurant_favorite.dart';
+import 'package:restaurant_app/models/restaurant_favorite.dart';
 
 final class RestaurantDatabase {
   // Singleton pattern

@@ -2,8 +2,8 @@
 import 'package:flutter/foundation.dart';
 
 // Project imports:
-import 'package:restaurant_app/data/db/restaurant_database.dart';
-import 'package:restaurant_app/data/models/restaurant_favorite.dart';
+import 'package:restaurant_app/models/restaurant_favorite.dart';
+import 'package:restaurant_app/services/db/restaurant_database.dart';
 
 class RestaurantDatabaseProvider extends ChangeNotifier {
   final RestaurantDatabase database;

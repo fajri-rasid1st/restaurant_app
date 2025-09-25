@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart';
 
 // Project imports:
-import 'package:restaurant_app/ui/themes/color_scheme.dart';
-import 'package:restaurant_app/ui/themes/text_theme.dart';
+import 'package:restaurant_app/common/theme/color_scheme.dart';
+import 'package:restaurant_app/common/theme/text_theme.dart';
 
 final ThemeData lightTheme = ThemeData(
   useMaterial3: true,

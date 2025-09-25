@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 // Project imports:
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
-import 'package:restaurant_app/data/models/restaurant_detail.dart';
+import 'package:restaurant_app/models/restaurant_detail.dart';
 
 class ItemMenuCard extends StatelessWidget {
   final ItemMenu item;

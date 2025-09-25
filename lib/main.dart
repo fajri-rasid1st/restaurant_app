@@ -7,9 +7,6 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:restaurant_app/app.dart';
-import 'package:restaurant_app/data/api/restaurant_api.dart';
-import 'package:restaurant_app/data/db/restaurant_database.dart';
-import 'package:restaurant_app/data/prefs/restaurant_settings_prefs.dart';
 import 'package:restaurant_app/providers/api_providers/restaurants_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_searching_provider.dart';
@@ -19,6 +16,9 @@ import 'package:restaurant_app/providers/app_providers/selected_category_provide
 import 'package:restaurant_app/providers/database_providers/restaurant_database_provider.dart';
 import 'package:restaurant_app/providers/prefs_providers/is_daily_reminder_actived_provider.dart';
 import 'package:restaurant_app/providers/prefs_providers/is_dark_mode_actived_provider.dart';
+import 'package:restaurant_app/services/api/restaurant_api.dart';
+import 'package:restaurant_app/services/db/restaurant_database.dart';
+import 'package:restaurant_app/services/prefs/restaurant_settings_prefs.dart';
 
 Future<void> main() async {
   // Memastikan widget Flutter sudah diinisialisasi

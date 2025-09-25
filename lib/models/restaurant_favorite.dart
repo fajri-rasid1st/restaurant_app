@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:restaurant_app/data/models/restaurant.dart';
+import 'package:restaurant_app/models/restaurant.dart';
 
 /// Nama tabel pada database
 const String favoriteTable = 'favorite_table';

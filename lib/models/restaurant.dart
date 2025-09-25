@@ -1,5 +1,5 @@
 // Project imports:
-import 'package:restaurant_app/data/models/restaurant_favorite.dart';
+import 'package:restaurant_app/models/restaurant_favorite.dart';
 
 class Restaurant {
   final String id;

@@ -6,8 +6,8 @@ import 'package:http/http.dart' as http;
 
 // Project imports:
 import 'package:restaurant_app/common/const/const.dart';
-import 'package:restaurant_app/data/models/restaurant.dart';
-import 'package:restaurant_app/data/models/restaurant_detail.dart';
+import 'package:restaurant_app/models/restaurant.dart';
+import 'package:restaurant_app/models/restaurant_detail.dart';
 
 final class RestaurantApi {
   // Singleton pattern
