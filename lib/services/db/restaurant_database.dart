@@ -7,11 +7,11 @@ import 'package:restaurant_app/models/restaurant_favorite.dart';
 
 final class RestaurantDatabase {
   // Singleton pattern
-  static final RestaurantDatabase _instance = RestaurantDatabase._internal();
+  static final RestaurantDatabase instance = RestaurantDatabase._internal();
 
   RestaurantDatabase._internal();
 
-  factory RestaurantDatabase() => _instance;
+  factory RestaurantDatabase() => instance;
 
   Database? _database;
 

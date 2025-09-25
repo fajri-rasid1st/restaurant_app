@@ -9,22 +9,19 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/common/enum/restaurant_category.dart';
 import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
+import 'package:restaurant_app/common/routes/route_names.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
+import 'package:restaurant_app/common/utilities/navigator_key.dart';
 import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/models/restaurant.dart';
 import 'package:restaurant_app/models/restaurant_favorite.dart';
-import 'package:restaurant_app/providers/api_providers/restaurant_detail_provider.dart';
 import 'package:restaurant_app/providers/api_providers/restaurants_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_searching_provider.dart';
 import 'package:restaurant_app/providers/app_providers/search_query_provider.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
 import 'package:restaurant_app/providers/database_providers/restaurant_database_provider.dart';
-import 'package:restaurant_app/services/api/restaurant_api.dart';
-import 'package:restaurant_app/services/db/restaurant_database.dart';
-import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
-import 'package:restaurant_app/ui/pages/favorite_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
 import 'package:restaurant_app/ui/widgets/category_list.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
@@ -319,20 +316,9 @@ class _RestaurantListWidget extends StatelessWidget {
       ),
       child: RestaurantCard(
         restaurant: restaurant,
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ChangeNotifierProvider(
-              create: (_) => RestaurantDetailProvider(
-                apiService: context.read<RestaurantApi>(),
-                databaseService: context.read<RestaurantDatabase>(),
-              )..getRestaurantDetail(restaurant.id),
-              child: DetailPage(
-                restaurantId: restaurant.id,
-                heroTag: restaurant.id,
-              ),
-            ),
-          ),
+        onTap: () => navigatorKey.currentState!.pushNamed(
+          Routes.detail,
+          arguments: {'id': restaurant.id},
         ),
       ),
     );
@@ -376,15 +362,7 @@ class _RestaurantListWidget extends StatelessWidget {
           : SnackBarAction(
               label: 'Lihat',
               textColor: Theme.of(context).colorScheme.primaryContainer,
-              onPressed: () => Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (_) => ChangeNotifierProvider.value(
-                    value: context.read<RestaurantDatabaseProvider>()..getAllFavorites(),
-                    child: FavoritePage(),
-                  ),
-                ),
-              ),
+              onPressed: () => navigatorKey.currentState!.pushNamed(Routes.favorites),
             ),
     );
   }

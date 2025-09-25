@@ -9,7 +9,9 @@ import 'package:readmore/readmore.dart';
 import 'package:restaurant_app/common/const/const.dart';
 import 'package:restaurant_app/common/enum/result_state.dart';
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
+import 'package:restaurant_app/common/routes/route_names.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
+import 'package:restaurant_app/common/utilities/navigator_key.dart';
 import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/models/restaurant_detail.dart';
 import 'package:restaurant_app/models/restaurant_favorite.dart';
@@ -19,7 +21,6 @@ import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/database_providers/restaurant_database_provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
-import 'package:restaurant_app/ui/pages/review_form_page.dart';
 import 'package:restaurant_app/ui/widgets/custom_network_image.dart';
 import 'package:restaurant_app/ui/widgets/item_menu_card.dart';
 import 'package:restaurant_app/ui/widgets/scaffold_safe_area.dart';
@@ -87,7 +88,7 @@ class DetailPage extends StatelessWidget {
                   leading: IconButton(
                     icon: Icon(Icons.arrow_back_rounded),
                     tooltip: 'Kembali',
-                    onPressed: () => Navigator.pop(context),
+                    onPressed: () => navigatorKey.currentState!.pop(),
                   ),
                   actions: [
                     IconButton(
@@ -323,17 +324,12 @@ class DetailPage extends StatelessWidget {
                           borderRadius: BorderRadius.circular(12),
                         ),
                       ),
-                      onPressed: () => Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => ChangeNotifierProvider.value(
-                            value: context.read<RestaurantDetailProvider>(),
-                            child: ReviewFormPage(
-                              restaurantId: restaurantDetail.id,
-                              restaurantName: restaurantDetail.name,
-                            ),
-                          ),
-                        ),
+                      onPressed: () => navigatorKey.currentState!.pushNamed(
+                        Routes.reviewForm,
+                        arguments: {
+                          'id': restaurantDetail.id,
+                          'name': restaurantDetail.name,
+                        },
                       ),
                     ),
                   ),

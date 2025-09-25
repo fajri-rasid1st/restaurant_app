@@ -6,10 +6,10 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
+import 'package:restaurant_app/common/routes/route_names.dart';
+import 'package:restaurant_app/common/utilities/navigator_key.dart';
 import 'package:restaurant_app/providers/app_providers/nav_bar_index_provider.dart';
-import 'package:restaurant_app/providers/database_providers/restaurant_database_provider.dart';
 import 'package:restaurant_app/ui/pages/discover_page.dart';
-import 'package:restaurant_app/ui/pages/favorite_page.dart';
 import 'package:restaurant_app/ui/pages/settings_page.dart';
 import 'package:restaurant_app/ui/widgets/scaffold_safe_area.dart';
 
@@ -65,15 +65,7 @@ class MainScreen extends StatelessWidget {
                     highlightElevation: 6,
                     heroTag: 'favorites_fab',
                     tooltip: 'Favorit',
-                    onPressed: () => Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (_) => ChangeNotifierProvider.value(
-                          value: context.read<RestaurantDatabaseProvider>()..getAllFavorites(),
-                          child: FavoritePage(),
-                        ),
-                      ),
-                    ),
+                    onPressed: () => navigatorKey.currentState!.pushNamed(Routes.favorites),
                     child: Icon(
                       Icons.favorite_rounded,
                       size: 26,

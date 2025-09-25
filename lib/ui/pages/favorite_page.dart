@@ -7,16 +7,14 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
+import 'package:restaurant_app/common/routes/route_names.dart';
 import 'package:restaurant_app/common/utilities/asset_path.dart';
+import 'package:restaurant_app/common/utilities/navigator_key.dart';
 import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/models/restaurant.dart';
 import 'package:restaurant_app/models/restaurant_favorite.dart';
-import 'package:restaurant_app/providers/api_providers/restaurant_detail_provider.dart';
 import 'package:restaurant_app/providers/api_providers/restaurants_provider.dart';
 import 'package:restaurant_app/providers/database_providers/restaurant_database_provider.dart';
-import 'package:restaurant_app/services/api/restaurant_api.dart';
-import 'package:restaurant_app/services/db/restaurant_database.dart';
-import 'package:restaurant_app/ui/pages/detail_page.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
 import 'package:restaurant_app/ui/widgets/restaurant_card.dart';
 import 'package:restaurant_app/ui/widgets/scaffold_safe_area.dart';
@@ -34,7 +32,7 @@ class FavoritePage extends StatelessWidget {
         leading: IconButton(
           icon: Icon(Icons.arrow_back_rounded),
           tooltip: 'Kembali',
-          onPressed: () => Navigator.pop(context),
+          onPressed: () => navigatorKey.currentState!.pop(),
         ),
       ),
       body: Consumer<RestaurantDatabaseProvider>(
@@ -106,20 +104,9 @@ class FavoritePage extends StatelessWidget {
       ),
       child: RestaurantCard(
         restaurant: Restaurant.fromFavorite(favorite),
-        onTap: () => Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ChangeNotifierProvider(
-              create: (_) => RestaurantDetailProvider(
-                apiService: context.read<RestaurantApi>(),
-                databaseService: context.read<RestaurantDatabase>(),
-              )..getRestaurantDetail(favorite.restaurantId),
-              child: DetailPage(
-                restaurantId: favorite.restaurantId,
-                heroTag: favorite.restaurantId,
-              ),
-            ),
-          ),
+        onTap: () => navigatorKey.currentState!.pushNamed(
+          Routes.detail,
+          arguments: {'id': favorite.restaurantId},
         ),
       ),
     );

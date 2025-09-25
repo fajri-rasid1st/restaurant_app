@@ -11,11 +11,11 @@ import 'package:restaurant_app/models/restaurant_detail.dart';
 
 final class RestaurantApi {
   // Singleton pattern
-  static final RestaurantApi _instance = RestaurantApi._internal();
+  static final RestaurantApi instance = RestaurantApi._internal();
 
   RestaurantApi._internal();
 
-  factory RestaurantApi() => _instance;
+  factory RestaurantApi() => instance;
 
   http.Client? _client;
 

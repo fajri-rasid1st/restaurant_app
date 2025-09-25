@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:restaurant_app/app.dart';
+import 'package:restaurant_app/common/utilities/navigator_key.dart';
 import 'package:restaurant_app/providers/api_providers/restaurants_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
 import 'package:restaurant_app/providers/app_providers/is_searching_provider.dart';
@@ -18,7 +19,19 @@ import 'package:restaurant_app/providers/prefs_providers/is_daily_reminder_activ
 import 'package:restaurant_app/providers/prefs_providers/is_dark_mode_actived_provider.dart';
 import 'package:restaurant_app/services/api/restaurant_api.dart';
 import 'package:restaurant_app/services/db/restaurant_database.dart';
+import 'package:restaurant_app/services/notifications/local_notification_service.dart';
 import 'package:restaurant_app/services/prefs/restaurant_settings_prefs.dart';
+
+Future<void> bootstrapNotifications() async {
+  // Init Workmanager (harus sebelum runApp)
+  // await Workmanager().initialize(callbackDispatcher);
+
+  // Init NotificationService (channel, permission, timezone)
+  await LocalNotificationService.instance.initialize(navigatorKey: navigatorKey);
+
+  // Jika app diluncurkan dari tap notifikasi saat terminated
+  await LocalNotificationService.instance.handleLaunchFromNotificationIfAny();
+}
 
 Future<void> main() async {
   // Memastikan widget Flutter sudah diinisialisasi
@@ -29,6 +42,9 @@ Future<void> main() async {
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
+
+  // Inisialisasi notifikasi
+  await bootstrapNotifications();
 
   runApp(
     MultiProvider(
