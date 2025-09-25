@@ -64,10 +64,10 @@ class DetailPage extends StatelessWidget {
     return ScaffoldSafeArea(
       backgroundColor: Theme.of(context).colorScheme.onSurface,
       body: NestedScrollView(
-        headerSliverBuilder: (context, innerBoxIsScrolled) {
+        headerSliverBuilder: (_, innerBoxIsScrolled) {
           return [
             SliverLayoutBuilder(
-              builder: (context, constraints) {
+              builder: (_, constraints) {
                 const expanded = 240.0; // expandedHeight
                 final collapsed = constraints.scrollOffset > (expanded - kToolbarHeight);
 

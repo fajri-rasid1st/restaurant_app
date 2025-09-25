@@ -17,6 +17,10 @@ final class RestaurantApi {
 
   factory RestaurantApi() => _instance;
 
+  http.Client? _client;
+
+  http.Client get client => _client ??= http.Client();
+
   /// Mengambil data daftar restaurant dari API. Jika [query] dimasukkan,
   /// maka akan mengambil daftar restaurant sesuai [query]. mengembalikan nilai berupa:
   ///
@@ -31,7 +35,7 @@ final class RestaurantApi {
 
     try {
       // Kirim http request menggunakan metode get
-      final response = await http.get(uri);
+      final response = await client.get(uri);
 
       if (response.statusCode == 200) {
         // Parsing string dan mengembalikan nilai objek json
@@ -64,7 +68,7 @@ final class RestaurantApi {
 
     try {
       // Kirim http request menggunakan metode get
-      final response = await http.get(uri);
+      final response = await client.get(uri);
 
       if (response.statusCode == 200) {
         // Parsing string dan mengembalikan nilai objek json
@@ -110,7 +114,7 @@ final class RestaurantApi {
 
     try {
       // Kirim data ke server dengan menggunakan metode post
-      final response = await http.post(
+      final response = await client.post(
         uri,
         headers: headers,
         body: body,
