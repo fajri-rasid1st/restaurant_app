@@ -22,29 +22,29 @@ import 'package:restaurant_app/services/db/restaurant_database.dart';
 import 'package:restaurant_app/services/notifications/local_notification_service.dart';
 import 'package:restaurant_app/services/prefs/restaurant_settings_prefs.dart';
 
-Future<void> bootstrapNotifications() async {
-  // Init Workmanager (harus sebelum runApp)
+Future<void> initNotifications() async {
+  // Init Workmanager
   // await Workmanager().initialize(callbackDispatcher);
 
-  // Init NotificationService (channel, permission, timezone)
-  await LocalNotificationService.instance.initialize(navigatorKey: navigatorKey);
+  // Init LocalNotificationService (channel, permission, timezone)
+  await LocalNotificationService().initialize(navigatorKey: navigatorKey);
 
   // Jika app diluncurkan dari tap notifikasi saat terminated
-  await LocalNotificationService.instance.handleLaunchFromNotificationIfAny();
+  await LocalNotificationService().handleLaunchFromNotificationIfAny();
 }
 
 Future<void> main() async {
   // Memastikan widget Flutter sudah diinisialisasi
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Inisialisasi notifikasi
+  await initNotifications();
+
   // Untuk mencegah orientasi landscape
   SystemChrome.setPreferredOrientations([
     DeviceOrientation.portraitUp,
     DeviceOrientation.portraitDown,
   ]);
-
-  // Inisialisasi notifikasi
-  await bootstrapNotifications();
 
   runApp(
     MultiProvider(

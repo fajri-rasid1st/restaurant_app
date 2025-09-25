@@ -16,11 +16,11 @@ import 'package:restaurant_app/common/routes/route_names.dart';
 
 class LocalNotificationService {
   // Singleton pattern
-  static final LocalNotificationService instance = LocalNotificationService._internal();
+  static final LocalNotificationService _instance = LocalNotificationService._internal();
 
   LocalNotificationService._internal();
 
-  factory LocalNotificationService() => instance;
+  factory LocalNotificationService() => _instance;
 
   // Instance flutter local notifications plugin
   final FlutterLocalNotificationsPlugin _fln = FlutterLocalNotificationsPlugin();
@@ -35,8 +35,8 @@ class LocalNotificationService {
   static const String _channelName = 'Daily Restaurant Reminder';
   static const String _channelDescription = 'Pengingat harian rekomendasi restoran';
 
-  static const String _dailyTaskUniqueName = 'daily-restaurant-reminder';
-  static const String _dailyTaskName = 'daily-restaurant-reminder';
+  static const String dailyTaskUniqueName = 'daily-restaurant-reminder';
+  static const String dailyTaskName = 'daily-restaurant-reminder';
 
   Future<void> initialize({GlobalKey<NavigatorState>? navigatorKey}) async {
     _navigatorKey = navigatorKey;
@@ -48,7 +48,7 @@ class LocalNotificationService {
 
     tz.setLocalLocation(tz.getLocation(timezoneInfo.identifier));
 
-    // Init Android and iOS settings
+    // Init Android dan iOS settings
     const initSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
     const initSettingsIOS = DarwinInitializationSettings();
     const initSettingsNotification = InitializationSettings(
@@ -75,7 +75,7 @@ class LocalNotificationService {
         ?.createNotificationChannel(_channel);
   }
 
-  /// Handle jika app diluncurkan dari tap notifikasi (terminated)
+  /// Handle jika app dibuka saat tap notifikasi (terminated)
   Future<void> handleLaunchFromNotificationIfAny() async {
     final details = await _fln.getNotificationAppLaunchDetails();
 
@@ -86,7 +86,7 @@ class LocalNotificationService {
     }
   }
 
-  /// Callback untuk Android saat app on background.
+  /// **Callback untuk Android saat app on background**
   ///
   /// Navigasi akan diproses saat app kembali ke foreground melalui [handleLaunchFromNotificationIfAny]
   @pragma('vm:entry-point')
@@ -117,9 +117,10 @@ class LocalNotificationService {
     }
   }
 
-  /// Memulai reminder harian [hour]:[minute] (default: 11:00).
+  /// **Memulai reminder harian [hour]:[minute] (default: 11:00)**
   ///
-  /// [interval] dapat digunakan untuk testing, misal. Duration(minutes: 5).
+  /// [interval] khusus digunakan untuk testing, misal. Duration(minutes: 1).
+  /// Biarkan interval bernilai `null` untuk menampilkan reminder tiap pukul 11:00 setiap hari.
   Future<void> enableDailyReminder({
     int hour = 11,
     int minute = 0,
@@ -132,8 +133,8 @@ class LocalNotificationService {
       final initialDelay = _computeInitialDelay(hour, minute);
 
       await Workmanager().registerPeriodicTask(
-        _dailyTaskUniqueName,
-        _dailyTaskName,
+        dailyTaskUniqueName,
+        dailyTaskName,
         initialDelay: initialDelay,
         frequency: Duration(hours: 24),
         constraints: Constraints(
@@ -149,17 +150,17 @@ class LocalNotificationService {
         backoffPolicyDelay: Duration(minutes: 5),
       );
     } else {
-      // Catatan: Android periodic minimal 15 menit
+      // Catatan: Android periodic hanya diperkenankan minimal 15 menit
       if (interval.inMinutes >= 15) {
         await Workmanager().registerPeriodicTask(
-          _dailyTaskUniqueName,
-          _dailyTaskName,
+          dailyTaskUniqueName,
+          dailyTaskName,
           frequency: interval,
           constraints: Constraints(
             networkType: NetworkType.connected,
           ),
           inputData: {
-            'mode': 'dev_periodic',
+            'mode': 'devPeriodic',
             'devMinutes': interval.inMinutes,
           },
           existingWorkPolicy: ExistingPeriodicWorkPolicy.update,
@@ -167,14 +168,14 @@ class LocalNotificationService {
       } else {
         // Jika < 15 menit, gunakan one-off-task.
         await Workmanager().registerOneOffTask(
-          _dailyTaskUniqueName,
-          _dailyTaskName,
+          dailyTaskUniqueName,
+          dailyTaskName,
           initialDelay: interval,
           constraints: Constraints(
             networkType: NetworkType.connected,
           ),
           inputData: {
-            'mode': 'dev_chain',
+            'mode': 'devChain',
             'devMinutes': interval.inMinutes,
           },
           existingWorkPolicy: ExistingWorkPolicy.update,
@@ -184,9 +185,9 @@ class LocalNotificationService {
   }
 
   Future<void> disableDailyReminder() async {
-    await Workmanager().cancelByUniqueName(_dailyTaskUniqueName);
+    await Workmanager().cancelByUniqueName(dailyTaskUniqueName);
 
-    // Batalkan notifikasi yang mungkin tersisa (opsional)
+    // Batalkan notifikasi yang mungkin tersisa
     await _fln.cancelAll();
   }
 

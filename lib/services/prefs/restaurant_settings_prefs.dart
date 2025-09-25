@@ -3,11 +3,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 final class RestaurantSettingsPrefs {
   // Singleton pattern
-  static final RestaurantSettingsPrefs instance = RestaurantSettingsPrefs._internal();
+  static final RestaurantSettingsPrefs _instance = RestaurantSettingsPrefs._internal();
 
   RestaurantSettingsPrefs._internal();
 
-  factory RestaurantSettingsPrefs() => instance;
+  factory RestaurantSettingsPrefs() => _instance;
 
   SharedPreferencesAsync? _prefs;
 
