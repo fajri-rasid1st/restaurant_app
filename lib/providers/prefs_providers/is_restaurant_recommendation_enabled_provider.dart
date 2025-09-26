@@ -4,17 +4,17 @@ import 'package:flutter/foundation.dart';
 // Project imports:
 import 'package:restaurant_app/services/prefs/restaurant_settings_prefs.dart';
 
-class IsDarkModeActivedProvider extends ChangeNotifier {
+class IsRestaurantRecommendationEnabledProvider extends ChangeNotifier {
   final RestaurantSettingsPrefs prefs;
 
-  IsDarkModeActivedProvider(this.prefs);
+  IsRestaurantRecommendationEnabledProvider(this.prefs);
 
   bool _value = false;
 
   bool get value => _value;
 
   Future<bool> loadValue() async {
-    final result = await prefs.getIsDarkModeActived();
+    final result = await prefs.getValue(kRestaurantRecommendationKey);
 
     _value = result;
     notifyListeners();
@@ -27,7 +27,7 @@ class IsDarkModeActivedProvider extends ChangeNotifier {
 
     _value = newValue;
 
-    await prefs.setIsDarkModeActived(newValue);
+    await prefs.setValue(kRestaurantRecommendationKey, newValue);
 
     notifyListeners();
   }

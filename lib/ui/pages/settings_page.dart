@@ -7,8 +7,9 @@ import 'package:provider/provider.dart';
 // Project imports:
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/providers/local_notification_providers/local_notification_provider.dart';
-import 'package:restaurant_app/providers/prefs_providers/is_daily_reminder_actived_provider.dart';
-import 'package:restaurant_app/providers/prefs_providers/is_dark_mode_actived_provider.dart';
+import 'package:restaurant_app/providers/prefs_providers/is_daily_reminder_enabled_provider.dart';
+import 'package:restaurant_app/providers/prefs_providers/is_dark_mode_enabled_provider.dart';
+import 'package:restaurant_app/providers/prefs_providers/is_restaurant_recommendation_enabled_provider.dart';
 import 'package:restaurant_app/services/notifications/work_manager_service.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -39,8 +40,8 @@ class SettingsPage extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Consumer<IsDarkModeActivedProvider>(
-              builder: (context, provider, child) {
+            Consumer<IsDarkModeEnabledProvider>(
+              builder: (context, provider, _) {
                 final isActive = provider.value;
 
                 return buildSwitch(
@@ -52,17 +53,15 @@ class SettingsPage extends StatelessWidget {
                 );
               },
             ),
-            Consumer2<IsDailyReminderActivedProvider, LocalNotificationProvider>(
-              builder: (context, isDailyReminderActivedProvider, localNotificationProvider, child) {
-                final isActive = isDailyReminderActivedProvider.value;
-
+            Consumer2<IsDailyReminderEnabledProvider, LocalNotificationProvider>(
+              builder: (context, isDailyReminderEnabledProvider, localNotificationProvider, _) {
                 return buildSwitch(
                   context: context,
-                  title: 'Notifikasi Restoran',
-                  subtitle: 'Akan muncul setiap pukul 11.00 AM',
-                  value: isActive,
+                  title: 'Daily Reminder',
+                  subtitle: 'Pengingat makan siang tiap pukul 11 AM',
+                  value: isDailyReminderEnabledProvider.value,
                   onChanged: (value) async {
-                    isDailyReminderActivedProvider.setValue(value);
+                    isDailyReminderEnabledProvider.setValue(value);
 
                     if (value) {
                       await localNotificationProvider.requestPermissions();
@@ -70,13 +69,34 @@ class SettingsPage extends StatelessWidget {
                       if (!context.mounted) return;
 
                       if (localNotificationProvider.permission != null && localNotificationProvider.permission!) {
-                        localNotificationProvider.scheduleDailyNotification(11);
-
-                        context.read<WorkmanagerService>().runPeriodicTask(11);
+                        localNotificationProvider.scheduleDailyNotification(14); // ganti sesuai keinginan
                       }
                     } else {
                       localNotificationProvider.cancelNotification(localNotificationProvider.notificationId);
+                    }
+                  },
+                );
+              },
+            ),
+            Consumer2<IsRestaurantRecommendationEnabledProvider, LocalNotificationProvider>(
+              builder: (context, isRestaurantRecommendationEnabledProvider, localNotificationProvider, child) {
+                return buildSwitch(
+                  context: context,
+                  title: 'Notifikasi Rekomendasi Restoran',
+                  subtitle: 'Pemberitahuan rekomendasi restoran tiap beberapa saat',
+                  value: isRestaurantRecommendationEnabledProvider.value,
+                  onChanged: (value) async {
+                    isRestaurantRecommendationEnabledProvider.setValue(value);
 
+                    if (value) {
+                      await localNotificationProvider.requestPermissions();
+
+                      if (!context.mounted) return;
+
+                      if (localNotificationProvider.permission != null && localNotificationProvider.permission!) {
+                        context.read<WorkmanagerService>().runPeriodicTask();
+                      }
+                    } else {
                       context.read<WorkmanagerService>().cancelAllTask();
                     }
                   },

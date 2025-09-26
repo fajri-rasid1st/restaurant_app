@@ -4,17 +4,17 @@ import 'package:flutter/foundation.dart';
 // Project imports:
 import 'package:restaurant_app/services/prefs/restaurant_settings_prefs.dart';
 
-class IsDailyReminderActivedProvider extends ChangeNotifier {
+class IsDarkModeEnabledProvider extends ChangeNotifier {
   final RestaurantSettingsPrefs prefs;
 
-  IsDailyReminderActivedProvider(this.prefs);
+  IsDarkModeEnabledProvider(this.prefs);
 
   bool _value = false;
 
   bool get value => _value;
 
   Future<bool> loadValue() async {
-    final result = await prefs.getIsDailyReminderActived();
+    final result = await prefs.getValue(kDarkModeKey);
 
     _value = result;
     notifyListeners();
@@ -27,7 +27,7 @@ class IsDailyReminderActivedProvider extends ChangeNotifier {
 
     _value = newValue;
 
-    await prefs.setIsDailyReminderActived(newValue);
+    await prefs.setValue(kDarkModeKey, newValue);
 
     notifyListeners();
   }

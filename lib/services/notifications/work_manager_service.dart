@@ -44,15 +44,19 @@ class WorkmanagerService {
   WorkmanagerService([Workmanager? workmanager]) : _workmanager = workmanager ??= Workmanager();
 
   Future<void> init() async {
-    await _workmanager.initialize(callbackDispatcher);
+    await _workmanager.initialize(
+      callbackDispatcher,
+      // ignore: deprecated_member_use
+      isInDebugMode: true,
+    );
   }
 
-  Future<void> runPeriodicTask(int hour) async {
+  Future<void> runPeriodicTask() async {
     await _workmanager.registerPeriodicTask(
       uniqueName,
       taskName,
-      frequency: Duration(minutes: 20),
-      initialDelay: Duration(seconds: 20),
+      frequency: Duration(hours: 3),
+      initialDelay: Duration(minutes: 3),
       constraints: Constraints(
         networkType: NetworkType.connected,
       ),
@@ -61,23 +65,23 @@ class WorkmanagerService {
     );
   }
 
-  Duration calculateInitialDelay(int hour) {
-    final now = DateTime.now();
-    final scheduled = DateTime(now.year, now.month, now.day, hour, 0, 0);
-
-    if (now.isAfter(scheduled)) {
-      // If it's after [hour] today, schedule for [hour] tomorrow
-      final tomorrow = now.add(Duration(days: 1));
-      final hourTomorrow = DateTime(tomorrow.year, tomorrow.month, tomorrow.day, hour, 0, 0);
-
-      return hourTomorrow.difference(now);
-    } else {
-      // If it's before [hour] today, schedule for [hour] today
-      return scheduled.difference(now);
-    }
-  }
-
   Future<void> cancelAllTask() async {
     await _workmanager.cancelAll();
   }
+
+  // Duration calculateInitialDelay(int hour) {
+  //   final now = DateTime.now();
+  //   final scheduled = DateTime(now.year, now.month, now.day, hour, 0, 0);
+
+  //   if (now.isAfter(scheduled)) {
+  //     // If it's after [hour] today, schedule for [hour] tomorrow
+  //     final tomorrow = now.add(Duration(days: 1));
+  //     final hourTomorrow = DateTime(tomorrow.year, tomorrow.month, tomorrow.day, hour, 0, 0);
+
+  //     return hourTomorrow.difference(now);
+  //   } else {
+  //     // If it's before [hour] today, schedule for [hour] today
+  //     return scheduled.difference(now);
+  //   }
+  // }
 }

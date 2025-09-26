@@ -17,8 +17,9 @@ import 'package:restaurant_app/providers/app_providers/search_query_provider.dar
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
 import 'package:restaurant_app/providers/database_providers/restaurant_database_provider.dart';
 import 'package:restaurant_app/providers/local_notification_providers/local_notification_provider.dart';
-import 'package:restaurant_app/providers/prefs_providers/is_daily_reminder_actived_provider.dart';
-import 'package:restaurant_app/providers/prefs_providers/is_dark_mode_actived_provider.dart';
+import 'package:restaurant_app/providers/prefs_providers/is_daily_reminder_enabled_provider.dart';
+import 'package:restaurant_app/providers/prefs_providers/is_dark_mode_enabled_provider.dart';
+import 'package:restaurant_app/providers/prefs_providers/is_restaurant_recommendation_enabled_provider.dart';
 import 'package:restaurant_app/services/api/restaurant_api.dart';
 import 'package:restaurant_app/services/db/restaurant_database.dart';
 import 'package:restaurant_app/services/notifications/local_notification_service.dart';
@@ -90,13 +91,19 @@ Future<void> main() async {
 
         //* Preferences providers
         ChangeNotifierProvider(
-          create: (context) => IsDarkModeActivedProvider(
+          create: (context) => IsDarkModeEnabledProvider(
             context.read<RestaurantSettingsPrefs>(),
           )..loadValue(),
           lazy: false,
         ),
         ChangeNotifierProvider(
-          create: (context) => IsDailyReminderActivedProvider(
+          create: (context) => IsDailyReminderEnabledProvider(
+            context.read<RestaurantSettingsPrefs>(),
+          )..loadValue(),
+          lazy: false,
+        ),
+        ChangeNotifierProvider(
+          create: (context) => IsRestaurantRecommendationEnabledProvider(
             context.read<RestaurantSettingsPrefs>(),
           )..loadValue(),
           lazy: false,
