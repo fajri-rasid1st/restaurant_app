@@ -5,7 +5,7 @@ import 'package:sqflite/sqflite.dart';
 // Project imports:
 import 'package:restaurant_app/models/restaurant_favorite.dart';
 
-final class RestaurantDatabase {
+class RestaurantDatabase {
   // Singleton pattern
   static final RestaurantDatabase _instance = RestaurantDatabase._internal();
 

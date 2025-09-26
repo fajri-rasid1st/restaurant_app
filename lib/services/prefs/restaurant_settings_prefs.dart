@@ -5,7 +5,7 @@ const String kDarkModeKey = 'dark_mode';
 const String kDailyReminderKey = 'daily_reminder';
 const String kRestaurantRecommendationKey = 'restaurant_recommendation';
 
-final class RestaurantSettingsPrefs {
+class RestaurantSettingsPrefs {
   // Singleton pattern
   static final RestaurantSettingsPrefs _instance = RestaurantSettingsPrefs._internal();
 

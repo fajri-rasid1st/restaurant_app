@@ -45,9 +45,7 @@ class WorkmanagerService {
 
   Future<void> init() async {
     await _workmanager.initialize(
-      callbackDispatcher,
-      // ignore: deprecated_member_use
-      isInDebugMode: true,
+      callbackDispatcher
     );
   }
 
@@ -55,8 +53,8 @@ class WorkmanagerService {
     await _workmanager.registerPeriodicTask(
       uniqueName,
       taskName,
-      frequency: Duration(hours: 3),
-      initialDelay: Duration(minutes: 3),
+      frequency: Duration(hours: 1),
+      initialDelay: Duration(minutes: 1),
       constraints: Constraints(
         networkType: NetworkType.connected,
       ),

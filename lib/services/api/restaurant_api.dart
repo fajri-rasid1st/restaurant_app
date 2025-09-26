@@ -9,7 +9,7 @@ import 'package:restaurant_app/common/const/const.dart';
 import 'package:restaurant_app/models/restaurant.dart';
 import 'package:restaurant_app/models/restaurant_detail.dart';
 
-final class RestaurantApi {
+class RestaurantApi {
   // Singleton pattern
   static final RestaurantApi _instance = RestaurantApi._internal();
 
