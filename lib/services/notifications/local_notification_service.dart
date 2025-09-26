@@ -2,6 +2,7 @@
 import 'dart:convert';
 
 // Flutter imports:
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 // Package imports:
@@ -9,10 +10,12 @@ import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_timezone/flutter_timezone.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
-import 'package:workmanager/workmanager.dart';
 
 // Project imports:
 import 'package:restaurant_app/common/routes/route_names.dart';
+
+// Instance of flutter local notifications plugin
+final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 class LocalNotificationService {
   // Singleton pattern
@@ -22,62 +25,114 @@ class LocalNotificationService {
 
   factory LocalNotificationService() => _instance;
 
-  // Instance flutter local notifications plugin
-  final FlutterLocalNotificationsPlugin _fln = FlutterLocalNotificationsPlugin();
-
-  // Android notification channel
-  late AndroidNotificationChannel _channel;
-
   // Navigator key untuk navigasi dari notifikasi
   GlobalKey<NavigatorState>? _navigatorKey;
 
-  static const String _channelId = 'daily_restaurant_channel';
-  static const String _channelName = 'Daily Restaurant Reminder';
-  static const String _channelDescription = 'Pengingat harian rekomendasi restoran';
-
-  static const String dailyTaskUniqueName = 'daily-restaurant-reminder';
-  static const String dailyTaskName = 'daily-restaurant-reminder';
-
+  /// Init Android and iOS settings
   Future<void> initialize({GlobalKey<NavigatorState>? navigatorKey}) async {
     _navigatorKey = navigatorKey;
 
-    // Konfigurasi local timezone
-    tzdata.initializeTimeZones();
-
-    final timezoneInfo = await FlutterTimezone.getLocalTimezone();
-
-    tz.setLocalLocation(tz.getLocation(timezoneInfo.identifier));
-
-    // Init Android dan iOS settings
-    const initSettingsAndroid = AndroidInitializationSettings('@mipmap/ic_launcher');
-    const initSettingsIOS = DarwinInitializationSettings();
-    const initSettingsNotification = InitializationSettings(
-      android: initSettingsAndroid,
-      iOS: initSettingsIOS,
+    const initializationSettingsAndroid = AndroidInitializationSettings(
+      '@mipmap/ic_launcher',
     );
 
-    await _fln.initialize(
-      initSettingsNotification,
-      onDidReceiveNotificationResponse: _onTapForeground,
+    const initializationSettingsDarwin = DarwinInitializationSettings(
+      requestAlertPermission: false,
+      requestBadgePermission: false,
+      requestSoundPermission: false,
+    );
+
+    final initializationSettings = InitializationSettings(
+      android: initializationSettingsAndroid,
+      iOS: initializationSettingsDarwin,
+    );
+
+    await flutterLocalNotificationsPlugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: notificationTapForeground,
       onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
     );
-
-    // Create channel (Android only)
-    _channel = AndroidNotificationChannel(
-      _channelId,
-      _channelName,
-      description: _channelDescription,
-      importance: Importance.max,
-    );
-
-    await _fln
-        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-        ?.createNotificationChannel(_channel);
   }
 
-  /// Handle jika app dibuka saat tap notifikasi (terminated)
+  Future<bool> _isAndroidPermissionGranted() async {
+    return await flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+            ?.areNotificationsEnabled() ??
+        false;
+  }
+
+  Future<bool> _requestAndroidNotificationsPermission() async {
+    return await flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+            ?.requestNotificationsPermission() ??
+        false;
+  }
+
+  Future<bool> _requestExactAlarmsPermission() async {
+    return await flutterLocalNotificationsPlugin
+            .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+            ?.requestExactAlarmsPermission() ??
+        false;
+  }
+
+  Future<bool?> requestPermissions() async {
+    if (defaultTargetPlatform == TargetPlatform.iOS) {
+      final iOSImplementation = flutterLocalNotificationsPlugin
+          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>();
+
+      return await iOSImplementation?.requestPermissions(
+        alert: true,
+        badge: true,
+        sound: true,
+      );
+    } else if (defaultTargetPlatform == TargetPlatform.android) {
+      final notificationEnabled = await _isAndroidPermissionGranted();
+      final requestAlarmEnabled = await _requestExactAlarmsPermission();
+
+      if (!notificationEnabled) {
+        final requestNotificationsPermission = await _requestAndroidNotificationsPermission();
+
+        return requestNotificationsPermission && requestAlarmEnabled;
+      }
+
+      return notificationEnabled && requestAlarmEnabled;
+    } else {
+      return false;
+    }
+  }
+
+  Future<void> showNotification({
+    required int id,
+    required String title,
+    required String body,
+    required String payload,
+  }) async {
+    const androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      '1',
+      'Simple Notification',
+      importance: Importance.max,
+      priority: Priority.high,
+    );
+
+    const iOSPlatformChannelSpecifics = DarwinNotificationDetails();
+
+    final notificationDetails = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+
+    await flutterLocalNotificationsPlugin.show(
+      id,
+      title,
+      body,
+      notificationDetails,
+      payload: payload,
+    );
+  }
+
+  /// Handle jika aplikasi dibuka saat menekan notifikasi
   Future<void> handleLaunchFromNotificationIfAny() async {
-    final details = await _fln.getNotificationAppLaunchDetails();
+    final details = await flutterLocalNotificationsPlugin.getNotificationAppLaunchDetails();
 
     if (details?.didNotificationLaunchApp == true) {
       final payload = details!.notificationResponse?.payload;
@@ -86,26 +141,29 @@ class LocalNotificationService {
     }
   }
 
-  /// **Callback untuk Android saat app on background**
-  ///
-  /// Navigasi akan diproses saat app kembali ke foreground melalui [handleLaunchFromNotificationIfAny]
-  @pragma('vm:entry-point')
-  static void notificationTapBackground(NotificationResponse response) {}
-
-  void _onTapForeground(NotificationResponse response) {
+  void notificationTapForeground(NotificationResponse response) {
     final payload = response.payload;
 
     if (payload != null) _navigateToDetailFromPayload(payload);
   }
 
+  /// **Callback untuk Android saat aplikasi berada di background**
+  ///
+  /// Navigasi akan diproses saat app kembali ke foreground melalui [handleLaunchFromNotificationIfAny]
+  @pragma('vm:entry-point')
+  static void notificationTapBackground(NotificationResponse response) {}
+
   void _navigateToDetailFromPayload(String payload) {
     try {
       final map = jsonDecode(payload) as Map<String, dynamic>;
+      debugPrint(map.toString());
 
-      final id = map['restaurantId']?.toString();
+      final id = map['id']?.toString();
+      debugPrint(id);
       if (id == null) return;
 
       final navigator = _navigatorKey?.currentState;
+      debugPrint((navigator != null).toString());
       if (navigator == null) return;
 
       navigator.pushNamed(
@@ -117,118 +175,67 @@ class LocalNotificationService {
     }
   }
 
-  /// **Memulai reminder harian [hour]:[minute] (default: 11:00)**
-  ///
-  /// [interval] khusus digunakan untuk testing, misal. Duration(minutes: 1).
-  /// Biarkan interval bernilai `null` untuk menampilkan reminder tiap pukul 11:00 setiap hari.
-  Future<void> enableDailyReminder({
-    int hour = 11,
-    int minute = 0,
-    Duration? interval,
-  }) async {
-    // disable first
-    await disableDailyReminder();
-
-    if (interval == null) {
-      final initialDelay = _computeInitialDelay(hour, minute);
-
-      await Workmanager().registerPeriodicTask(
-        dailyTaskUniqueName,
-        dailyTaskName,
-        initialDelay: initialDelay,
-        frequency: Duration(hours: 24),
-        constraints: Constraints(
-          networkType: NetworkType.connected,
-        ),
-        inputData: {
-          'hour': hour,
-          'minute': minute,
-          'mode': 'daily',
-        },
-        existingWorkPolicy: ExistingPeriodicWorkPolicy.update,
-        backoffPolicy: BackoffPolicy.linear,
-        backoffPolicyDelay: Duration(minutes: 5),
-      );
-    } else {
-      // Catatan: Android periodic hanya diperkenankan minimal 15 menit
-      if (interval.inMinutes >= 15) {
-        await Workmanager().registerPeriodicTask(
-          dailyTaskUniqueName,
-          dailyTaskName,
-          frequency: interval,
-          constraints: Constraints(
-            networkType: NetworkType.connected,
-          ),
-          inputData: {
-            'mode': 'devPeriodic',
-            'devMinutes': interval.inMinutes,
-          },
-          existingWorkPolicy: ExistingPeriodicWorkPolicy.update,
-        );
-      } else {
-        // Jika < 15 menit, gunakan one-off-task.
-        await Workmanager().registerOneOffTask(
-          dailyTaskUniqueName,
-          dailyTaskName,
-          initialDelay: interval,
-          constraints: Constraints(
-            networkType: NetworkType.connected,
-          ),
-          inputData: {
-            'mode': 'devChain',
-            'devMinutes': interval.inMinutes,
-          },
-          existingWorkPolicy: ExistingWorkPolicy.update,
-        );
-      }
-    }
+  Future<void> cancelNotification(int id) async {
+    await flutterLocalNotificationsPlugin.cancel(id);
   }
 
-  Future<void> disableDailyReminder() async {
-    await Workmanager().cancelByUniqueName(dailyTaskUniqueName);
+  /// zoned-schedule: configure the local timezone
+  Future<void> configureLocalTimeZone() async {
+    tzdata.initializeTimeZones();
 
-    // Batalkan notifikasi yang mungkin tersisa
-    await _fln.cancelAll();
+    final timezoneInfo = await FlutterTimezone.getLocalTimezone();
+
+    debugPrint("fajri: ${timezoneInfo.identifier}");
+
+    tz.setLocalLocation(tz.getLocation(timezoneInfo.identifier));
   }
 
-  Duration _computeInitialDelay(int hour, int minute) {
+  /// zoned-schedule: set the timer, either today or tommorow at [hour] o'clock.
+  tz.TZDateTime _nextInstanceOfHour(int hour) {
     final now = tz.TZDateTime.now(tz.local);
 
-    var next = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
+    var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour);
 
-    if (!next.isAfter(now)) {
-      next = next.add(Duration(days: 1));
+    if (scheduled.isBefore(now)) {
+      scheduled = scheduled.add(Duration(days: 1));
     }
 
-    return next.difference(now);
+    return scheduled;
   }
 
-  /// Utility untuk menampilkan notifikasi (dipakai di worker).
-  Future<void> showSimpleNotification({
+  /// zoned-schedule: run the schedule daily notification
+  Future<void> scheduleDailyNotification({
     required int id,
     required String title,
     required String body,
     required String payload,
+    int? hour,
   }) async {
-    final androidNotificationDetails = AndroidNotificationDetails(
-      _channelId,
-      _channel.name,
-      channelDescription: _channel.description,
+    const androidPlatformChannelSpecifics = AndroidNotificationDetails(
+      '2',
+      'Scheduled Notification',
       importance: Importance.max,
       priority: Priority.high,
-      styleInformation: BigTextStyleInformation(''),
-    );
-    final iosNotificationDetails = DarwinNotificationDetails();
-    final notificationDetails = NotificationDetails(
-      android: androidNotificationDetails,
-      iOS: iosNotificationDetails,
+      ticker: 'ticker',
     );
 
-    await _fln.show(
+    const iOSPlatformChannelSpecifics = DarwinNotificationDetails();
+
+    final notificationDetails = NotificationDetails(
+      android: androidPlatformChannelSpecifics,
+      iOS: iOSPlatformChannelSpecifics,
+    );
+
+    final datetimeSchedule = _nextInstanceOfHour(hour ?? 11);
+
+    await flutterLocalNotificationsPlugin.zonedSchedule(
       id,
       title,
       body,
+      datetimeSchedule,
       notificationDetails,
+      androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
+      matchDateTimeComponents: DateTimeComponents.time,
       payload: payload,
     );
   }

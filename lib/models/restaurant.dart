@@ -44,6 +44,19 @@ class Restaurant {
     );
   }
 
+  /// Convert object menjadi bentuk json Map
+  Map<String, dynamic> toMap() {
+    return <String, dynamic>{
+      'id': id,
+      'name': name,
+      'description': description,
+      'pictureId': pictureId,
+      'city': city,
+      'rating': rating,
+      'isFavorited': isFavorited,
+    };
+  }
+
   /// Method untuk meng-copy object dengan beberapa field yang diubah
   Restaurant copyWith({
     String? id,

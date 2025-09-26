@@ -6,8 +6,10 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
+import 'package:restaurant_app/providers/local_notification_providers/local_notification_provider.dart';
 import 'package:restaurant_app/providers/prefs_providers/is_daily_reminder_actived_provider.dart';
 import 'package:restaurant_app/providers/prefs_providers/is_dark_mode_actived_provider.dart';
+import 'package:restaurant_app/services/notifications/work_manager_service.dart';
 
 class SettingsPage extends StatelessWidget {
   const SettingsPage({super.key});
@@ -50,16 +52,42 @@ class SettingsPage extends StatelessWidget {
                 );
               },
             ),
-            Consumer<IsDailyReminderActivedProvider>(
-              builder: (context, provider, child) {
-                final isActive = provider.value;
+            Consumer2<IsDailyReminderActivedProvider, LocalNotificationProvider>(
+              builder: (context, provider1, provider2, child) {
+                final isActive = provider1.value;
 
                 return buildSwitch(
                   context: context,
                   title: 'Notifikasi Restoran',
                   subtitle: 'Akan muncul setiap pukul 11.00 AM',
                   value: isActive,
-                  onChanged: (value) => provider.setValue(value),
+                  onChanged: (value) async {
+                    provider1.setValue(value);
+
+                    if (value) {
+                      await provider2.requestPermissions();
+
+                      if (!context.mounted) return;
+
+                      if (provider2.permission != null && provider2.permission!) {
+                        debugPrint("permission granted!!!");
+
+                        provider2.scheduleDailyTenAMNotification();
+                        debugPrint("scheduled notification activated!!!");
+
+                        context.read<WorkmanagerService>().runPeriodicTask();
+                        debugPrint("background notification activated!!!");
+                      } else {
+                        debugPrint("permission restricted!!!");
+                      }
+                    } else {
+                      provider2.cancelNotification(provider2.notificationId);
+                      debugPrint("scheduled notification off!!!");
+
+                      context.read<WorkmanagerService>().cancelAllTask();
+                      debugPrint("background notification off!!!");
+                    }
+                  },
                 );
               },
             ),

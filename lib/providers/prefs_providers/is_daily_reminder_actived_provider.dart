@@ -9,7 +9,7 @@ class IsDailyReminderActivedProvider extends ChangeNotifier {
 
   IsDailyReminderActivedProvider(this.prefs);
 
-  bool _value = true;
+  bool _value = false;
 
   bool get value => _value;
 
@@ -26,8 +26,9 @@ class IsDailyReminderActivedProvider extends ChangeNotifier {
     if (_value == newValue) return;
 
     _value = newValue;
-    notifyListeners();
 
     await prefs.setIsDailyReminderActived(newValue);
+
+    notifyListeners();
   }
 }

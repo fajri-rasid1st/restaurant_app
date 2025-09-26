@@ -26,8 +26,9 @@ class IsDarkModeActivedProvider extends ChangeNotifier {
     if (_value == newValue) return;
 
     _value = newValue;
-    notifyListeners();
 
     await prefs.setIsDarkModeActived(newValue);
+
+    notifyListeners();
   }
 }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
 // Package imports:
+import 'package:flutter_native_splash/flutter_native_splash.dart';
 import 'package:provider/provider.dart';
 
 // Project imports:
@@ -15,30 +16,20 @@ import 'package:restaurant_app/providers/app_providers/nav_bar_index_provider.da
 import 'package:restaurant_app/providers/app_providers/search_query_provider.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
 import 'package:restaurant_app/providers/database_providers/restaurant_database_provider.dart';
+import 'package:restaurant_app/providers/local_notification_providers/local_notification_provider.dart';
 import 'package:restaurant_app/providers/prefs_providers/is_daily_reminder_actived_provider.dart';
 import 'package:restaurant_app/providers/prefs_providers/is_dark_mode_actived_provider.dart';
 import 'package:restaurant_app/services/api/restaurant_api.dart';
 import 'package:restaurant_app/services/db/restaurant_database.dart';
 import 'package:restaurant_app/services/notifications/local_notification_service.dart';
+import 'package:restaurant_app/services/notifications/work_manager_service.dart';
 import 'package:restaurant_app/services/prefs/restaurant_settings_prefs.dart';
-
-Future<void> initNotifications() async {
-  // Init Workmanager
-  // await Workmanager().initialize(callbackDispatcher);
-
-  // Init LocalNotificationService (channel, permission, timezone)
-  await LocalNotificationService().initialize(navigatorKey: navigatorKey);
-
-  // Jika app diluncurkan dari tap notifikasi saat terminated
-  await LocalNotificationService().handleLaunchFromNotificationIfAny();
-}
 
 Future<void> main() async {
   // Memastikan widget Flutter sudah diinisialisasi
-  WidgetsFlutterBinding.ensureInitialized();
+  WidgetsBinding widgetsBinding = WidgetsFlutterBinding.ensureInitialized();
 
-  // Inisialisasi notifikasi
-  await initNotifications();
+  FlutterNativeSplash.preserve(widgetsBinding: widgetsBinding);
 
   // Untuk mencegah orientasi landscape
   SystemChrome.setPreferredOrientations([
@@ -50,6 +41,13 @@ Future<void> main() async {
     MultiProvider(
       providers: [
         //* Service providers
+        Provider(
+          create: (_) => LocalNotificationService()
+            ..initialize(navigatorKey: navigatorKey)
+            ..configureLocalTimeZone()
+            ..handleLaunchFromNotificationIfAny().then((_) => FlutterNativeSplash.remove()),
+          lazy: false,
+        ),
         Provider(
           create: (_) => RestaurantSettingsPrefs(),
         ),
@@ -75,6 +73,17 @@ Future<void> main() async {
         ),
         ChangeNotifierProvider(
           create: (_) => SelectedCategoryProvider(),
+        ),
+
+        //* Local notification providers
+        ChangeNotifierProvider(
+          create: (context) => LocalNotificationProvider(
+            context.read<LocalNotificationService>(),
+          ),
+        ),
+        Provider(
+          create: (_) => WorkmanagerService()..init(),
+          lazy: false,
         ),
 
         //* Preferences providers
