@@ -49,8 +49,8 @@ class LocalNotificationService {
 
     await flutterLocalNotificationsPlugin.initialize(
       initializationSettings,
-      onDidReceiveNotificationResponse: notificationTapForeground,
-      onDidReceiveBackgroundNotificationResponse: notificationTapBackground,
+      onDidReceiveNotificationResponse: notificationOnTapLaunchApp,
+      // onDidReceiveBackgroundNotificationResponse: notificationOnTapBackground,
     );
   }
 
@@ -141,29 +141,26 @@ class LocalNotificationService {
     }
   }
 
-  void notificationTapForeground(NotificationResponse response) {
+  void notificationOnTapLaunchApp(NotificationResponse response) {
     final payload = response.payload;
 
     if (payload != null) _navigateToDetailFromPayload(payload);
   }
 
-  /// **Callback untuk Android saat aplikasi berada di background**
-  ///
-  /// Navigasi akan diproses saat app kembali ke foreground melalui [handleLaunchFromNotificationIfAny]
-  @pragma('vm:entry-point')
-  static void notificationTapBackground(NotificationResponse response) {}
+  // /// **Callback untuk Android saat aplikasi berada di background**
+  // ///
+  // /// Navigasi akan diproses saat app kembali ke foreground melalui [handleLaunchFromNotificationIfAny]
+  // @pragma('vm:entry-point')
+  // static void notificationOnTapBackground(NotificationResponse response) {}
 
   void _navigateToDetailFromPayload(String payload) {
     try {
       final map = jsonDecode(payload) as Map<String, dynamic>;
-      debugPrint(map.toString());
 
       final id = map['id']?.toString();
-      debugPrint(id);
       if (id == null) return;
 
       final navigator = _navigatorKey?.currentState;
-      debugPrint((navigator != null).toString());
       if (navigator == null) return;
 
       navigator.pushNamed(
@@ -184,8 +181,6 @@ class LocalNotificationService {
     tzdata.initializeTimeZones();
 
     final timezoneInfo = await FlutterTimezone.getLocalTimezone();
-
-    debugPrint("fajri: ${timezoneInfo.identifier}");
 
     tz.setLocalLocation(tz.getLocation(timezoneInfo.identifier));
   }
@@ -226,7 +221,7 @@ class LocalNotificationService {
       iOS: iOSPlatformChannelSpecifics,
     );
 
-    final datetimeSchedule = _nextInstanceOfHour(hour ?? 11);
+    final datetimeSchedule = _nextInstanceOfHour(hour ?? 11); // default to 11:00 AM
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       id,

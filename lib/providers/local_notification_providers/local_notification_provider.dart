@@ -1,6 +1,3 @@
-// Dart imports:
-import 'dart:convert';
-
 // Flutter imports:
 import 'package:flutter/widgets.dart';
 
@@ -23,15 +20,15 @@ class LocalNotificationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> scheduleDailyTenAMNotification() async {
+  Future<void> scheduleDailyNotification(int? hour) async {
     _notificationId += 1;
 
     await localNotificationService.scheduleDailyNotification(
       id: _notificationId,
-      title: "Waktunya makan siang⏰",
-      body: "Cek restoran yang sesuai keinginanmu!",
-      payload: jsonEncode({"id": "rqdv5juczeskfw1e867"}),
-      hour: 10,
+      title: 'Waktunya makan siang ⏰',
+      body: 'Cek restoran yang sesuai keinginanmu!',
+      payload: '',
+      hour: hour,
     );
   }
 

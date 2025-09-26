@@ -28,8 +28,8 @@ void callbackDispatcher() {
 
       await localNotificationService.showNotification(
         id: randIndex,
-        title: 'Waktunya makan siang⏰',
-        body: 'Anda mungkin tertarik dengan restoran ${restaurant.name}',
+        title: 'Waktunya makan siang ⏰',
+        body: 'Anda mungkin tertarik dengan restoran "${restaurant.name}"',
         payload: jsonEncode(restaurant.toMap()),
       );
     }
@@ -47,13 +47,12 @@ class WorkmanagerService {
     await _workmanager.initialize(callbackDispatcher);
   }
 
-  Future<void> runPeriodicTask() async {
-    // this task will run every 24 hours
+  Future<void> runPeriodicTask(int hour) async {
     await _workmanager.registerPeriodicTask(
       uniqueName,
       taskName,
-      frequency: Duration(minutes: 15),
-      initialDelay: Duration(seconds: 15),
+      frequency: Duration(minutes: 20),
+      initialDelay: Duration(seconds: 20),
       constraints: Constraints(
         networkType: NetworkType.connected,
       ),

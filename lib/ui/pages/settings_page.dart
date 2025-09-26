@@ -53,8 +53,8 @@ class SettingsPage extends StatelessWidget {
               },
             ),
             Consumer2<IsDailyReminderActivedProvider, LocalNotificationProvider>(
-              builder: (context, provider1, provider2, child) {
-                final isActive = provider1.value;
+              builder: (context, isDailyReminderActivedProvider, localNotificationProvider, child) {
+                final isActive = isDailyReminderActivedProvider.value;
 
                 return buildSwitch(
                   context: context,
@@ -62,30 +62,22 @@ class SettingsPage extends StatelessWidget {
                   subtitle: 'Akan muncul setiap pukul 11.00 AM',
                   value: isActive,
                   onChanged: (value) async {
-                    provider1.setValue(value);
+                    isDailyReminderActivedProvider.setValue(value);
 
                     if (value) {
-                      await provider2.requestPermissions();
+                      await localNotificationProvider.requestPermissions();
 
                       if (!context.mounted) return;
 
-                      if (provider2.permission != null && provider2.permission!) {
-                        debugPrint("permission granted!!!");
+                      if (localNotificationProvider.permission != null && localNotificationProvider.permission!) {
+                        localNotificationProvider.scheduleDailyNotification(11);
 
-                        provider2.scheduleDailyTenAMNotification();
-                        debugPrint("scheduled notification activated!!!");
-
-                        context.read<WorkmanagerService>().runPeriodicTask();
-                        debugPrint("background notification activated!!!");
-                      } else {
-                        debugPrint("permission restricted!!!");
+                        context.read<WorkmanagerService>().runPeriodicTask(11);
                       }
                     } else {
-                      provider2.cancelNotification(provider2.notificationId);
-                      debugPrint("scheduled notification off!!!");
+                      localNotificationProvider.cancelNotification(localNotificationProvider.notificationId);
 
                       context.read<WorkmanagerService>().cancelAllTask();
-                      debugPrint("background notification off!!!");
                     }
                   },
                 );

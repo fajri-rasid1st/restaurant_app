@@ -45,7 +45,13 @@ Future<void> main() async {
           create: (_) => LocalNotificationService()
             ..initialize(navigatorKey: navigatorKey)
             ..configureLocalTimeZone()
-            ..handleLaunchFromNotificationIfAny().then((_) => FlutterNativeSplash.remove()),
+            ..handleLaunchFromNotificationIfAny().then((_) {
+              FlutterNativeSplash.remove();
+            }),
+          lazy: false,
+        ),
+        Provider(
+          create: (_) => WorkmanagerService()..init(),
           lazy: false,
         ),
         Provider(
@@ -80,10 +86,6 @@ Future<void> main() async {
           create: (context) => LocalNotificationProvider(
             context.read<LocalNotificationService>(),
           ),
-        ),
-        Provider(
-          create: (_) => WorkmanagerService()..init(),
-          lazy: false,
         ),
 
         //* Preferences providers
