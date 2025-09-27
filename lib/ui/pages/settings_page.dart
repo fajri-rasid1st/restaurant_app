@@ -58,7 +58,7 @@ class SettingsPage extends StatelessWidget {
                 return buildSwitch(
                   context: context,
                   title: 'Daily Reminder',
-                  subtitle: 'Pengingat makan siang tiap pukul 11 AM',
+                  subtitle: 'Pengingat makan siang tiap pukul 11:00 AM',
                   value: isDailyReminderEnabledProvider.value,
                   onChanged: (value) async {
                     isDailyReminderEnabledProvider.setValue(value);
@@ -69,7 +69,7 @@ class SettingsPage extends StatelessWidget {
                       if (!context.mounted) return;
 
                       if (localNotificationProvider.permission != null && localNotificationProvider.permission!) {
-                        localNotificationProvider.scheduleDailyNotification(11); // ganti sesuai keinginan
+                        localNotificationProvider.scheduleDailyNotification(11, 0); // change this
                       }
                     } else {
                       localNotificationProvider.cancelNotification(localNotificationProvider.notificationId);
@@ -83,7 +83,7 @@ class SettingsPage extends StatelessWidget {
                 return buildSwitch(
                   context: context,
                   title: 'Notifikasi Rekomendasi Restoran',
-                  subtitle: 'Pemberitahuan rekomendasi restoran tiap beberapa saat',
+                  subtitle: 'Muncul tiap satu jam setelah pengingat makan siang',
                   value: isRestaurantRecommendationEnabledProvider.value,
                   onChanged: (value) async {
                     isRestaurantRecommendationEnabledProvider.setValue(value);

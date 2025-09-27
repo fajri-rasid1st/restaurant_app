@@ -1,0 +1,1 @@
+-dontwarn dev.fluttercommunity.workmanager.WorkmanagerPlugin

@@ -329,6 +329,7 @@ class DetailPage extends StatelessWidget {
                         arguments: {
                           'id': restaurantDetail.id,
                           'name': restaurantDetail.name,
+                          'detailProvider': context.read<RestaurantDetailProvider>(),
                         },
                       ),
                     ),

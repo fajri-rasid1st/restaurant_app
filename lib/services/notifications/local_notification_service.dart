@@ -108,7 +108,7 @@ class LocalNotificationService {
     required String payload,
   }) async {
     const androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      '1',
+      '100',
       'Simple Notification',
       importance: Importance.max,
       priority: Priority.high,
@@ -185,11 +185,11 @@ class LocalNotificationService {
     tz.setLocalLocation(tz.getLocation(timezoneInfo.identifier));
   }
 
-  /// zoned-schedule: set the timer, either today or tommorow at [hour] o'clock.
-  tz.TZDateTime _nextInstanceOfHour(int hour) {
+  /// zoned-schedule: set the timer, either today or tommorow at [hour]:[minute] o'clock.
+  tz.TZDateTime _nextInstanceOfHour(int hour, int minute) {
     final now = tz.TZDateTime.now(tz.local);
 
-    var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour);
+    var scheduled = tz.TZDateTime(tz.local, now.year, now.month, now.day, hour, minute);
 
     if (scheduled.isBefore(now)) {
       scheduled = scheduled.add(Duration(days: 1));
@@ -205,9 +205,10 @@ class LocalNotificationService {
     required String body,
     required String payload,
     int? hour,
+    int? minute,
   }) async {
     const androidPlatformChannelSpecifics = AndroidNotificationDetails(
-      '2',
+      '200',
       'Scheduled Notification',
       importance: Importance.max,
       priority: Priority.high,
@@ -221,17 +222,17 @@ class LocalNotificationService {
       iOS: iOSPlatformChannelSpecifics,
     );
 
-    final datetimeSchedule = _nextInstanceOfHour(hour ?? 11); // default to 11:00 AM
+    final scheduledDate = _nextInstanceOfHour(hour ?? 11, minute ?? 0); // default to 11:00 AM
 
     await flutterLocalNotificationsPlugin.zonedSchedule(
       id,
       title,
       body,
-      datetimeSchedule,
+      scheduledDate,
       notificationDetails,
+      payload: payload,
       androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
       matchDateTimeComponents: DateTimeComponents.time,
-      payload: payload,
     );
   }
 }

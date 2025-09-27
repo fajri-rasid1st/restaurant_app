@@ -44,17 +44,15 @@ class WorkmanagerService {
   WorkmanagerService([Workmanager? workmanager]) : _workmanager = workmanager ??= Workmanager();
 
   Future<void> init() async {
-    await _workmanager.initialize(
-      callbackDispatcher
-    );
+    await _workmanager.initialize(callbackDispatcher);
   }
 
   Future<void> runPeriodicTask() async {
     await _workmanager.registerPeriodicTask(
       uniqueName,
       taskName,
-      frequency: Duration(hours: 1),
-      initialDelay: Duration(minutes: 1),
+      frequency: Duration(minutes: 60),
+      initialDelay: calculateInitialDelay(11, 0), // change this
       constraints: Constraints(
         networkType: NetworkType.connected,
       ),
@@ -67,19 +65,19 @@ class WorkmanagerService {
     await _workmanager.cancelAll();
   }
 
-  // Duration calculateInitialDelay(int hour) {
-  //   final now = DateTime.now();
-  //   final scheduled = DateTime(now.year, now.month, now.day, hour, 0, 0);
+  Duration calculateInitialDelay(int hour, int minute) {
+    final now = DateTime.now();
+    final scheduled = DateTime(now.year, now.month, now.day, hour, minute);
 
-  //   if (now.isAfter(scheduled)) {
-  //     // If it's after [hour] today, schedule for [hour] tomorrow
-  //     final tomorrow = now.add(Duration(days: 1));
-  //     final hourTomorrow = DateTime(tomorrow.year, tomorrow.month, tomorrow.day, hour, 0, 0);
+    if (now.isAfter(scheduled)) {
+      // If it's after [hour]:[minute] today, schedule for [hour]:[minute] tomorrow
+      final tomorrow = now.add(Duration(days: 1));
+      final hourTomorrow = DateTime(tomorrow.year, tomorrow.month, tomorrow.day, hour, minute);
 
-  //     return hourTomorrow.difference(now);
-  //   } else {
-  //     // If it's before [hour] today, schedule for [hour] today
-  //     return scheduled.difference(now);
-  //   }
-  // }
+      return hourTomorrow.difference(now);
+    } else {
+      // If it's before [hour]:[minute] today, schedule for [hour]:[minute] today
+      return scheduled.difference(now);
+    }
+  }
 }

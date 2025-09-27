@@ -25,10 +25,10 @@ Route<dynamic>? generateAppRoutes(RouteSettings settings) {
           create: (context) => RestaurantDetailProvider(
             apiService: context.read<RestaurantApi>(),
             databaseService: context.read<RestaurantDatabase>(),
-          )..getRestaurantDetail(args['id']),
+          )..getRestaurantDetail(args['id'] as String),
           child: DetailPage(
-            restaurantId: args['id'],
-            heroTag: args['id'],
+            restaurantId: args['id'] as String,
+            heroTag: args['id'] as String,
           ),
         ),
       );
@@ -38,10 +38,10 @@ Route<dynamic>? generateAppRoutes(RouteSettings settings) {
 
       return MaterialPageRoute(
         builder: (context) => ChangeNotifierProvider.value(
-          value: context.read<RestaurantDetailProvider>(),
+          value: args['detailProvider'] as RestaurantDetailProvider,
           child: ReviewFormPage(
-            restaurantId: args['id'],
-            restaurantName: args['name'],
+            restaurantId: args['id'] as String,
+            restaurantName: args['name'] as String,
           ),
         ),
       );

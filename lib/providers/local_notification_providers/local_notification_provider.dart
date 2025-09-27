@@ -20,7 +20,7 @@ class LocalNotificationProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> scheduleDailyNotification(int? hour) async {
+  Future<void> scheduleDailyNotification([int? hour, int? minute]) async {
     _notificationId += 1;
 
     await localNotificationService.scheduleDailyNotification(
@@ -29,6 +29,7 @@ class LocalNotificationProvider extends ChangeNotifier {
       body: 'Cek restoran yang sesuai keinginanmu!',
       payload: '',
       hour: hour,
+      minute: minute,
     );
   }
 
