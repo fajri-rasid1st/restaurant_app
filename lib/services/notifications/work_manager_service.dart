@@ -51,8 +51,8 @@ class WorkmanagerService {
     await _workmanager.registerPeriodicTask(
       uniqueName,
       taskName,
-      frequency: Duration(minutes: 60),
-      initialDelay: calculateInitialDelay(11, 0), // change this
+      frequency: Duration(minutes: 180),
+      initialDelay: calculateInitialDelay(),
       constraints: Constraints(
         networkType: NetworkType.connected,
       ),
@@ -65,7 +65,7 @@ class WorkmanagerService {
     await _workmanager.cancelAll();
   }
 
-  Duration calculateInitialDelay(int hour, int minute) {
+  Duration calculateInitialDelay({int hour = 11, int minute = 0}) {
     final now = DateTime.now();
     final scheduled = DateTime(now.year, now.month, now.day, hour, minute);
 

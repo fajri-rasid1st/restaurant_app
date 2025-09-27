@@ -69,7 +69,7 @@ class SettingsPage extends StatelessWidget {
                       if (!context.mounted) return;
 
                       if (localNotificationProvider.permission != null && localNotificationProvider.permission!) {
-                        localNotificationProvider.scheduleDailyNotification(11, 0); // change this
+                        localNotificationProvider.scheduleDailyNotification();
                       }
                     } else {
                       localNotificationProvider.cancelNotification(localNotificationProvider.notificationId);
