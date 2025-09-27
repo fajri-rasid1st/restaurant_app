@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:restaurant_app/common/theme/color_scheme.dart';
 import 'package:restaurant_app/common/theme/text_theme.dart';
 
-final ThemeData lightTheme = ThemeData(
+final lightTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.light,
   colorScheme: lightColorScheme,
@@ -16,7 +16,7 @@ final ThemeData lightTheme = ThemeData(
   ),
 );
 
-final ThemeData darkTheme = ThemeData(
+final darkTheme = ThemeData(
   useMaterial3: true,
   brightness: Brightness.dark,
   colorScheme: darkColorScheme,

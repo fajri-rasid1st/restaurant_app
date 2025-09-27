@@ -17,7 +17,7 @@ import 'package:restaurant_app/models/restaurant_detail.dart';
 import 'package:restaurant_app/models/restaurant_favorite.dart';
 import 'package:restaurant_app/providers/api_providers/restaurant_detail_provider.dart';
 import 'package:restaurant_app/providers/api_providers/restaurants_provider.dart';
-import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
+import 'package:restaurant_app/providers/app_providers/page_reload_provider.dart';
 import 'package:restaurant_app/providers/database_providers/restaurant_database_provider.dart';
 import 'package:restaurant_app/ui/pages/error_page.dart';
 import 'package:restaurant_app/ui/pages/loading_page.dart';
@@ -65,7 +65,7 @@ class DetailPage extends StatelessWidget {
     return ScaffoldSafeArea(
       backgroundColor: Theme.of(context).colorScheme.onSurface,
       body: NestedScrollView(
-        headerSliverBuilder: (_, innerBoxIsScrolled) {
+        headerSliverBuilder: (_, _) {
           return [
             SliverLayoutBuilder(
               builder: (_, constraints) {
@@ -383,7 +383,7 @@ class DetailPage extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: 12),
         itemCount: items.length,
-        itemBuilder: (_, index) {
+        itemBuilder: (context, index) {
           return ItemMenuCard(
             item: items[index],
             isFood: isFood,
@@ -428,7 +428,7 @@ class DetailPage extends StatelessWidget {
     BuildContext context,
     String restaurantId,
   ) {
-    context.read<IsReloadProvider>().value = true;
+    context.read<PageReloadProvider>().value = true;
 
     Future.wait([
           Future.delayed(Duration(milliseconds: 500)),
@@ -437,12 +437,12 @@ class DetailPage extends StatelessWidget {
         .then((_) {
           if (!context.mounted) return;
 
-          context.read<IsReloadProvider>().value = false;
+          context.read<PageReloadProvider>().value = false;
         })
         .catchError((_) {
           if (!context.mounted) return;
 
-          context.read<IsReloadProvider>().value = false;
+          context.read<PageReloadProvider>().value = false;
         });
   }
 

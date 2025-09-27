@@ -2,7 +2,7 @@
 import 'package:flutter/foundation.dart';
 
 /// Provider untuk mengatur state kondisi pencarian
-class IsSearchingProvider extends ChangeNotifier {
+class SearchConditionProvider extends ChangeNotifier {
   bool _value = false;
 
   bool get value => _value;

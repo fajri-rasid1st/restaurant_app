@@ -47,9 +47,9 @@ class RestaurantDetailProvider extends ChangeNotifier {
       _message = 'Gagal memuat detail restoran. Silahkan coba lagi.';
 
       _state = ResultState.error;
+    } finally {
+      notifyListeners();
     }
-
-    notifyListeners();
   }
 
   /// Mengirim data review restaurant
@@ -72,8 +72,8 @@ class RestaurantDetailProvider extends ChangeNotifier {
       _message = 'Berhasil mengirim review';
     } catch (e) {
       _message = 'Gagal mengirim review. Silahkan coba lagi.';
+    } finally {
+      notifyListeners();
     }
-
-    notifyListeners();
   }
 }

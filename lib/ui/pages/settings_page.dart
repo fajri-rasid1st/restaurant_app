@@ -7,9 +7,9 @@ import 'package:provider/provider.dart';
 // Project imports:
 import 'package:restaurant_app/common/extensions/text_style_extension.dart';
 import 'package:restaurant_app/providers/local_notification_providers/local_notification_provider.dart';
-import 'package:restaurant_app/providers/prefs_providers/is_daily_reminder_enabled_provider.dart';
-import 'package:restaurant_app/providers/prefs_providers/is_dark_mode_enabled_provider.dart';
-import 'package:restaurant_app/providers/prefs_providers/is_restaurant_recommendation_enabled_provider.dart';
+import 'package:restaurant_app/providers/prefs_providers/daily_reminder_provider.dart';
+import 'package:restaurant_app/providers/prefs_providers/dark_mode_provider.dart';
+import 'package:restaurant_app/providers/prefs_providers/restaurant_recommendation_provider.dart';
 import 'package:restaurant_app/services/notifications/work_manager_service.dart';
 
 class SettingsPage extends StatelessWidget {
@@ -40,8 +40,8 @@ class SettingsPage extends StatelessWidget {
         ),
         child: Column(
           children: [
-            Consumer<IsDarkModeEnabledProvider>(
-              builder: (context, provider, _) {
+            Consumer<DarkModeProvider>(
+              builder: (context, provider, child) {
                 final isActive = provider.value;
 
                 return buildSwitch(
@@ -53,15 +53,15 @@ class SettingsPage extends StatelessWidget {
                 );
               },
             ),
-            Consumer2<IsDailyReminderEnabledProvider, LocalNotificationProvider>(
-              builder: (context, isDailyReminderEnabledProvider, localNotificationProvider, _) {
+            Consumer2<DailyReminderProvider, LocalNotificationProvider>(
+              builder: (context, dailyReminderProvider, localNotificationProvider, child) {
                 return buildSwitch(
                   context: context,
                   title: 'Daily Reminder',
                   subtitle: 'Pengingat makan siang tiap pukul 11:00 AM',
-                  value: isDailyReminderEnabledProvider.value,
+                  value: dailyReminderProvider.value,
                   onChanged: (value) async {
-                    isDailyReminderEnabledProvider.setValue(value);
+                    dailyReminderProvider.setValue(value);
 
                     if (value) {
                       await localNotificationProvider.requestPermissions();
@@ -78,15 +78,15 @@ class SettingsPage extends StatelessWidget {
                 );
               },
             ),
-            Consumer2<IsRestaurantRecommendationEnabledProvider, LocalNotificationProvider>(
-              builder: (context, isRestaurantRecommendationEnabledProvider, localNotificationProvider, child) {
+            Consumer2<RestaurantRecommendationProvider, LocalNotificationProvider>(
+              builder: (context, restaurantRecommendationProvider, localNotificationProvider, child) {
                 return buildSwitch(
                   context: context,
                   title: 'Notifikasi Rekomendasi Restoran',
                   subtitle: 'Muncul tiap satu jam setelah pengingat makan siang',
-                  value: isRestaurantRecommendationEnabledProvider.value,
+                  value: restaurantRecommendationProvider.value,
                   onChanged: (value) async {
-                    isRestaurantRecommendationEnabledProvider.setValue(value);
+                    restaurantRecommendationProvider.setValue(value);
 
                     if (value) {
                       await localNotificationProvider.requestPermissions();

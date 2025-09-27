@@ -16,8 +16,8 @@ import 'package:restaurant_app/common/utilities/utilities.dart';
 import 'package:restaurant_app/models/restaurant.dart';
 import 'package:restaurant_app/models/restaurant_favorite.dart';
 import 'package:restaurant_app/providers/api_providers/restaurants_provider.dart';
-import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
-import 'package:restaurant_app/providers/app_providers/is_searching_provider.dart';
+import 'package:restaurant_app/providers/app_providers/page_reload_provider.dart';
+import 'package:restaurant_app/providers/app_providers/search_condition_provider.dart';
 import 'package:restaurant_app/providers/app_providers/search_query_provider.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
 import 'package:restaurant_app/providers/database_providers/restaurant_database_provider.dart';
@@ -33,7 +33,7 @@ class DiscoverPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<IsSearchingProvider>(
+    return Consumer<SearchConditionProvider>(
       builder: (context, provider, child) {
         final isSearching = provider.value;
 
@@ -43,7 +43,7 @@ class DiscoverPage extends StatelessWidget {
             if (didPop) return;
 
             if (isSearching) {
-              context.read<IsSearchingProvider>().value = false;
+              context.read<SearchConditionProvider>().value = false;
               context.read<SearchQueryProvider>().value = '';
               context.read<RestaurantsProvider>().getRestaurants();
             }
@@ -134,7 +134,7 @@ class _DiscoverMainWidget extends StatelessWidget {
     return isSearching
         ? IconButton(
             onPressed: () {
-              context.read<IsSearchingProvider>().value = false;
+              context.read<SearchConditionProvider>().value = false;
               context.read<SearchQueryProvider>().value = '';
               context.read<RestaurantsProvider>().getRestaurants();
             },
@@ -161,7 +161,7 @@ class _DiscoverMainWidget extends StatelessWidget {
           onPressed: state == ResultState.error
               ? null
               : () {
-                  context.read<IsSearchingProvider>().value = true;
+                  context.read<SearchConditionProvider>().value = true;
                   context.read<SelectedCategoryProvider>().value = RestaurantCategory.all;
                   context.read<RestaurantsProvider>().getRestaurants();
                 },
@@ -224,7 +224,7 @@ class _DiscoverMainWidget extends StatelessWidget {
     BuildContext context,
     String query,
   ) {
-    context.read<IsReloadProvider>().value = true;
+    context.read<PageReloadProvider>().value = true;
 
     Future.wait([
           Future.delayed(Duration(milliseconds: 500)),
@@ -233,12 +233,12 @@ class _DiscoverMainWidget extends StatelessWidget {
         .then((_) {
           if (!context.mounted) return;
 
-          context.read<IsReloadProvider>().value = false;
+          context.read<PageReloadProvider>().value = false;
         })
         .catchError((_) {
           if (!context.mounted) return;
 
-          context.read<IsReloadProvider>().value = false;
+          context.read<PageReloadProvider>().value = false;
         });
   }
 }

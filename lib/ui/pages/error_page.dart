@@ -6,7 +6,7 @@ import 'package:provider/provider.dart';
 
 // Project imports:
 import 'package:restaurant_app/common/utilities/asset_path.dart';
-import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
+import 'package:restaurant_app/providers/app_providers/page_reload_provider.dart';
 import 'package:restaurant_app/ui/widgets/custom_information.dart';
 
 class ErrorPage extends StatelessWidget {
@@ -27,7 +27,7 @@ class ErrorPage extends StatelessWidget {
           assetName: AssetPath.getVector('404_error_lost_in_space_cuate.svg'),
           title: 'Gagal Memuat Data',
           subtitle: message,
-          child: Consumer<IsReloadProvider>(
+          child: Consumer<PageReloadProvider>(
             builder: (context, provider, child) {
               final isReload = provider.value;
 

@@ -15,7 +15,7 @@ import 'package:timezone/timezone.dart' as tz;
 import 'package:restaurant_app/common/routes/route_names.dart';
 
 // Instance of flutter local notifications plugin
-final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+final flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
 
 class LocalNotificationService {
   // Singleton pattern

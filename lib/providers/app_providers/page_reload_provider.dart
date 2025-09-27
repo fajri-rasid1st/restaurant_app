@@ -2,7 +2,7 @@
 import 'package:flutter/foundation.dart';
 
 /// Provider untuk mengatur state reload halaman
-class IsReloadProvider extends ChangeNotifier {
+class PageReloadProvider extends ChangeNotifier {
   bool _value = false;
 
   bool get value => _value;

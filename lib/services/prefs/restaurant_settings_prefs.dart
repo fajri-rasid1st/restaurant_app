@@ -1,9 +1,9 @@
 // Package imports:
 import 'package:shared_preferences/shared_preferences.dart';
 
-const String kDarkModeKey = 'dark_mode';
-const String kDailyReminderKey = 'daily_reminder';
-const String kRestaurantRecommendationKey = 'restaurant_recommendation';
+const kDarkModeKey = 'dark_mode';
+const kDailyReminderKey = 'daily_reminder';
+const kRestaurantRecommendationKey = 'restaurant_recommendation';
 
 class RestaurantSettingsPrefs {
   // Singleton pattern

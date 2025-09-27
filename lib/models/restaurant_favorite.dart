@@ -2,17 +2,17 @@
 import 'package:restaurant_app/models/restaurant.dart';
 
 /// Nama tabel pada database
-const String favoriteTable = 'favorite_table';
+const favoriteTable = 'favorite_table';
 
 class FavoriteFields {
-  static const String id = '_id';
-  static const String restaurantId = 'restaurantId';
-  static const String name = 'name';
-  static const String description = 'description';
-  static const String pictureId = 'pictureId';
-  static const String city = 'city';
-  static const String rating = 'rating';
-  static const String createdAt = 'createdAt';
+  static const id = '_id';
+  static const restaurantId = 'restaurantId';
+  static const name = 'name';
+  static const description = 'description';
+  static const pictureId = 'pictureId';
+  static const city = 'city';
+  static const rating = 'rating';
+  static const createdAt = 'createdAt';
 }
 
 /// Model untuk restoran favorite yang disimpan di database

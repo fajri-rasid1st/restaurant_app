@@ -17,8 +17,8 @@ class RestaurantDatabase {
 
   Future<Database> get database async => _database ??= await _initDb();
 
-  static const String _dbName = 'restaurant_database.db';
-  static const int _dbVersion = 1;
+  static const _dbName = 'restaurant_database.db';
+  static const _dbVersion = 1;
 
   /// Inisialisasi, membuat, dan membuka database.
   Future<Database> _initDb() async {

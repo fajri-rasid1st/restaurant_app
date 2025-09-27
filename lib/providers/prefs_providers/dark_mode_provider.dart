@@ -4,10 +4,10 @@ import 'package:flutter/foundation.dart';
 // Project imports:
 import 'package:restaurant_app/services/prefs/restaurant_settings_prefs.dart';
 
-class IsDarkModeEnabledProvider extends ChangeNotifier {
+class DarkModeProvider extends ChangeNotifier {
   final RestaurantSettingsPrefs prefs;
 
-  IsDarkModeEnabledProvider(this.prefs);
+  DarkModeProvider(this.prefs);
 
   bool _value = false;
 

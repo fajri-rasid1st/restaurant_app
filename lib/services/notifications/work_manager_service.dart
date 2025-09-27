@@ -10,8 +10,8 @@ import 'package:restaurant_app/common/utilities/navigator_key.dart';
 import 'package:restaurant_app/services/api/restaurant_api.dart';
 import 'package:restaurant_app/services/notifications/local_notification_service.dart';
 
-const String uniqueName = "com.example.restaurant_app";
-const String taskName = "notificationTask";
+const uniqueName = "com.example.restaurant_app";
+const taskName = "notificationTask";
 
 @pragma('vm:entry-point')
 void callbackDispatcher() {

@@ -51,8 +51,8 @@ class RestaurantsProvider extends ChangeNotifier {
       _message = 'Gagal memuat daftar restoran. Silahkan coba lagi.';
 
       _state = ResultState.error;
+    } finally {
+      notifyListeners();
     }
-
-    notifyListeners();
   }
 }

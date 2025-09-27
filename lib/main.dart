@@ -10,16 +10,16 @@ import 'package:provider/provider.dart';
 import 'package:restaurant_app/app.dart';
 import 'package:restaurant_app/common/utilities/navigator_key.dart';
 import 'package:restaurant_app/providers/api_providers/restaurants_provider.dart';
-import 'package:restaurant_app/providers/app_providers/is_reload_provider.dart';
-import 'package:restaurant_app/providers/app_providers/is_searching_provider.dart';
 import 'package:restaurant_app/providers/app_providers/nav_bar_index_provider.dart';
+import 'package:restaurant_app/providers/app_providers/page_reload_provider.dart';
+import 'package:restaurant_app/providers/app_providers/search_condition_provider.dart';
 import 'package:restaurant_app/providers/app_providers/search_query_provider.dart';
 import 'package:restaurant_app/providers/app_providers/selected_category_provider.dart';
 import 'package:restaurant_app/providers/database_providers/restaurant_database_provider.dart';
 import 'package:restaurant_app/providers/local_notification_providers/local_notification_provider.dart';
-import 'package:restaurant_app/providers/prefs_providers/is_daily_reminder_enabled_provider.dart';
-import 'package:restaurant_app/providers/prefs_providers/is_dark_mode_enabled_provider.dart';
-import 'package:restaurant_app/providers/prefs_providers/is_restaurant_recommendation_enabled_provider.dart';
+import 'package:restaurant_app/providers/prefs_providers/daily_reminder_provider.dart';
+import 'package:restaurant_app/providers/prefs_providers/dark_mode_provider.dart';
+import 'package:restaurant_app/providers/prefs_providers/restaurant_recommendation_provider.dart';
 import 'package:restaurant_app/services/api/restaurant_api.dart';
 import 'package:restaurant_app/services/db/restaurant_database.dart';
 import 'package:restaurant_app/services/notifications/local_notification_service.dart';
@@ -70,10 +70,10 @@ Future<void> main() async {
           create: (_) => NavBarIndexProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => IsReloadProvider(),
+          create: (_) => PageReloadProvider(),
         ),
         ChangeNotifierProvider(
-          create: (_) => IsSearchingProvider(),
+          create: (_) => SearchConditionProvider(),
         ),
         ChangeNotifierProvider(
           create: (_) => SearchQueryProvider(),
@@ -91,19 +91,19 @@ Future<void> main() async {
 
         //* Preferences providers
         ChangeNotifierProvider(
-          create: (context) => IsDarkModeEnabledProvider(
+          create: (context) => DarkModeProvider(
             context.read<RestaurantSettingsPrefs>(),
           )..loadValue(),
           lazy: false,
         ),
         ChangeNotifierProvider(
-          create: (context) => IsDailyReminderEnabledProvider(
+          create: (context) => DailyReminderProvider(
             context.read<RestaurantSettingsPrefs>(),
           )..loadValue(),
           lazy: false,
         ),
         ChangeNotifierProvider(
-          create: (context) => IsRestaurantRecommendationEnabledProvider(
+          create: (context) => RestaurantRecommendationProvider(
             context.read<RestaurantSettingsPrefs>(),
           )..loadValue(),
           lazy: false,
