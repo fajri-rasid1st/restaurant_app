@@ -1,5 +1,7 @@
+// Project imports:
 import 'package:restaurant_app/models/restaurant.dart';
 import 'package:restaurant_app/models/restaurant_detail.dart';
+import 'package:restaurant_app/models/restaurant_favorite.dart';
 
 final dummyRestaurants = [
   Restaurant(
@@ -20,7 +22,7 @@ final dummyRestaurants = [
   ),
 ];
 
-final dummyRestaurantsSearchResult = <Restaurant>[
+final dummyRestaurantsSearchResult = [
   Restaurant(
     id: 'r1',
     name: 'Restoran Sederhana',
@@ -66,8 +68,6 @@ final dummyRestaurantDetail = RestaurantDetail(
   ),
 );
 
-// Hasil list review setelah kirim review sukses (API sendCustomerReview di project-mu
-// mengembalikan List<CustomerReview>, bukan RestaurantDetail)
 final dummyReviewsAfterPost = [
   ...dummyRestaurantDetail.customerReviews,
   CustomerReview(
@@ -76,3 +76,27 @@ final dummyReviewsAfterPost = [
     date: '2024-01-02',
   ),
 ];
+
+final dummyRestaurantFavorite1 = RestaurantFavorite(
+  id: 1,
+  restaurantId: 'r1',
+  name: 'Sederhana',
+  description: 'Masakan Padang',
+  pictureId: 'pic_1',
+  city: 'Jakarta',
+  rating: 4.5,
+  createdAt: DateTime.parse('2024-01-01'),
+);
+
+final dummyRestaurantFavorite2 = RestaurantFavorite(
+  id: 2,
+  restaurantId: 'r2',
+  name: 'Padang Maknyus',
+  description: 'Rendang juara',
+  pictureId: 'pic_2',
+  city: 'Bandung',
+  rating: 4.3,
+  createdAt: DateTime.parse('2024-01-02'),
+);
+
+final dummyRestaurantFavoriteList = [dummyRestaurantFavorite2, dummyRestaurantFavorite1];

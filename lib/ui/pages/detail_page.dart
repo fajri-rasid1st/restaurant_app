@@ -383,7 +383,7 @@ class DetailPage extends StatelessWidget {
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.symmetric(horizontal: 12),
         itemCount: items.length,
-        itemBuilder: (context, index) {
+        itemBuilder: (_, index) {
           return ItemMenuCard(
             item: items[index],
             isFood: isFood,

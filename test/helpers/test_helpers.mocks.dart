@@ -3,13 +3,21 @@
 // Do not manually edit this file.
 
 // ignore_for_file: no_leading_underscores_for_library_prefixes
-import 'dart:async' as _i5;
 
+// Dart imports:
+import 'dart:async' as _i6;
+
+// Package imports:
 import 'package:http/http.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
-import 'package:restaurant_app/models/restaurant.dart' as _i6;
+import 'package:sqflite/sqflite.dart' as _i4;
+
+// Project imports:
+import 'package:restaurant_app/models/restaurant.dart' as _i7;
 import 'package:restaurant_app/models/restaurant_detail.dart' as _i3;
-import 'package:restaurant_app/services/api/restaurant_api.dart' as _i4;
+import 'package:restaurant_app/models/restaurant_favorite.dart' as _i9;
+import 'package:restaurant_app/services/api/restaurant_api.dart' as _i5;
+import 'package:restaurant_app/services/db/restaurant_database.dart' as _i8;
 
 // ignore_for_file: type=lint
 // ignore_for_file: avoid_redundant_argument_values
@@ -37,10 +45,15 @@ class _FakeRestaurantDetail_1 extends _i1.SmartFake
     : super(parent, parentInvocation);
 }
 
+class _FakeDatabase_2 extends _i1.SmartFake implements _i4.Database {
+  _FakeDatabase_2(Object parent, Invocation parentInvocation)
+    : super(parent, parentInvocation);
+}
+
 /// A class which mocks [RestaurantApi].
 ///
 /// See the documentation for Mockito's code generation for more information.
-class MockRestaurantApi extends _i1.Mock implements _i4.RestaurantApi {
+class MockRestaurantApi extends _i1.Mock implements _i5.RestaurantApi {
   MockRestaurantApi() {
     _i1.throwOnMissingStub(this);
   }
@@ -54,30 +67,30 @@ class MockRestaurantApi extends _i1.Mock implements _i4.RestaurantApi {
           as _i2.Client);
 
   @override
-  _i5.Future<List<_i6.Restaurant>> getRestaurants([String? query]) =>
+  _i6.Future<List<_i7.Restaurant>> getRestaurants([String? query]) =>
       (super.noSuchMethod(
             Invocation.method(#getRestaurants, [query]),
-            returnValue: _i5.Future<List<_i6.Restaurant>>.value(
-              <_i6.Restaurant>[],
+            returnValue: _i6.Future<List<_i7.Restaurant>>.value(
+              <_i7.Restaurant>[],
             ),
           )
-          as _i5.Future<List<_i6.Restaurant>>);
+          as _i6.Future<List<_i7.Restaurant>>);
 
   @override
-  _i5.Future<_i3.RestaurantDetail> getRestaurantDetail(String? id) =>
+  _i6.Future<_i3.RestaurantDetail> getRestaurantDetail(String? id) =>
       (super.noSuchMethod(
             Invocation.method(#getRestaurantDetail, [id]),
-            returnValue: _i5.Future<_i3.RestaurantDetail>.value(
+            returnValue: _i6.Future<_i3.RestaurantDetail>.value(
               _FakeRestaurantDetail_1(
                 this,
                 Invocation.method(#getRestaurantDetail, [id]),
               ),
             ),
           )
-          as _i5.Future<_i3.RestaurantDetail>);
+          as _i6.Future<_i3.RestaurantDetail>);
 
   @override
-  _i5.Future<List<_i3.CustomerReview>> sendCustomerReview({
+  _i6.Future<List<_i3.CustomerReview>> sendCustomerReview({
     required String? id,
     required String? name,
     required String? review,
@@ -88,9 +101,63 @@ class MockRestaurantApi extends _i1.Mock implements _i4.RestaurantApi {
               #name: name,
               #review: review,
             }),
-            returnValue: _i5.Future<List<_i3.CustomerReview>>.value(
+            returnValue: _i6.Future<List<_i3.CustomerReview>>.value(
               <_i3.CustomerReview>[],
             ),
           )
-          as _i5.Future<List<_i3.CustomerReview>>);
+          as _i6.Future<List<_i3.CustomerReview>>);
+}
+
+/// A class which mocks [RestaurantDatabase].
+///
+/// See the documentation for Mockito's code generation for more information.
+class MockRestaurantDatabase extends _i1.Mock
+    implements _i8.RestaurantDatabase {
+  MockRestaurantDatabase() {
+    _i1.throwOnMissingStub(this);
+  }
+
+  @override
+  _i6.Future<_i4.Database> get database =>
+      (super.noSuchMethod(
+            Invocation.getter(#database),
+            returnValue: _i6.Future<_i4.Database>.value(
+              _FakeDatabase_2(this, Invocation.getter(#database)),
+            ),
+          )
+          as _i6.Future<_i4.Database>);
+
+  @override
+  _i6.Future<List<_i9.RestaurantFavorite>> all() =>
+      (super.noSuchMethod(
+            Invocation.method(#all, []),
+            returnValue: _i6.Future<List<_i9.RestaurantFavorite>>.value(
+              <_i9.RestaurantFavorite>[],
+            ),
+          )
+          as _i6.Future<List<_i9.RestaurantFavorite>>);
+
+  @override
+  _i6.Future<int> insert(_i9.RestaurantFavorite? favorite) =>
+      (super.noSuchMethod(
+            Invocation.method(#insert, [favorite]),
+            returnValue: _i6.Future<int>.value(0),
+          )
+          as _i6.Future<int>);
+
+  @override
+  _i6.Future<bool> isExist(String? restaurantId) =>
+      (super.noSuchMethod(
+            Invocation.method(#isExist, [restaurantId]),
+            returnValue: _i6.Future<bool>.value(false),
+          )
+          as _i6.Future<bool>);
+
+  @override
+  _i6.Future<int> delete(String? restaurantId) =>
+      (super.noSuchMethod(
+            Invocation.method(#delete, [restaurantId]),
+            returnValue: _i6.Future<int>.value(0),
+          )
+          as _i6.Future<int>);
 }
