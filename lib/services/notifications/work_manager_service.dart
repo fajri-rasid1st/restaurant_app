@@ -28,7 +28,7 @@ void callbackDispatcher() {
 
       await localNotificationService.showNotification(
         id: randIndex,
-        title: 'Waktunya makan siang ⏰',
+        title: 'Rekomendasi restoran 🍽️',
         body: 'Anda mungkin tertarik dengan restoran "${restaurant.name}"',
         payload: jsonEncode(restaurant.toMap()),
       );
